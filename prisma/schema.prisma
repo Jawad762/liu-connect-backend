@@ -1,0 +1,223 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum NotificationType {
+  LIKE
+  COMMENT
+  FOLLOW
+  MENTION
+  COMMUNITY
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  publicId String  @unique @default(uuid()) @map("public_id")
+  email    String  @unique
+  name     String?
+  avatar_url String?
+  bio      String?
+  school   String?
+  major    String?
+  followers_count Int @default(0) @map("followers_count")
+  following_count Int @default(0) @map("following_count")
+  password   String
+  refresh_token String?
+  reset_password_token String?
+  reset_password_expires DateTime?
+  verify_email_token String?
+  verify_email_expires DateTime?
+  is_verified Boolean @default(false)
+  is_deleted Boolean  @default(false) @map("is_deleted")
+  deleted_at DateTime? @map("deleted_at")
+  posts    Post[]
+  comments Comment[]
+  communities CommunityMember[]
+  postLikes PostLike[]
+  commentLikes CommentLike[]
+  notifications Notification[]
+  createdCommunities Community[]
+  followers UserFollow[]  @relation("Follower")
+  following UserFollow[] @relation("Following")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([is_deleted])
+}
+
+model Post {
+  id        Int     @id @default(autoincrement())
+  publicId  String  @unique @default(uuid()) @map("public_id")
+  content   String
+  published Boolean @default(false)
+  is_deleted Boolean @default(false) @map("is_deleted")
+  deleted_at DateTime? @map("deleted_at")
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  comments Comment[]
+  likes_count Int @default(0)
+  comments_count Int @default(0)
+  community Community? @relation(fields: [communityId], references: [id])
+  communityId Int?
+  likes PostLike[]
+  media PostMedia[]
+  notifications Notification[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([communityId])
+  @@index([createdAt])
+  @@index([communityId, createdAt])
+  @@index([is_deleted])
+}
+
+model Comment {
+  id        Int     @id @default(autoincrement())
+  publicId  String  @unique @default(uuid()) @map("public_id")
+  content   String
+  is_deleted Boolean @default(false) @map("is_deleted")
+  deleted_at DateTime? @map("deleted_at")
+  post      Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    Int
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  parentId  Int?
+  parent   Comment?  @relation("Comment", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  Comment[] @relation("Comment")
+  likes_count Int @default(0)
+  replies_count Int @default(0)
+  likes CommentLike[]
+  media CommentMedia[]
+  notifications Notification[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([postId])
+  @@index([userId])
+  @@index([parentId])
+  @@index([createdAt])
+  @@index([is_deleted])
+}
+
+model Community {
+  id        Int     @id @default(autoincrement())
+  publicId  String  @unique @default(uuid()) @map("public_id")
+  name      String
+  description String?
+  posts Post[]
+  communityMembers CommunityMember[]
+  createdBy User @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([createdById])
+}
+
+model CommunityMember {
+  id        Int     @id @default(autoincrement())
+  publicId  String  @unique @default(uuid()) @map("public_id")
+  community Community @relation(fields: [communityId], references: [id])
+  communityId Int
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([communityId, userId])
+  @@index([communityId])
+  @@index([userId])
+}
+
+model PostLike {
+  id        Int     @id @default(autoincrement())
+  publicId  String  @unique @default(uuid()) @map("public_id")
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId Int
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([postId, userId])
+  @@index([postId])
+  @@index([userId])
+}
+
+model CommentLike {
+  id        Int     @id @default(autoincrement())
+  publicId  String  @unique @default(uuid()) @map("public_id")
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId Int
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([commentId, userId])
+  @@index([commentId])
+  @@index([userId])
+}
+
+model Notification {
+  id        Int     @id @default(autoincrement())
+  publicId  String  @unique @default(uuid()) @map("public_id")
+  type      NotificationType
+  title     String
+  media_url String?
+  redirect_url String?
+  read      Boolean @default(false)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  post      Post?   @relation(fields: [postId], references: [id], onDelete: SetNull)
+  postId    Int?
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: SetNull)
+  commentId Int?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([userId, read])
+  @@index([createdAt])
+}
+
+model PostMedia {
+  id        Int     @id @default(autoincrement())
+  publicId  String  @unique @default(uuid()) @map("public_id")
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId Int
+  media_url String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model CommentMedia {
+  id        Int     @id @default(autoincrement())
+  publicId  String  @unique @default(uuid()) @map("public_id")
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId Int
+  media_url String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model UserFollow {
+  id         Int      @id @default(autoincrement())
+  publicId   String   @unique @default(uuid()) @map("public_id")
+  follower   User     @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId Int
+  following  User     @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+  followingId Int
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
+}
