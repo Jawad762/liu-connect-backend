@@ -7,6 +7,7 @@ import { toProfile, toProfileSelf, toUserListItem } from "../mappers/user.mapper
 import { validateName } from "../utils/auth.utils.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
 import { sendNotification } from "../utils/firebase.utils.ts";
+import { NotificationType } from "../../generated/prisma/enums.ts";
 
 export const getMe = async (req: IAuthRequest, res: Response) => {
   try {
@@ -95,11 +96,35 @@ export const followUser = async (req: IAuthRequest, res: Response) => {
       }),
     ]);
 
+    const notificationTitle = `${req.user.name ?? "Someone"} followed you`;
+    const notificationBody = "You have a new follower";
+    const redirectPath = req.user.publicId ? `/users/${req.user.publicId}` : undefined;
+
+    await prisma.notification.create({
+      data: {
+        type: NotificationType.FOLLOW,
+        title: notificationTitle,
+        ...(redirectPath && { redirect_url: redirectPath }),
+        userId: targetUser.id,
+      },
+    });
+
     const pushTokens = await prisma.pushToken.findMany({
       where: { userId: targetUser.id },
     });
     for (const pushToken of pushTokens) {
-      sendNotification(pushToken.token, `${req.user.name} followed you`, "You have a new follower");
+      await sendNotification(
+        pushToken.token,
+        notificationTitle,
+        notificationBody,
+        {
+          type: NotificationType.FOLLOW,
+          entity: "user",
+          followerPublicId: req.user.publicId ?? "",
+          actorPublicId: req.user.publicId ?? "",
+          actorName: req.user.name ?? "",
+        },
+      );
     }
     
     res.status(201).json(successResponse(undefined, "Following"));

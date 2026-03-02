@@ -5,6 +5,7 @@ import { Response } from "express";
 import { validateContent } from "../utils/post.utils.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
 import { sendNotification } from "../utils/firebase.utils.ts";
+import { NotificationType } from "../../generated/prisma/enums.ts";
 
 export const getPosts = async (req: IAuthRequest, res: Response) => {
     try {
@@ -124,15 +125,19 @@ export const likePost = async (req: IAuthRequestBody<ILikePostBody>, res: Respon
 
         const user = await prisma.user.findUnique({
             where: { id: userId },
-            select: { name: true },
+            select: { name: true, publicId: true },
         });
         if (!user) return res.status(404).json(errorResponse("User not found"));
 
         const post = await prisma.post.findUnique({
             where: { publicId: publicId as string },
-            select: { id: true, userId: true },
+            select: { id: true, userId: true, publicId: true },
         });
         if (!post) return res.status(404).json(errorResponse("Post not found"));
+
+        const notificationTitle = `${user.name ?? "Someone"} liked your post`;
+        const notificationBody = "You have a new like on your post";
+        const redirectPath = `/posts/${post.publicId}`;
 
         await prisma.$transaction([
             prisma.postLike.create({
@@ -144,12 +149,34 @@ export const likePost = async (req: IAuthRequestBody<ILikePostBody>, res: Respon
             }),
         ])
 
-        const pushTokens = await prisma.pushToken.findMany({
-            where: { userId: post.userId },
-        });
+        if (post.userId !== userId) {
+            await prisma.notification.create({
+                data: {
+                    type: NotificationType.LIKE,
+                    title: notificationTitle,
+                    redirect_url: redirectPath,
+                    userId: post.userId,
+                    postId: post.id,
+                },
+            });
 
-        for (const pushToken of pushTokens) {
-            sendNotification(pushToken.token, `${user.name} liked your post`, "You have a new like on your post");
+            const pushTokens = await prisma.pushToken.findMany({
+                where: { userId: post.userId },
+            });
+            for (const pushToken of pushTokens) {
+                await sendNotification(
+                    pushToken.token,
+                    notificationTitle,
+                    notificationBody,
+                    {
+                        type: NotificationType.LIKE,
+                        entity: "post",
+                        postPublicId: post.publicId,
+                        actorPublicId: req.user?.publicId ?? "",
+                        actorName: user.name ?? "",
+                    },
+                );
+            }
         }
 
         return res.status(201).json(successResponse(undefined, "Liked post"));

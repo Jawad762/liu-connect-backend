@@ -5,6 +5,7 @@ import { prisma } from "../lib/prisma.ts";
 import { ICreateCommentBody, IUpdateCommentBody } from "../dtos/comment.dto.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
 import { sendNotification } from "../utils/firebase.utils.ts";
+import { NotificationType } from "../../generated/prisma/enums.ts";
 
 export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, res: Response) => {
     try {
@@ -15,7 +16,7 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
 
         const user = await prisma.user.findUnique({
             where: { id: userId },
-            select: { name: true },
+            select: { name: true, publicId: true },
         });
         if (!user) return res.status(404).json(errorResponse("User not found"));
 
@@ -25,7 +26,7 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
 
         const post = await prisma.post.findUnique({
             where: { publicId: postPublicId as string },
-            select: { id: true, userId: true },
+            select: { id: true, userId: true, publicId: true },
         });
         if (!post) return res.status(404).json(errorResponse("Post not found"));
 
@@ -56,21 +57,81 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
         if (parentId) {
             const parent = await prisma.comment.findUnique({
                 where: { id: parentId },
-                select: { userId: true },
+                select: { userId: true, publicId: true },
             });
             if (!parent) return res.status(404).json(errorResponse("Parent comment not found"));
-            const pushTokens = await prisma.pushToken.findMany({
-                where: { userId: parent.userId },
-            });
-            for (const pushToken of pushTokens) {
-                sendNotification(pushToken.token, `${user.name} replied to your comment`, "You have a new reply to your comment");
+            if (parent.userId !== userId) {
+                const notificationTitle = `${user.name ?? "Someone"} replied to your comment`;
+                const notificationBody = "You have a new reply to your comment";
+                const redirectPath = `/posts/${post.publicId}`;
+
+                await prisma.notification.create({
+                    data: {
+                        type: NotificationType.COMMENT,
+                        title: notificationTitle,
+                        redirect_url: redirectPath,
+                        userId: parent.userId,
+                        postId: post.id,
+                        commentId: comment.id,
+                    },
+                });
+
+                const pushTokens = await prisma.pushToken.findMany({
+                    where: { userId: parent.userId },
+                });
+
+                for (const pushToken of pushTokens) {
+                    await sendNotification(
+                        pushToken.token,
+                        notificationTitle,
+                        notificationBody,
+                        {
+                            type: NotificationType.COMMENT,
+                            entity: "comment_reply",
+                            postPublicId: post.publicId,
+                            commentPublicId: comment.publicId,
+                            parentCommentPublicId: parent.publicId,
+                            actorPublicId: req.user?.publicId ?? "",
+                            actorName: user.name ?? "",
+                        },
+                    );
+                }
             }
         } else {
-            const pushTokens = await prisma.pushToken.findMany({
-                where: { userId: post.userId },
-            });
-            for (const pushToken of pushTokens) {
-                sendNotification(pushToken.token, `${user.name} commented on your post`, "You have a new comment on your post");
+            if (post.userId !== userId) {
+                const notificationTitle = `${user.name ?? "Someone"} commented on your post`;
+                const notificationBody = "You have a new comment on your post";
+                const redirectPath = `/posts/${post.publicId}`;
+
+                await prisma.notification.create({
+                    data: {
+                        type: NotificationType.COMMENT,
+                        title: notificationTitle,
+                        redirect_url: redirectPath,
+                        userId: post.userId,
+                        postId: post.id,
+                        commentId: comment.id,
+                    },
+                });
+
+                const pushTokens = await prisma.pushToken.findMany({
+                    where: { userId: post.userId },
+                });
+                for (const pushToken of pushTokens) {
+                    await sendNotification(
+                        pushToken.token,
+                        notificationTitle,
+                        notificationBody,
+                        {
+                            type: NotificationType.COMMENT,
+                            entity: "comment",
+                            postPublicId: post.publicId,
+                            commentPublicId: comment.publicId,
+                            actorPublicId: req.user?.publicId ?? "",
+                            actorName: user.name ?? "",
+                        },
+                    );
+                }
             }
         }
 
@@ -151,15 +212,19 @@ export const likeComment = async (req: IAuthRequest, res: Response) => {
 
         const user = await prisma.user.findUnique({
             where: { id: userId },
-            select: { name: true },
+            select: { name: true, publicId: true },
         });
         if (!user) return res.status(404).json(errorResponse("User not found"));
 
         const comment = await prisma.comment.findUnique({
             where: { publicId: publicId as string },
-            select: { id: true },
+            select: { id: true, publicId: true, userId: true, postId: true, post: { select: { publicId: true } } },
         });
         if (!comment) return res.status(404).json(errorResponse("Comment not found"));
+
+        const notificationTitle = `${user.name ?? "Someone"} liked your comment`;
+        const notificationBody = "You have a new like on your comment";
+        const redirectPath = `/posts/${comment.post.publicId}`;
 
         await prisma.$transaction([
             prisma.commentLike.create({
@@ -171,11 +236,36 @@ export const likeComment = async (req: IAuthRequest, res: Response) => {
             }),
         ]);
 
-        const pushTokens = await prisma.pushToken.findMany({
-            where: { userId },
-        });
-        for (const pushToken of pushTokens) {
-            sendNotification(pushToken.token, `${user.name} liked your comment`, "You have a new like on your comment");
+        if (comment.userId !== userId) {
+            await prisma.notification.create({
+                data: {
+                    type: NotificationType.LIKE,
+                    title: notificationTitle,
+                    redirect_url: redirectPath,
+                    userId: comment.userId,
+                    postId: comment.postId,
+                    commentId: comment.id,
+                },
+            });
+
+            const pushTokens = await prisma.pushToken.findMany({
+                where: { userId: comment.userId },
+            });
+            for (const pushToken of pushTokens) {
+                await sendNotification(
+                    pushToken.token,
+                    notificationTitle,
+                    notificationBody,
+                    {
+                        type: NotificationType.LIKE,
+                        entity: "comment",
+                        postPublicId: comment.post.publicId,
+                        commentPublicId: comment.publicId,
+                        actorPublicId: req.user?.publicId ?? "",
+                        actorName: user.name ?? "",
+                    },
+                );
+            }
         }
 
         return res.status(200).json(successResponse(undefined, "Liked comment"));
