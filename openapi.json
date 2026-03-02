@@ -1,0 +1,865 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "LIU Connect API",
+    "description": "API specification with example payloads for testing in Postman, Swagger UI, or similar tools.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local development"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Access token from sign-in or refresh. Use: Authorization: Bearer <accessToken>"
+      }
+    },
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "message": { "type": "string", "example": "Error message" }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string" },
+          "data": {}
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/health": {
+      "get": {
+        "summary": "Health check",
+        "tags": ["Health"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": { "status": "ok" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/health/ready": {
+      "get": {
+        "summary": "Readiness check",
+        "tags": ["Health"],
+        "responses": {
+          "200": {
+            "description": "Ready",
+            "content": {
+              "application/json": {
+                "example": { "status": "ready" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/signup": {
+      "post": {
+        "summary": "Create account",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "john@example.com" },
+                  "password": { "type": "string", "minLength": 8, "example": "SecurePass123!" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "User created" },
+          "400": { "description": "Invalid email or password" },
+          "409": { "description": "Email already registered" }
+        }
+      }
+    },
+    "/api/auth/signin": {
+      "post": {
+        "summary": "Sign in",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "john@example.com" },
+                  "password": { "type": "string", "example": "SecurePass123!" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Signed in",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Signed in successfully",
+                  "data": {
+                    "user": { "id": 1, "publicId": "abc123", "email": "john@example.com", "name": "John" },
+                    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Invalid credentials" },
+          "403": { "description": "Email not verified" }
+        }
+      }
+    },
+    "/api/auth/signout": {
+      "post": {
+        "summary": "Sign out",
+        "tags": ["Auth"],
+        "description": "Requires refreshToken cookie (set by sign-in)",
+        "responses": {
+          "200": { "description": "Signed out" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/auth/refresh": {
+      "post": {
+        "summary": "Refresh access token",
+        "tags": ["Auth"],
+        "description": "Requires refreshToken cookie",
+        "responses": {
+          "200": {
+            "description": "Token refreshed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Token refreshed successfully",
+                  "data": { "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/auth/verify-email": {
+      "post": {
+        "summary": "Verify email with code",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "code"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "john@example.com" },
+                  "code": { "type": "string", "example": "123456" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Email verified" },
+          "400": { "description": "Invalid code or already verified" }
+        }
+      }
+    },
+    "/api/auth/resend-verification": {
+      "post": {
+        "summary": "Resend verification code",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "john@example.com" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Code sent" },
+          "400": { "description": "Invalid or already verified" }
+        }
+      }
+    },
+    "/api/auth/forgot-password": {
+      "post": {
+        "summary": "Request password reset",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "john@example.com" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "If account exists, reset email sent" }
+        }
+      }
+    },
+    "/api/auth/reset-password": {
+      "post": {
+        "summary": "Reset password with code",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "code", "newPassword"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "john@example.com" },
+                  "code": { "type": "string", "example": "123456" },
+                  "newPassword": { "type": "string", "minLength": 8, "example": "NewSecurePass123!" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Password reset" },
+          "400": { "description": "Invalid or expired code" }
+        }
+      }
+    },
+    "/api/auth/change-password": {
+      "post": {
+        "summary": "Change password (authenticated)",
+        "tags": ["Auth"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["currentPassword", "newPassword"],
+                "properties": {
+                  "currentPassword": { "type": "string", "example": "SecurePass123!" },
+                  "newPassword": { "type": "string", "minLength": 8, "example": "NewSecurePass456!" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Password changed" },
+          "401": { "description": "Unauthorized or wrong current password" }
+        }
+      }
+    },
+    "/api/users/me": {
+      "get": {
+        "summary": "Get current user profile",
+        "tags": ["Users"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Profile" },
+          "401": { "description": "Unauthorized" }
+        }
+      },
+      "patch": {
+        "summary": "Update current user profile",
+        "tags": ["Users"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": { "type": "string", "minLength": 2, "example": "John Doe" },
+                  "avatar_url": { "type": "string", "nullable": true, "example": "https://example.com/avatar.jpg" },
+                  "bio": { "type": "string", "nullable": true, "example": "Computer Science student" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Profile updated" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/users/{publicId}": {
+      "get": {
+        "summary": "Get user by public ID",
+        "tags": ["Users"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "publicId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "example": "usr_abc123xyz" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "User profile" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "User not found" }
+        }
+      }
+    },
+    "/api/users/{publicId}/follow": {
+      "post": {
+        "summary": "Follow user",
+        "tags": ["Users"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "publicId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "example": "usr_abc123xyz" }
+          }
+        ],
+        "responses": {
+          "201": { "description": "Following" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "User not found" }
+        }
+      },
+      "delete": {
+        "summary": "Unfollow user",
+        "tags": ["Users"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "publicId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "example": "usr_abc123xyz" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Unfollowed" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/users/{publicId}/followers": {
+      "get": {
+        "summary": "Get user's followers",
+        "tags": ["Users"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "usr_abc123xyz" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "size", "in": "query", "schema": { "type": "integer", "default": 10 } }
+        ],
+        "responses": {
+          "200": { "description": "List of followers" },
+          "404": { "description": "User not found" }
+        }
+      }
+    },
+    "/api/users/{publicId}/following": {
+      "get": {
+        "summary": "Get users that user follows",
+        "tags": ["Users"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "usr_abc123xyz" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "size", "in": "query", "schema": { "type": "integer", "default": 10 } }
+        ],
+        "responses": {
+          "200": { "description": "List of following" },
+          "404": { "description": "User not found" }
+        }
+      }
+    },
+    "/api/posts": {
+      "get": {
+        "summary": "List posts",
+        "tags": ["Posts"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "size", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "communityPublicId", "in": "query", "schema": { "type": "string", "example": "com_xyz789" } },
+          { "name": "userPublicId", "in": "query", "schema": { "type": "string", "example": "usr_abc123xyz" } }
+        ],
+        "responses": {
+          "200": { "description": "List of posts" },
+          "401": { "description": "Unauthorized" }
+        }
+      },
+      "post": {
+        "summary": "Create post",
+        "tags": ["Posts"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["content", "media"],
+                "properties": {
+                  "content": { "type": "string", "example": "Hello world! This is my first post." },
+                  "communityPublicId": { "type": "string", "nullable": true, "example": "com_xyz789" },
+                  "media": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "maxItems": 4,
+                    "example": ["https://example.com/image1.jpg"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Post created" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/posts/{publicId}": {
+      "get": {
+        "summary": "Get single post",
+        "tags": ["Posts"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "pst_abc123" } }
+        ],
+        "responses": {
+          "200": { "description": "Post details" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Post not found" }
+        }
+      },
+      "put": {
+        "summary": "Update post",
+        "tags": ["Posts"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "pst_abc123" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["content", "media"],
+                "properties": {
+                  "content": { "type": "string", "example": "Updated post content" },
+                  "media": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "maxItems": 4,
+                    "example": ["https://example.com/image1.jpg"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Post updated" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Post not found" }
+        }
+      },
+      "delete": {
+        "summary": "Delete post",
+        "tags": ["Posts"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "pst_abc123" } }
+        ],
+        "responses": {
+          "200": { "description": "Post deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Post not found" }
+        }
+      }
+    },
+    "/api/posts/like": {
+      "patch": {
+        "summary": "Like a post",
+        "tags": ["Posts"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["publicId"],
+                "properties": {
+                  "publicId": { "type": "string", "example": "pst_abc123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Liked" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Post not found" }
+        }
+      }
+    },
+    "/api/posts/unlike": {
+      "patch": {
+        "summary": "Unlike a post",
+        "tags": ["Posts"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["publicId"],
+                "properties": {
+                  "publicId": { "type": "string", "example": "pst_abc123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Unliked" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/comments": {
+      "post": {
+        "summary": "Create comment",
+        "tags": ["Comments"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["postPublicId", "content", "media"],
+                "properties": {
+                  "postPublicId": { "type": "string", "example": "pst_abc123" },
+                  "content": { "type": "string", "example": "Great post!" },
+                  "media": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "maxItems": 4,
+                    "example": []
+                  },
+                  "parentPublicId": { "type": "string", "example": "cmt_xyz789", "description": "For replies" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Comment created" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Post not found" }
+        }
+      },
+      "get": {
+        "summary": "List comments",
+        "tags": ["Comments"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "postPublicId", "in": "query", "required": true, "schema": { "type": "string", "example": "pst_abc123" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "size", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "userPublicId", "in": "query", "schema": { "type": "string", "example": "usr_abc123" } },
+          { "name": "parentPublicId", "in": "query", "schema": { "type": "string", "description": "Get replies to this comment" } }
+        ],
+        "responses": {
+          "200": { "description": "List of comments" },
+          "400": { "description": "postPublicId required" },
+          "404": { "description": "Post not found" }
+        }
+      }
+    },
+    "/api/comments/{publicId}": {
+      "put": {
+        "summary": "Update comment",
+        "tags": ["Comments"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "cmt_abc123" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["content", "media"],
+                "properties": {
+                  "content": { "type": "string", "example": "Updated comment" },
+                  "media": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "maxItems": 4,
+                    "example": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Comment updated" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Comment not found" }
+        }
+      },
+      "delete": {
+        "summary": "Delete comment",
+        "tags": ["Comments"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "cmt_abc123" } }
+        ],
+        "responses": {
+          "200": { "description": "Comment deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Comment not found" }
+        }
+      }
+    },
+    "/api/comments/{publicId}/like": {
+      "patch": {
+        "summary": "Like comment",
+        "tags": ["Comments"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "cmt_abc123" } }
+        ],
+        "responses": {
+          "200": { "description": "Liked" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Comment not found" }
+        }
+      }
+    },
+    "/api/comments/{publicId}/unlike": {
+      "patch": {
+        "summary": "Unlike comment",
+        "tags": ["Comments"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "cmt_abc123" } }
+        ],
+        "responses": {
+          "200": { "description": "Unliked" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Comment not found" }
+        }
+      }
+    },
+    "/api/communities": {
+      "get": {
+        "summary": "List communities",
+        "tags": ["Communities"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "size", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "search", "in": "query", "schema": { "type": "string", "example": "tech" } }
+        ],
+        "responses": {
+          "200": { "description": "List of communities" },
+          "401": { "description": "Unauthorized" }
+        }
+      },
+      "post": {
+        "summary": "Create community",
+        "tags": ["Communities"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": { "type": "string", "minLength": 2, "example": "Tech Enthusiasts" },
+                  "description": { "type": "string", "nullable": true, "example": "A place for tech lovers" },
+                  "avatar_url": { "type": "string", "nullable": true, "example": "https://example.com/community.jpg" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Community created" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/communities/{publicId}": {
+      "get": {
+        "summary": "Get community",
+        "tags": ["Communities"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "com_xyz789" } }
+        ],
+        "responses": {
+          "200": { "description": "Community details" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Community not found" }
+        }
+      },
+      "put": {
+        "summary": "Update community",
+        "tags": ["Communities"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "com_xyz789" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "minLength": 2, "example": "Tech Enthusiasts" },
+                  "description": { "type": "string", "nullable": true },
+                  "avatar_url": { "type": "string", "nullable": true }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Community updated" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden (creator only)" },
+          "404": { "description": "Community not found" }
+        }
+      },
+      "delete": {
+        "summary": "Delete community",
+        "tags": ["Communities"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "com_xyz789" } }
+        ],
+        "responses": {
+          "200": { "description": "Community deleted" },
+          "400": { "description": "Cannot delete community with posts" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Community not found" }
+        }
+      }
+    },
+    "/api/communities/{publicId}/join": {
+      "post": {
+        "summary": "Join community",
+        "tags": ["Communities"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "com_xyz789" } }
+        ],
+        "responses": {
+          "201": { "description": "Joined" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Community not found" }
+        }
+      },
+      "delete": {
+        "summary": "Leave community",
+        "tags": ["Communities"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "com_xyz789" } }
+        ],
+        "responses": {
+          "200": { "description": "Left" },
+          "400": { "description": "Owner cannot leave" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Community not found" }
+        }
+      }
+    },
+    "/api/notifications": {
+      "get": {
+        "summary": "List notifications",
+        "tags": ["Notifications"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "List of notifications" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/notifications/read-all": {
+      "post": {
+        "summary": "Mark all notifications as read",
+        "tags": ["Notifications"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "All marked read" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    }
+  }
+}

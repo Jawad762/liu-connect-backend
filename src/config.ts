@@ -12,6 +12,7 @@ const envSchema = z.object({
   SENDGRID_API_KEY: z.string().min(1, 'SENDGRID_API_KEY is required'),
   SENDGRID_FROM_EMAIL: z.string().email('SENDGRID_FROM_EMAIL must be a valid email'),
   FIREBASE_SERVICE_ACCOUNT: z.string().min(1, 'FIREBASE_SERVICE_ACCOUNT is required'),
+  LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
 });
 
 const parseEnv = () => {
@@ -38,6 +39,7 @@ const config = {
   SENDGRID_API_KEY: env.SENDGRID_API_KEY,
   SENDGRID_FROM_EMAIL: env.SENDGRID_FROM_EMAIL,
   FIREBASE_SERVICE_ACCOUNT: env.FIREBASE_SERVICE_ACCOUNT,
+  LOG_LEVEL: env.LOG_LEVEL,
 };
 
 export default config;

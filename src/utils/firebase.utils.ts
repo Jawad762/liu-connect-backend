@@ -1,4 +1,5 @@
 import { messaging } from "../lib/firebase.ts";
+import logger from "../lib/logger.ts";
 
 export const sendNotification = async (token: string, title: string, body: string) => {
   try {
@@ -8,6 +9,6 @@ export const sendNotification = async (token: string, title: string, body: strin
     };
     await messaging.send(message);
   } catch (error) {
-    console.error(error);
+    logger.error({ err: error }, "Failed to send push notification");
   }
 }
