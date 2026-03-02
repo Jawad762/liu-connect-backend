@@ -3,3 +3,5 @@ node_modules
 .env
 
 /src/generated/prisma
+
+liu-connect-app-firebase-adminsdk-fbsvc-bb6b2d69b4.json

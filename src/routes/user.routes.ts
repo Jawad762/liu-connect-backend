@@ -7,7 +7,7 @@ import {
   getUserByPublicId,
   unfollowUser,
   updateProfile,
-} from '../controllers/users.controller.ts';
+} from '../controllers/user.controller.ts';
 import { authMiddleware } from '../middleware/auth.middleware.ts';
 
 const router = express.Router();
@@ -16,7 +16,6 @@ router.use(authMiddleware);
 
 router.get('/me', getMe);
 router.patch('/me', updateProfile);
-
 router.get('/:publicId', getUserByPublicId);
 router.post('/:publicId/follow', followUser);
 router.delete('/:publicId/follow', unfollowUser);

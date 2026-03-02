@@ -61,7 +61,8 @@ export const ModelName = {
   Notification: 'Notification',
   PostMedia: 'PostMedia',
   CommentMedia: 'CommentMedia',
-  UserFollow: 'UserFollow'
+  UserFollow: 'UserFollow',
+  PushToken: 'PushToken'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -148,6 +149,7 @@ export const CommunityScalarFieldEnum = {
   publicId: 'publicId',
   name: 'name',
   description: 'description',
+  avatar_url: 'avatar_url',
   createdById: 'createdById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -244,6 +246,18 @@ export const UserFollowScalarFieldEnum = {
 } as const
 
 export type UserFollowScalarFieldEnum = (typeof UserFollowScalarFieldEnum)[keyof typeof UserFollowScalarFieldEnum]
+
+
+export const PushTokenScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  token: 'token',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PushTokenScalarFieldEnum = (typeof PushTokenScalarFieldEnum)[keyof typeof PushTokenScalarFieldEnum]
 
 
 export const SortOrder = {

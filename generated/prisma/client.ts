@@ -96,3 +96,8 @@ export type CommentMedia = Prisma.CommentMediaModel
  * 
  */
 export type UserFollow = Prisma.UserFollowModel
+/**
+ * Model PushToken
+ * 
+ */
+export type PushToken = Prisma.PushTokenModel

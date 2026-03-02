@@ -63,8 +63,8 @@ export const signIn = async (req: IRequestBody<ISignInBody>, res: Response) => {
     if (!user.is_verified) return res.status(403).json(errorResponse('Please verify your email before signing in'));
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) return res.status(401).json(errorResponse('Invalid email or password'));
-    const accessToken = jwt.sign({ id: user.id, publicId: user.publicId }, config.ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
-    const refreshToken = jwt.sign({ id: user.id, publicId: user.publicId }, config.REFRESH_TOKEN_SECRET, { expiresIn: '30d' });
+    const accessToken = jwt.sign({ id: user.id, publicId: user.publicId, name: user.name }, config.ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
+    const refreshToken = jwt.sign({ id: user.id, publicId: user.publicId, name: user.name }, config.REFRESH_TOKEN_SECRET, { expiresIn: '30d' });
     await prisma.user.update({
       where: { id: user.id },
       data: { refresh_token: refreshToken },
@@ -236,7 +236,7 @@ export const resetPassword = async (req: IRequestBody<IResetPasswordBody>, res: 
 
 export const changePassword = async (req: Request, res: Response) => {
   try {
-    const userId = req.userId;
+    const userId = req.user?.id;
     if (!userId) return res.status(401).json(errorResponse('Unauthorized'));
 
     const { currentPassword, newPassword } = req.body as IChangePasswordBody;

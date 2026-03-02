@@ -1,15 +1,16 @@
 import { IAuthRequestBody, IAuthRequest } from "../dtos/base.dto.ts";
 import { errorResponse, successResponse } from "../dtos/base.dto.ts";
-import { IUpdateProfileBody, IUserListItem } from "../dtos/users.dto.ts";
+import { IUpdateProfileBody, IUserListItem } from "../dtos/user.dto.ts";
 import { prisma } from "../lib/prisma.ts";
 import { Response } from "express";
 import { toProfile, toProfileSelf, toUserListItem } from "../mappers/user.mapper.ts";
 import { validateName } from "../utils/auth.utils.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
+import { sendNotification } from "../utils/firebase.utils.ts";
 
 export const getMe = async (req: IAuthRequest, res: Response) => {
   try {
-    const userId = req.userId;
+    const userId = req.user?.id;
     if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
 
     const user = await prisma.user.findUnique({
@@ -25,7 +26,7 @@ export const getMe = async (req: IAuthRequest, res: Response) => {
 
 export const updateProfile = async (req: IAuthRequestBody<IUpdateProfileBody>, res: Response) => {
   try {
-    const userId = req.userId;
+    const userId = req.user?.id;
     if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
 
     const { name, avatar_url, bio } = req.body;
@@ -43,7 +44,7 @@ export const updateProfile = async (req: IAuthRequestBody<IUpdateProfileBody>, r
 
 export const getUserByPublicId = async (req: IAuthRequest, res: Response) => {
   try {
-    const currentUserId = req.userId;
+    const currentUserId = req.user?.id;
     if (!currentUserId) return res.status(401).json(errorResponse("Unauthorized"));
 
     const publicId = getRouteParam(req, "publicId");
@@ -68,7 +69,7 @@ export const getUserByPublicId = async (req: IAuthRequest, res: Response) => {
 
 export const followUser = async (req: IAuthRequest, res: Response) => {
   try {
-    const followerId = req.userId;
+    const followerId = req.user.id;
     if (!followerId) return res.status(401).json(errorResponse("Unauthorized"));
 
     const publicId = getRouteParam(req, "publicId");
@@ -93,6 +94,14 @@ export const followUser = async (req: IAuthRequest, res: Response) => {
         data: { following_count: { increment: 1 } },
       }),
     ]);
+
+    const pushTokens = await prisma.pushToken.findMany({
+      where: { userId: targetUser.id },
+    });
+    for (const pushToken of pushTokens) {
+      sendNotification(pushToken.token, `${req.user.name} followed you`, "You have a new follower");
+    }
+    
     res.status(201).json(successResponse(undefined, "Following"));
   } catch (error) {
     return res.status(500).json(errorResponse("Internal server error"));
@@ -101,7 +110,7 @@ export const followUser = async (req: IAuthRequest, res: Response) => {
 
 export const unfollowUser = async (req: IAuthRequest, res: Response) => {
   try {
-    const followerId = req.userId;
+    const followerId = req.user?.id;
     if (!followerId) return res.status(401).json(errorResponse("Unauthorized"));
 
     const publicId = getRouteParam(req, "publicId");
@@ -138,6 +147,8 @@ export const getFollowers = async (req: IAuthRequest, res: Response) => {
     const publicId = getRouteParam(req, "publicId");
     if (!publicId) return res.status(400).json(errorResponse("Invalid user"));
 
+    const { page = 1, size = 10 } = req.query;
+
     const user = await prisma.user.findUnique({
       where: { publicId },
     });
@@ -145,8 +156,10 @@ export const getFollowers = async (req: IAuthRequest, res: Response) => {
 
     const follows = await prisma.userFollow.findMany({
       where: { followingId: user.id },
-      include: { follower: { select: { publicId: true, name: true, avatar_url: true } } },
+      include: { follower: { select: { publicId: true, name: true, avatar_url: true, bio: true, school: true, major: true } } },
       orderBy: { createdAt: "desc" },
+      skip: (Number(page) - 1) * Number(size),
+      take: Number(size),
     });
 
     const list: IUserListItem[] = follows.map((f) => toUserListItem(f.follower));
@@ -161,6 +174,8 @@ export const getFollowing = async (req: IAuthRequest, res: Response) => {
     const publicId = getRouteParam(req, "publicId");
     if (!publicId) return res.status(400).json(errorResponse("Invalid user"));
 
+    const { page = 1, size = 10 } = req.query;
+
     const user = await prisma.user.findUnique({
       where: { publicId },
     });
@@ -168,8 +183,10 @@ export const getFollowing = async (req: IAuthRequest, res: Response) => {
 
     const follows = await prisma.userFollow.findMany({
       where: { followerId: user.id },
-      include: { following: { select: { publicId: true, name: true, avatar_url: true } } },
+      include: { following: { select: { publicId: true, name: true, avatar_url: true, bio: true, school: true, major: true } } },
       orderBy: { createdAt: "desc" },
+      skip: (Number(page) - 1) * Number(size),
+      take: Number(size),
     });
 
     const list: IUserListItem[] = follows.map((f) => toUserListItem(f.following));

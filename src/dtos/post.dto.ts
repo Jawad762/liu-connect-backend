@@ -5,5 +5,10 @@ export interface ICreatePostBody {
 }
 
 export interface ILikePostBody {
-    postPublicId: string;
+    publicId: string;
+}
+
+export interface IUpdatePostBody {
+    content: string;
+    media: string[];
 }

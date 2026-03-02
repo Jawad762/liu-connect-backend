@@ -1,4 +1,4 @@
-import type { IUserProfile, IUserProfileSelf, IUserListItem } from "../dtos/users.dto.ts";
+import type { IUserProfile, IUserProfileSelf, IUserListItem } from "../dtos/user.dto.ts";
 
 export function toProfileSelf(user: {
   id: number;

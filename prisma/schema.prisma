@@ -12,7 +12,6 @@ enum NotificationType {
   COMMENT
   FOLLOW
   MENTION
-  COMMUNITY
 }
 
 model User {
@@ -42,6 +41,7 @@ model User {
   commentLikes CommentLike[]
   notifications Notification[]
   createdCommunities Community[]
+  pushTokens PushToken[]
   followers UserFollow[]  @relation("Follower")
   following UserFollow[] @relation("Following")
   createdAt DateTime @default(now()) @map("created_at")
@@ -110,6 +110,7 @@ model Community {
   publicId  String  @unique @default(uuid()) @map("public_id")
   name      String
   description String?
+  avatar_url String?
   posts Post[]
   communityMembers CommunityMember[]
   createdBy User @relation(fields: [createdById], references: [id], onDelete: Cascade)
@@ -220,4 +221,16 @@ model UserFollow {
   @@unique([followerId, followingId])
   @@index([followerId])
   @@index([followingId])
+}
+
+model PushToken {
+  id        Int     @id @default(autoincrement())
+  publicId  String  @unique @default(uuid()) @map("public_id")
+  token     String @unique
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
 }
