@@ -1,13 +1,14 @@
 import { IAuthRequestBody, IAuthRequest } from "../dtos/base.dto.ts";
 import { errorResponse, successResponse } from "../dtos/base.dto.ts";
-import { IUpdateProfileBody, IUserListItem } from "../dtos/user.dto.ts";
+import { IAddPushTokenBody, IUpdateProfileBody, IUserListItem } from "../dtos/user.dto.ts";
 import { prisma } from "../lib/prisma.ts";
 import { Response } from "express";
 import { toProfile, toProfileSelf, toUserListItem } from "../mappers/user.mapper.ts";
 import { validateName } from "../utils/auth.utils.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
-import { sendNotification } from "../utils/firebase.utils.ts";
 import { NotificationType } from "../../generated/prisma/enums.ts";
+import { enqueuePushNotifications } from "../queue/enqueuePushNotifications.ts";
+import logger from "../lib/logger.ts";
 
 export const getMe = async (req: IAuthRequest, res: Response) => {
   try {
@@ -21,6 +22,7 @@ export const getMe = async (req: IAuthRequest, res: Response) => {
 
     res.status(200).json(successResponse(toProfileSelf(user)));
   } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse("Internal server error"));
   }
 };
@@ -39,6 +41,7 @@ export const updateProfile = async (req: IAuthRequestBody<IUpdateProfileBody>, r
     });
     res.status(200).json(successResponse(toProfileSelf(user)));
   } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse("Internal server error"));
   }
 };
@@ -64,6 +67,7 @@ export const getUserByPublicId = async (req: IAuthRequest, res: Response) => {
 
     res.status(200).json(successResponse(toProfile(user, !!isFollowing)));
   } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse("Internal server error"));
   }
 };
@@ -112,23 +116,17 @@ export const followUser = async (req: IAuthRequest, res: Response) => {
     const pushTokens = await prisma.pushToken.findMany({
       where: { userId: targetUser.id },
     });
-    for (const pushToken of pushTokens) {
-      await sendNotification(
-        pushToken.token,
-        notificationTitle,
-        notificationBody,
-        {
-          type: NotificationType.FOLLOW,
-          entity: "user",
-          followerPublicId: req.user.publicId ?? "",
-          actorPublicId: req.user.publicId ?? "",
-          actorName: req.user.name ?? "",
-        },
-      );
-    }
-    
+    enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
+      type: NotificationType.FOLLOW,
+      entity: "user",
+      followerPublicId: req.user.publicId ?? "",
+      actorPublicId: req.user.publicId ?? "",
+      actorName: req.user.name ?? "",
+    });
+
     res.status(201).json(successResponse(undefined, "Following"));
   } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse("Internal server error"));
   }
 };
@@ -163,6 +161,7 @@ export const unfollowUser = async (req: IAuthRequest, res: Response) => {
     });
     res.status(200).json(successResponse(undefined, "Unfollowed"));
   } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse("Internal server error"));
   }
 };
@@ -190,6 +189,7 @@ export const getFollowers = async (req: IAuthRequest, res: Response) => {
     const list: IUserListItem[] = follows.map((f) => toUserListItem(f.follower));
     res.status(200).json(successResponse(list));
   } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse("Internal server error"));
   }
 };
@@ -217,6 +217,26 @@ export const getFollowing = async (req: IAuthRequest, res: Response) => {
     const list: IUserListItem[] = follows.map((f) => toUserListItem(f.following));
     res.status(200).json(successResponse(list));
   } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
+    return res.status(500).json(errorResponse("Internal server error"));
+  }
+};
+
+export const addPushToken = async (req: IAuthRequestBody<IAddPushTokenBody>, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
+
+    const { token } = req.body;
+    if (!token) return res.status(400).json(errorResponse("Token is required"));
+
+    await prisma.pushToken.create({
+      data: { token, userId },
+    });
+
+    return res.status(201).json(successResponse(undefined, "Push token added"));
+  } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse("Internal server error"));
   }
 };

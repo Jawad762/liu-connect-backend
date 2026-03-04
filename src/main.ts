@@ -1,6 +1,7 @@
 import config from './config.ts';
 import logger from './lib/logger.ts';
 import { prisma } from './lib/prisma.ts';
+import { redis } from './queue/connection.ts';
 import { errorResponse } from './dtos/base.dto.ts';
 import express, { Request, Response, NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
@@ -12,30 +13,41 @@ import commentRoutes from './routes/comment.routes.ts';
 import communityRoutes from './routes/community.routes.ts';
 import healthRoutes from './routes/health.routes.ts';
 import cors from 'cors';
-
-process.on('uncaughtException', (err) => {
-  logger.fatal({ err }, 'Uncaught exception');
-  process.exit(1);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-  logger.fatal({ reason, promise }, 'Unhandled rejection');
-  process.exit(1);
-});
+import rateLimit from 'express-rate-limit';
 
 const app = express();
+
+const rateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 requests per 15 minutes per IP
+  handler: (_req, res) => {
+    res.status(429).json(errorResponse('Too many requests, please try again later.'));
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // 10 requests per 15 minutes per IP for auth
+  handler: (_req, res) => {
+    res.status(429).json(errorResponse('Too many auth attempts, please try again later.'));
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 app.use(cookieParser());
 
-app.use('/api', healthRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/users', usersRoutes);
-app.use('/api/notifications', notificationRoutes);
-app.use('/api/posts', postRoutes);
-app.use('/api/comments', commentRoutes);
-app.use('/api/communities', communityRoutes);
+app.use('/api', rateLimiter, healthRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/users', rateLimiter, usersRoutes);
+app.use('/api/notifications', rateLimiter, notificationRoutes);
+app.use('/api/posts', rateLimiter, postRoutes);
+app.use('/api/comments', rateLimiter, commentRoutes);
+app.use('/api/communities', rateLimiter, communityRoutes);
 
 app.use((_req, _res, next) => {
   next(new Error('Not Found'));
@@ -63,6 +75,12 @@ const server = app.listen(config.PORT, () => {
 const shutdown = async (signal: string) => {
   logger.info({ signal }, 'Shutting down gracefully');
   server.close(async () => {
+    try {
+      await redis.quit();
+      logger.info('Redis connection closed');
+    } catch (err) {
+      logger.error({ err }, 'Error closing Redis');
+    }
     try {
       await prisma.$disconnect();
       logger.info('Database disconnected');

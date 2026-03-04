@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "nodemon src/main.ts",
     "build": "tsc",
-    "start": "node dist/main.js"
+    "start": "node dist/main.js",
+    "worker": "node dist/worker.js",
+    "worker:dev": "tsx src/worker.ts"
   },
   "keywords": [],
   "author": "",
@@ -17,10 +19,12 @@
     "@prisma/client": "^7.4.2",
     "@sendgrid/mail": "^8.1.6",
     "bcrypt": "^6.0.0",
+    "bullmq": "^5.70.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.2.1",
     "firebase": "^12.10.0",
     "firebase-admin": "^13.7.0",
     "jsonwebtoken": "^9.0.3",

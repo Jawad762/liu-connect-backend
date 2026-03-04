@@ -1,5 +1,5 @@
 import { randomInt } from 'crypto';
-import { sendEmail } from '../lib/sendgrid.ts';
+import { emailQueue } from '../queue/queues.ts';
 
 export const validateEmail = (email: string) => {
   if (!email) return false;
@@ -109,7 +109,12 @@ export const sendVerificationEmail = async (email: string, code: string): Promis
     footerNote: 'For security reasons, this code will expire in 5 minutes. Enter it on the verification screen in the LIU Connect app.',
   });
 
-  await sendEmail(email, subject, text, html);
+  await emailQueue.add('email', {
+    to: email,
+    subject: subject,
+    text: text,
+    html: html,
+  });
 };
 
 export const sendPasswordResetEmail = async (email: string, code: string): Promise<void> => {
@@ -123,5 +128,10 @@ export const sendPasswordResetEmail = async (email: string, code: string): Promi
     footerNote: 'This code will expire in 1 hour. If you did not request a password reset, you can safely ignore this email.',
   });
 
-  await sendEmail(email, subject, text, html);
+  await emailQueue.add('email', {
+    to: email,
+    subject: subject,
+    text: text,
+    html: html,
+  });
 };

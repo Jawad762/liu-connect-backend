@@ -1,5 +1,6 @@
 import express from 'express';
 import {
+  addPushToken,
   followUser,
   getFollowers,
   getFollowing,
@@ -16,6 +17,7 @@ router.use(authMiddleware);
 
 router.get('/me', getMe);
 router.patch('/me', updateProfile);
+router.post('/me/push-token', addPushToken);
 router.get('/:publicId', getUserByPublicId);
 router.post('/:publicId/follow', followUser);
 router.delete('/:publicId/follow', unfollowUser);

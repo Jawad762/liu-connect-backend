@@ -4,6 +4,7 @@ import { prisma } from "../lib/prisma.ts";
 import { ICreateCommunityBody, IUpdateCommunityBody } from "../dtos/community.dto.ts";
 import { validateName } from "../utils/auth.utils.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
+import logger from "../lib/logger.ts";
 
 export const getCommunities = async (req: IAuthRequest, res: Response) => {
     try {
@@ -26,6 +27,7 @@ export const getCommunities = async (req: IAuthRequest, res: Response) => {
 
         return res.status(200).json(successResponse(communities));
     } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 };
@@ -56,6 +58,7 @@ export const createCommunity = async (
 
         return res.status(201).json(successResponse(community));
     } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 };
@@ -79,6 +82,7 @@ export const getCommunity = async (req: IAuthRequest, res: Response) => {
 
         return res.status(200).json(successResponse(community));
     } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 };
@@ -130,6 +134,7 @@ export const updateCommunity = async (
 
         return res.status(200).json(successResponse(undefined, "Community updated"));
     } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 };
@@ -178,6 +183,7 @@ export const deleteCommunity = async (req: IAuthRequest, res: Response) => {
 
         return res.status(200).json(successResponse(undefined, "Community deleted"));
     } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 };
@@ -219,6 +225,7 @@ export const joinCommunity = async (req: IAuthRequest, res: Response) => {
 
         return res.status(201).json(successResponse(undefined, "Joined community"));
     } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 };
@@ -259,6 +266,7 @@ export const leaveCommunity = async (req: IAuthRequest, res: Response) => {
 
         return res.status(200).json(successResponse(undefined, "Left community"));
     } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 };

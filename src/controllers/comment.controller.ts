@@ -4,8 +4,9 @@ import { validateContent } from "../utils/post.utils.ts";
 import { prisma } from "../lib/prisma.ts";
 import { ICreateCommentBody, IUpdateCommentBody } from "../dtos/comment.dto.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
-import { sendNotification } from "../utils/firebase.utils.ts";
 import { NotificationType } from "../../generated/prisma/enums.ts";
+import { enqueuePushNotifications } from "../queue/enqueuePushNotifications.ts";
+import logger from "../lib/logger.ts";
 
 export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, res: Response) => {
     try {
@@ -79,23 +80,15 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
                 const pushTokens = await prisma.pushToken.findMany({
                     where: { userId: parent.userId },
                 });
-
-                for (const pushToken of pushTokens) {
-                    await sendNotification(
-                        pushToken.token,
-                        notificationTitle,
-                        notificationBody,
-                        {
-                            type: NotificationType.COMMENT,
-                            entity: "comment_reply",
-                            postPublicId: post.publicId,
-                            commentPublicId: comment.publicId,
-                            parentCommentPublicId: parent.publicId,
-                            actorPublicId: req.user?.publicId ?? "",
-                            actorName: user.name ?? "",
-                        },
-                    );
-                }
+                enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
+                    type: NotificationType.COMMENT,
+                    entity: "comment_reply",
+                    postPublicId: post.publicId,
+                    commentPublicId: comment.publicId,
+                    parentCommentPublicId: parent.publicId,
+                    actorPublicId: req.user?.publicId ?? "",
+                    actorName: user.name ?? "",
+                });
             }
         } else {
             if (post.userId !== userId) {
@@ -117,27 +110,21 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
                 const pushTokens = await prisma.pushToken.findMany({
                     where: { userId: post.userId },
                 });
-                for (const pushToken of pushTokens) {
-                    await sendNotification(
-                        pushToken.token,
-                        notificationTitle,
-                        notificationBody,
-                        {
-                            type: NotificationType.COMMENT,
-                            entity: "comment",
-                            postPublicId: post.publicId,
-                            commentPublicId: comment.publicId,
-                            actorPublicId: req.user?.publicId ?? "",
-                            actorName: user.name ?? "",
-                        },
-                    );
-                }
+                enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
+                    type: NotificationType.COMMENT,
+                    entity: "comment",
+                    postPublicId: post.publicId,
+                    commentPublicId: comment.publicId,
+                    actorPublicId: req.user?.publicId ?? "",
+                    actorName: user.name ?? "",
+                });
             }
         }
 
         return res.status(201).json(successResponse(comment));
     }
     catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 }
@@ -199,6 +186,7 @@ export const getComments = async (req: IAuthRequest, res: Response) => {
         return res.status(200).json(successResponse(comments));
     }
     catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 }
@@ -251,26 +239,20 @@ export const likeComment = async (req: IAuthRequest, res: Response) => {
             const pushTokens = await prisma.pushToken.findMany({
                 where: { userId: comment.userId },
             });
-            for (const pushToken of pushTokens) {
-                await sendNotification(
-                    pushToken.token,
-                    notificationTitle,
-                    notificationBody,
-                    {
-                        type: NotificationType.LIKE,
-                        entity: "comment",
-                        postPublicId: comment.post.publicId,
-                        commentPublicId: comment.publicId,
-                        actorPublicId: req.user?.publicId ?? "",
-                        actorName: user.name ?? "",
-                    },
-                );
-            }
+            enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
+                type: NotificationType.LIKE,
+                entity: "comment",
+                postPublicId: comment.post.publicId,
+                commentPublicId: comment.publicId,
+                actorPublicId: req.user?.publicId ?? "",
+                actorName: user.name ?? "",
+            });
         }
 
         return res.status(200).json(successResponse(undefined, "Liked comment"));
     }
     catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 }
@@ -303,6 +285,7 @@ export const unlikeComment = async (req: IAuthRequest, res: Response) => {
         return res.status(200).json(successResponse(undefined, "Unliked comment"));
     }
     catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 }
@@ -339,6 +322,7 @@ export const updateComment = async (req: IAuthRequestBody<IUpdateCommentBody>, r
 
         return res.status(200).json(successResponse(undefined, "Comment updated"));
     } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 };
@@ -364,6 +348,7 @@ export const deleteComment = async (req: IAuthRequest, res: Response) => {
 
         return res.status(200).json(successResponse(undefined, "Comment deleted"));
     } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 };

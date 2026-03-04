@@ -4,8 +4,9 @@ import { prisma } from "../lib/prisma.ts";
 import { Response } from "express";
 import { validateContent } from "../utils/post.utils.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
-import { sendNotification } from "../utils/firebase.utils.ts";
 import { NotificationType } from "../../generated/prisma/enums.ts";
+import { enqueuePushNotifications } from "../queue/enqueuePushNotifications.ts";
+import logger from "../lib/logger.ts";
 
 export const getPosts = async (req: IAuthRequest, res: Response) => {
     try {
@@ -79,6 +80,7 @@ export const getPosts = async (req: IAuthRequest, res: Response) => {
         const postsWithIsLiked = await Promise.all(promises);
         res.status(200).json(successResponse(postsWithIsLiked));
     } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 };
@@ -112,6 +114,7 @@ export const createPost = async (req: IAuthRequestBody<ICreatePostBody>, res: Re
         });
         res.status(201).json(successResponse(post));
     } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 };
@@ -163,24 +166,18 @@ export const likePost = async (req: IAuthRequestBody<ILikePostBody>, res: Respon
             const pushTokens = await prisma.pushToken.findMany({
                 where: { userId: post.userId },
             });
-            for (const pushToken of pushTokens) {
-                await sendNotification(
-                    pushToken.token,
-                    notificationTitle,
-                    notificationBody,
-                    {
-                        type: NotificationType.LIKE,
-                        entity: "post",
-                        postPublicId: post.publicId,
-                        actorPublicId: req.user?.publicId ?? "",
-                        actorName: user.name ?? "",
-                    },
-                );
-            }
+            enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
+                type: NotificationType.LIKE,
+                entity: "post",
+                postPublicId: post.publicId,
+                actorPublicId: req.user?.publicId ?? "",
+                actorName: user.name ?? "",
+            });
         }
 
         return res.status(201).json(successResponse(undefined, "Liked post"));
     } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 };
@@ -212,6 +209,7 @@ export const unlikePost = async (req: IAuthRequestBody<ILikePostBody>, res: Resp
 
         res.status(200).json(successResponse(undefined, "Unliked post"));
     } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 };
@@ -237,6 +235,7 @@ export const getPost = async (req: IAuthRequest, res: Response) => {
 
         res.status(200).json(successResponse({ ...post, isLiked: !!isLiked }));
     } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 };
@@ -263,6 +262,7 @@ export const updatePost = async (req: IAuthRequestBody<IUpdatePostBody>, res: Re
 
         return res.status(200).json(successResponse(undefined, "Post updated"));
     } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 };
@@ -288,6 +288,7 @@ export const deletePost = async (req: IAuthRequest, res: Response) => {
         
         return res.status(200).json(successResponse(undefined, "Post deleted"));
     } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
 };

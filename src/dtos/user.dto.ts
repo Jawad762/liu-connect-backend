@@ -28,3 +28,7 @@ export interface IUserListItem {
   name: string | null;
   avatar_url: string | null;
 }
+
+export interface IAddPushTokenBody {
+  token: string;
+}

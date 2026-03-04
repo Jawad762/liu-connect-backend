@@ -21,12 +21,13 @@ import {
 } from "../dtos/auth.dto.ts";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from "../config.ts";
+import logger from "../lib/logger.ts";
 
 export const signUp = async (req: IRequestBody<ISignUpBody>, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    if (!validateEmail(email)) return res.status(400).json(errorResponse('Invalid email'));
+    if (!validateEmail(email)) return res.status(400).json(errorResponse('Please use a valid @students.liu.edu.lb email'));
     if (!validatePassword(password)) return res.status(400).json(errorResponse('Invalid password'));
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -47,6 +48,7 @@ export const signUp = async (req: IRequestBody<ISignUpBody>, res: Response) => {
 
     res.status(201).json(successResponse(undefined, 'User created. Check your email for the verification code.'));
   } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse('Internal server error'));
   }
 };
@@ -86,6 +88,7 @@ export const signIn = async (req: IRequestBody<ISignInBody>, res: Response) => {
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'lax', maxAge: 30 * 24 * 60 * 60 * 1000 });
     res.status(200).json(successResponse({ user: responseUser, accessToken }, 'Signed in successfully'));
   } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse('Internal server error'));
   }
 };
@@ -104,6 +107,7 @@ export const signOut = async (req: Request, res: Response) => {
     res.clearCookie('refreshToken');
     res.status(200).json(successResponse(undefined, 'Signed out successfully'));
   } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse('Internal server error'));
   }
 };
@@ -121,6 +125,7 @@ export const refreshToken = async (req: Request, res: Response) => {
     const accessToken = jwt.sign({ id: user.id, publicId: user.publicId }, config.ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
     res.status(200).json(successResponse({ accessToken }, 'Token refreshed successfully'));
   } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse('Internal server error'));
   }
 };
@@ -151,6 +156,7 @@ export const verifyEmail = async (req: IRequestBody<IVerifyEmailBody>, res: Resp
 
     res.status(200).json(successResponse(undefined, 'Email verified successfully'));
   } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse('Internal server error'));
   }
 };
@@ -174,6 +180,7 @@ export const resendVerificationCode = async (req: IRequestBody<IResendVerificati
 
     res.status(200).json(successResponse(undefined, 'Verification code sent'));
   } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse('Internal server error'));
   }
 };
@@ -199,6 +206,7 @@ export const forgotPassword = async (req: IRequestBody<IForgotPasswordBody>, res
 
     res.status(200).json(successResponse(undefined, 'If an account exists, you will receive a reset code'));
   } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse('Internal server error'));
   }
 };
@@ -230,6 +238,7 @@ export const resetPassword = async (req: IRequestBody<IResetPasswordBody>, res: 
 
     res.status(200).json(successResponse(undefined, 'Password reset successfully'));
   } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse('Internal server error'));
   }
 };
@@ -257,6 +266,7 @@ export const changePassword = async (req: Request, res: Response) => {
 
     res.status(200).json(successResponse(undefined, 'Password changed successfully'));
   } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse('Internal server error'));
   }
 };
