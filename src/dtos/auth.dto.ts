@@ -55,3 +55,9 @@ export interface IChangePasswordBody {
   currentPassword: string;
   newPassword: string;
 }
+
+export interface ISignOutBody {
+  refreshToken: string;
+}
+
+export interface IRefreshTokenBody extends ISignOutBody {}
