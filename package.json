@@ -5,6 +5,7 @@
   "main": "src/main.ts",
   "scripts": {
     "dev": "nodemon src/main.ts",
+    "dev:debug": "nodemon --exec \"tsx --inspect src/main.ts\" src/main.ts",
     "build": "tsc",
     "start": "node dist/main.js",
     "worker": "node dist/worker.js",

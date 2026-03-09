@@ -51,6 +51,7 @@ export const getPosts = async (req: IAuthRequest, res: Response) => {
                         name: true,
                         avatar_url: true,
                         publicId: true,
+                        major: true,
                     },
                 },
                 community: {
@@ -138,6 +139,13 @@ export const likePost = async (req: IAuthRequestBody<ILikePostBody>, res: Respon
         });
         if (!post) return res.status(404).json(errorResponse("Post not found"));
 
+        const existingLike = await prisma.postLike.findUnique({
+            where: { postId_userId: { postId: post.id, userId } },
+        });
+        if (existingLike) {
+            return res.status(200).json(successResponse(undefined, "Already liked"));
+        }
+
         const notificationTitle = `${user.name ?? "Someone"} liked your post`;
         const notificationBody = "You have a new like on your post";
         const redirectPath = `/posts/${post.publicId}`;
@@ -177,6 +185,10 @@ export const likePost = async (req: IAuthRequestBody<ILikePostBody>, res: Respon
 
         return res.status(201).json(successResponse(undefined, "Liked post"));
     } catch (error) {
+        const prismaError = error as { code?: string };
+        if (prismaError.code === "P2002") {
+            return res.status(200).json(successResponse(undefined, "Already liked"));
+        }
         logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
@@ -209,6 +221,10 @@ export const unlikePost = async (req: IAuthRequestBody<ILikePostBody>, res: Resp
 
         res.status(200).json(successResponse(undefined, "Unliked post"));
     } catch (error) {
+        const prismaError = error as { code?: string };
+        if (prismaError.code === "P2002") {
+            return res.status(200).json(successResponse(undefined, "Already unliked"));
+        }
         logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }

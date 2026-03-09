@@ -22,7 +22,7 @@ export const listNotifications = async (req: IAuthRequest, res: Response) => {
         media_url: true,
         redirect_url: true,
         read: true,
-        createdAt: true,
+        createdAt: true
       },
     });
 

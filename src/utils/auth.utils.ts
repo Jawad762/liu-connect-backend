@@ -25,6 +25,7 @@ export const validateName = (name: string) => {
   if (!name) return false;
 
   if (name.length < 2) return false;
+  if (name.length > 25) return false;
 
   return true;
 };
