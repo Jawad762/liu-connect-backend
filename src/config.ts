@@ -13,6 +13,7 @@ const envSchema = z.object({
   SENDGRID_FROM_EMAIL: z.string().email('SENDGRID_FROM_EMAIL must be a valid email'),
   FIREBASE_SERVICE_ACCOUNT: z.string().min(1, 'FIREBASE_SERVICE_ACCOUNT is required'),
   REDIS_URL: z.string().min(1, 'REDIS_URL is required').default('redis://localhost:6379'),
+  UPLOADTHING_TOKEN: z.string().min(1, 'UPLOADTHING_TOKEN is required'),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
 });
 
@@ -41,6 +42,7 @@ const config = {
   SENDGRID_FROM_EMAIL: env.SENDGRID_FROM_EMAIL,
   FIREBASE_SERVICE_ACCOUNT: env.FIREBASE_SERVICE_ACCOUNT,
   REDIS_URL: env.REDIS_URL,
+  UPLOADTHING_TOKEN: env.UPLOADTHING_TOKEN,
   LOG_LEVEL: env.LOG_LEVEL,
 };
 

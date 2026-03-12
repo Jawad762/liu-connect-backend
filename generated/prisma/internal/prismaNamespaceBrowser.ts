@@ -217,6 +217,7 @@ export const PostMediaScalarFieldEnum = {
   publicId: 'publicId',
   postId: 'postId',
   media_url: 'media_url',
+  type: 'type',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -229,6 +230,7 @@ export const CommentMediaScalarFieldEnum = {
   publicId: 'publicId',
   commentId: 'commentId',
   media_url: 'media_url',
+  type: 'type',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

@@ -14,6 +14,7 @@ import communityRoutes from './routes/community.routes.ts';
 import healthRoutes from './routes/health.routes.ts';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
+import { uploadthingRouter } from './lib/uploadthing.ts';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -32,7 +33,7 @@ const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 10, // 10 requests per 15 minutes per IP for auth
   handler: (_req, res) => {
-    res.status(429).json(errorResponse('Too many auth attempts, please try again later.'));
+    res.status(429).json(errorResponse('Too many requests, please try again later.'));
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -49,6 +50,7 @@ app.use('/api/notifications', rateLimiter, notificationRoutes);
 app.use('/api/posts', rateLimiter, postRoutes);
 app.use('/api/comments', rateLimiter, commentRoutes);
 app.use('/api/communities', rateLimiter, communityRoutes);
+app.use("/api/uploadthing", uploadthingRouter);
 
 app.use((_req, _res, next) => {
   next(new Error('Not Found'));

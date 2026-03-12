@@ -14,6 +14,11 @@ enum NotificationType {
   MENTION
 }
 
+enum MediaTypeEnum {
+  IMAGE
+  VIDEO
+}
+
 model User {
   id       Int     @id @default(autoincrement())
   publicId String  @unique @default(uuid()) @map("public_id")
@@ -194,6 +199,7 @@ model PostMedia {
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId Int
   media_url String
+  type MediaTypeEnum
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 }
@@ -204,6 +210,7 @@ model CommentMedia {
   comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId Int
   media_url String
+  type MediaTypeEnum
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 }

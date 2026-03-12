@@ -1,7 +1,9 @@
+import { MediaTypeEnum } from "../../generated/prisma/enums.ts";
+
 export interface ICreatePostBody {
     content: string;
     communityPublicId: string;
-    media: string[];
+    media: { url: string, type: MediaTypeEnum }[];
 }
 
 export interface ILikePostBody {
@@ -10,5 +12,5 @@ export interface ILikePostBody {
 
 export interface IUpdatePostBody {
     content: string;
-    media: string[];
+    media: { url: string, type: MediaTypeEnum }[];
 }

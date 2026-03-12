@@ -1,17 +1,18 @@
 import { Response } from "express";
 import { errorResponse, IAuthRequest, IAuthRequestBody, successResponse } from "../dtos/base.dto.ts";
-import { validateContent } from "../utils/post.utils.ts";
 import { prisma } from "../lib/prisma.ts";
 import { ICreateCommentBody, IUpdateCommentBody } from "../dtos/comment.dto.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
 import { NotificationType } from "../../generated/prisma/enums.ts";
 import { enqueuePushNotifications } from "../queue/enqueuePushNotifications.ts";
 import logger from "../lib/logger.ts";
+import { validatePost } from "../utils/post.utils.ts";
 
 export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, res: Response) => {
     try {
         const userId = req.user?.id;
-        const { postPublicId, content, media, parentPublicId } = req.body;
+        const { postPublicId, content, media: rawMedia, parentPublicId } = req.body;
+        const media = rawMedia ?? [];
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
         if (!postPublicId) return res.status(400).json(errorResponse("Post public ID is required"));
 
@@ -21,9 +22,8 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
         });
         if (!user) return res.status(404).json(errorResponse("User not found"));
 
-        const isContentValid = validateContent(content);
-        if (!isContentValid) return res.status(400).json(errorResponse("Content is invalid"));
-        if (media.length > 4) return res.status(400).json(errorResponse("Maximum 4 media allowed"));
+        const commentValidation = validatePost(content, media);
+        if (!commentValidation.success) return res.status(400).json(errorResponse(commentValidation.message));
 
         const post = await prisma.post.findUnique({
             where: { publicId: postPublicId as string },
@@ -50,7 +50,7 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
                 content,
                 userId,
                 postId: post.id,
-                media: { create: media.map(url => ({ media_url: url })) },
+                media: { create: media.map(m => ({ media_url: m.url, type: m.type })) },
                 parentId,
             },
         });
@@ -181,6 +181,7 @@ export const getComments = async (req: IAuthRequest, res: Response) => {
             take: Number(size),
             include: {
                 user: { select: { id: true, name: true, avatar_url: true, publicId: true } },
+                media: { select: { publicId: true, media_url: true, type: true } },
             },
         });
         return res.status(200).json(successResponse(comments));
@@ -294,13 +295,13 @@ export const updateComment = async (req: IAuthRequestBody<IUpdateCommentBody>, r
     try {
         const userId = req.user?.id;
         const publicId = getRouteParam(req, "publicId");
-        const { content, media } = req.body;
+        const { content, media: rawMedia } = req.body;
+        const media = rawMedia ?? [];
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
         if (!publicId) return res.status(400).json(errorResponse("Comment public ID is required"));
 
-        const isContentValid = validateContent(content);
-        if (!isContentValid) return res.status(400).json(errorResponse("Content is invalid"));
-        if (media.length > 4) return res.status(400).json(errorResponse("Maximum 4 media allowed"));
+        const commentValidation = validatePost(content, media);
+        if (!commentValidation.success) return res.status(400).json(errorResponse(commentValidation.message));
 
         const comment = await prisma.comment.findUnique({
             where: { publicId: publicId as string },
@@ -315,7 +316,7 @@ export const updateComment = async (req: IAuthRequestBody<IUpdateCommentBody>, r
                 content,
                 media: {
                     deleteMany: {},
-                    create: media.map(url => ({ media_url: url })),
+                    create: media.map(m => ({ media_url: m.url, type: m.type })),
                 },
             },
         });

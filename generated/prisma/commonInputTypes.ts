@@ -219,6 +219,23 @@ export type EnumNotificationTypeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumNotificationTypeFilter<$PrismaModel>
 }
 
+export type EnumMediaTypeEnumFilter<$PrismaModel = never> = {
+  equals?: $Enums.MediaTypeEnum | Prisma.EnumMediaTypeEnumFieldRefInput<$PrismaModel>
+  in?: $Enums.MediaTypeEnum[] | Prisma.ListEnumMediaTypeEnumFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MediaTypeEnum[] | Prisma.ListEnumMediaTypeEnumFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMediaTypeEnumFilter<$PrismaModel> | $Enums.MediaTypeEnum
+}
+
+export type EnumMediaTypeEnumWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MediaTypeEnum | Prisma.EnumMediaTypeEnumFieldRefInput<$PrismaModel>
+  in?: $Enums.MediaTypeEnum[] | Prisma.ListEnumMediaTypeEnumFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MediaTypeEnum[] | Prisma.ListEnumMediaTypeEnumFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMediaTypeEnumWithAggregatesFilter<$PrismaModel> | $Enums.MediaTypeEnum
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMediaTypeEnumFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMediaTypeEnumFilter<$PrismaModel>
+}
+
 export type NestedIntFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
   in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
@@ -435,6 +452,23 @@ export type NestedEnumNotificationTypeWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumNotificationTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumNotificationTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumMediaTypeEnumFilter<$PrismaModel = never> = {
+  equals?: $Enums.MediaTypeEnum | Prisma.EnumMediaTypeEnumFieldRefInput<$PrismaModel>
+  in?: $Enums.MediaTypeEnum[] | Prisma.ListEnumMediaTypeEnumFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MediaTypeEnum[] | Prisma.ListEnumMediaTypeEnumFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMediaTypeEnumFilter<$PrismaModel> | $Enums.MediaTypeEnum
+}
+
+export type NestedEnumMediaTypeEnumWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MediaTypeEnum | Prisma.EnumMediaTypeEnumFieldRefInput<$PrismaModel>
+  in?: $Enums.MediaTypeEnum[] | Prisma.ListEnumMediaTypeEnumFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MediaTypeEnum[] | Prisma.ListEnumMediaTypeEnumFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMediaTypeEnumWithAggregatesFilter<$PrismaModel> | $Enums.MediaTypeEnum
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMediaTypeEnumFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMediaTypeEnumFilter<$PrismaModel>
 }
 
 

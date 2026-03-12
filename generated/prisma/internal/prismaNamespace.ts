@@ -1478,6 +1478,7 @@ export const PostMediaScalarFieldEnum = {
   publicId: 'publicId',
   postId: 'postId',
   media_url: 'media_url',
+  type: 'type',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1490,6 +1491,7 @@ export const CommentMediaScalarFieldEnum = {
   publicId: 'publicId',
   commentId: 'commentId',
   media_url: 'media_url',
+  type: 'type',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1611,6 +1613,20 @@ export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'NotificationType[]'
  */
 export type ListEnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MediaTypeEnum'
+ */
+export type EnumMediaTypeEnumFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaTypeEnum'>
+    
+
+
+/**
+ * Reference to a field of type 'MediaTypeEnum[]'
+ */
+export type ListEnumMediaTypeEnumFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaTypeEnum[]'>
     
 
 

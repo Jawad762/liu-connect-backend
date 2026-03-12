@@ -2,7 +2,7 @@ import { errorResponse, IAuthRequest, IAuthRequestBody, successResponse } from "
 import { ICreatePostBody, ILikePostBody, IUpdatePostBody } from "../dtos/post.dto.ts";
 import { prisma } from "../lib/prisma.ts";
 import { Response } from "express";
-import { validateContent } from "../utils/post.utils.ts";
+import { validatePost } from "../utils/post.utils.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
 import { NotificationType } from "../../generated/prisma/enums.ts";
 import { enqueuePushNotifications } from "../queue/enqueuePushNotifications.ts";
@@ -11,16 +11,25 @@ import logger from "../lib/logger.ts";
 export const getPosts = async (req: IAuthRequest, res: Response) => {
     try {
         const currentUserId = req.user?.id;
-        const { page = 1, size = 10, communityPublicId, userPublicId } = req.query;
+        if (!currentUserId) return res.status(401).json(errorResponse("Unauthorized"));
 
-        let userId = null;
-        if (userPublicId) {
-            const user = await prisma.user.findUnique({
-                where: { publicId: userPublicId as string },
+        const { page: rawPage, size: rawSize, followingOnly: rawFollowingOnly, communityPublicId, authorPublicId } = req.query;
+
+        const pageNumber = Math.max(1, Number(rawPage));
+        const sizeNumber = Math.min(30, Math.max(1, Number(rawSize)));
+        const followingOnly = rawFollowingOnly === "true";
+
+        if (followingOnly && communityPublicId) return res.status(400).json(errorResponse("Please either choose following only or a community, but not both."));
+        if (followingOnly && authorPublicId) return res.status(400).json(errorResponse("Please either choose following only or an author, but not both."));
+        
+        let authorId = null;
+        if (authorPublicId) {
+            const author = await prisma.user.findUnique({
+                where: { publicId: authorPublicId as string },
                 select: { id: true },
             });
-            if (!user) return res.status(404).json(errorResponse("User not found"));
-            userId = user.id;
+            if (!author) return res.status(404).json(errorResponse("User not found"));
+            authorId = author.id;
         }
 
         let communityId = null;
@@ -33,17 +42,24 @@ export const getPosts = async (req: IAuthRequest, res: Response) => {
             communityId = community.id;
         }
 
+        const userFollowings = followingOnly ? await prisma.userFollow.findMany({
+            where: { followerId: currentUserId },
+            select: { followingId: true },
+        }) : [];
+        const followingIds = followingOnly ? userFollowings.map(uf => uf.followingId) : [];
+
         const posts = await prisma.post.findMany({
             where: {
                 ...(communityId && { communityId }),
-                ...(userId != null && { userId }),
+                ...(authorId != null && { userId: authorId }),
+                ...(followingOnly && { userId: { in: followingIds } }),
                 is_deleted: false,
             },
             orderBy: {
                 createdAt: "desc",
             },
-            skip: (Number(page) - 1) * Number(size),
-            take: Number(size),
+            skip: (pageNumber - 1) * sizeNumber,
+            take: sizeNumber,
             include: {
                 user: {
                     select: {
@@ -63,25 +79,43 @@ export const getPosts = async (req: IAuthRequest, res: Response) => {
                 },
                 media: {
                     select: {
-                        id: true,
+                        publicId: true,
                         media_url: true,
+                        type: true,
                     },
                 }
             },
         });
-        const promises = posts.map(async (post) => {
-            const isLiked = await prisma.postLike.findUnique({
-                where: { postId_userId: { postId: post.id, userId: currentUserId as number } },
-            });
-            return {
-                ...post,
-                isLiked: !!isLiked,
-            };
-        });
-        const postsWithIsLiked = await Promise.all(promises);
+        const postIds = posts.map((post) => post.id);
+
+        const likes = postIds.length > 0
+            ? await prisma.postLike.findMany({
+                where: {
+                    userId: currentUserId,
+                    postId: { in: postIds },
+                },
+                select: { postId: true },
+            })
+            : [];
+
+        const likedPostIds = new Set(likes.map((like) => like.postId));
+
+        const postsWithIsLiked = posts.map((post) => ({
+            ...post,
+            isLiked: likedPostIds.has(post.id),
+        }));
         res.status(200).json(successResponse(postsWithIsLiked));
     } catch (error) {
-        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
+        logger.error(
+            {
+                err: error,
+                method: req.method,
+                path: req.path,
+                userId: req.user?.id,
+                query: req.query,
+            },
+            "Request failed"
+        );
         return res.status(500).json(errorResponse("Internal server error"));
     }
 };
@@ -89,11 +123,11 @@ export const getPosts = async (req: IAuthRequest, res: Response) => {
 export const createPost = async (req: IAuthRequestBody<ICreatePostBody>, res: Response) => {
     try {
         const userId = req.user?.id;
-        const { content, communityPublicId, media } = req.body;
+        const { content, communityPublicId, media: rawMedia } = req.body;
+        const media = rawMedia ?? [];
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
-        const isContentValid = validateContent(content);
-        if (!isContentValid) return res.status(400).json(errorResponse("Content is invalid"));
-        if (media.length > 4) return res.status(400).json(errorResponse("Maximum 4 media allowed"));
+        const postValidation = validatePost(content, media);
+        if (!postValidation.success) return res.status(400).json(errorResponse(postValidation.message));
 
         let communityId = null;
         if (communityPublicId) {
@@ -110,8 +144,9 @@ export const createPost = async (req: IAuthRequestBody<ICreatePostBody>, res: Re
                 content,
                 userId,
                 communityId,
-                media: { create: media.map(url => ({ media_url: url })) },
+                media: { create: media.map((m) => ({ media_url: m.url, type: m.type })) },
             },
+            include: { media: { select: { publicId: true, media_url: true, type: true } } },
         });
         res.status(201).json(successResponse(post));
     } catch (error) {
@@ -240,7 +275,19 @@ export const getPost = async (req: IAuthRequest, res: Response) => {
 
         const post = await prisma.post.findUnique({
             where: { publicId: publicId as string },
-            include: { media: true, user: true, community: true },
+            include: {
+                media: { select: { publicId: true, media_url: true, type: true } },
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar_url: true,
+                        publicId: true,
+                        major: true,
+                    },
+                },
+                community: true,
+            },
         });
 
         if (!post) return res.status(404).json(errorResponse("Post not found"));
@@ -260,9 +307,12 @@ export const updatePost = async (req: IAuthRequestBody<IUpdatePostBody>, res: Re
     try {
         const userId = req.user?.id;
         const publicId = getRouteParam(req, "publicId");
-        const { content, media } = req.body;
+        const { content, media: rawMedia } = req.body;
+        const media = rawMedia ?? [];
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
         if (!publicId) return res.status(400).json(errorResponse("Post public ID is required"));
+        const postValidation = validatePost(content, media);
+        if (!postValidation.success) return res.status(400).json(errorResponse(postValidation.message));
 
         const post = await prisma.post.findUnique({
             where: { publicId: publicId as string },
@@ -273,7 +323,7 @@ export const updatePost = async (req: IAuthRequestBody<IUpdatePostBody>, res: Re
 
         await prisma.post.update({
             where: { id: post.id },
-            data: { content, media: { deleteMany: {}, create: media.map(url => ({ media_url: url })) } },
+            data: { content, media: { deleteMany: {}, create: media.map(m => ({ media_url: m.url, type: m.type })) } },
         });
 
         return res.status(200).json(successResponse(undefined, "Post updated"));
@@ -301,7 +351,7 @@ export const deletePost = async (req: IAuthRequest, res: Response) => {
             where: { id: post.id },
             data: { is_deleted: true },
         });
-        
+
         return res.status(200).json(successResponse(undefined, "Post deleted"));
     } catch (error) {
         logger.error({ err: error, method: req.method, path: req.path }, "Request failed");

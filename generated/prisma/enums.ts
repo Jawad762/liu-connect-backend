@@ -13,8 +13,15 @@ export const NotificationType = {
   LIKE: 'LIKE',
   COMMENT: 'COMMENT',
   FOLLOW: 'FOLLOW',
-  MENTION: 'MENTION',
-  COMMUNITY: 'COMMUNITY'
+  MENTION: 'MENTION'
 } as const
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
+export const MediaTypeEnum = {
+  IMAGE: 'IMAGE',
+  VIDEO: 'VIDEO'
+} as const
+
+export type MediaTypeEnum = (typeof MediaTypeEnum)[keyof typeof MediaTypeEnum]
