@@ -16,10 +16,10 @@ router.use(authMiddleware);
 
 router.get('/', getCommunities);
 router.post('/', createCommunity);
-router.get('/:publicId', getCommunity);
-router.put('/:publicId', updateCommunity);
-router.delete('/:publicId', deleteCommunity);
-router.post('/:publicId/join', joinCommunity);
-router.delete('/:publicId/join', leaveCommunity);
+router.get('/:id', getCommunity);
+router.put('/:id', updateCommunity);
+router.delete('/:id', deleteCommunity);
+router.post('/:id/join', joinCommunity);
+router.delete('/:id/join', leaveCommunity);
 
 export default router;

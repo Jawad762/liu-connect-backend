@@ -50,7 +50,6 @@ export const signUp = async (req: IRequestBody<ISignUpBody>, res: Response) => {
 
     const responseUser = {
       id: user.id,
-      publicId: user.publicId,
       email: user.email,
       name: user.name,
       avatar_url: user.avatar_url,
@@ -83,15 +82,14 @@ export const signIn = async (req: IRequestBody<ISignInBody>, res: Response) => {
     if (!user.is_verified) return res.status(403).json(errorResponse('Please verify your email before signing in'));
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) return res.status(401).json(errorResponse('Invalid email or password'));
-    const accessToken = jwt.sign({ id: user.id, publicId: user.publicId, name: user.name }, config.ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
-    const refreshToken = jwt.sign({ id: user.id, publicId: user.publicId, name: user.name }, config.REFRESH_TOKEN_SECRET, { expiresIn: '30d' });
+    const accessToken = jwt.sign({ id: user.id, name: user.name }, config.ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
+    const refreshToken = jwt.sign({ id: user.id, name: user.name }, config.REFRESH_TOKEN_SECRET, { expiresIn: '30d' });
     await prisma.user.update({
       where: { id: user.id },
       data: { refresh_token: refreshToken },
     });
     const responseUser = {
       id: user.id,
-      publicId: user.publicId,
       email: user.email,
       name: user.name,
       avatar_url: user.avatar_url,
@@ -139,7 +137,7 @@ export const refreshToken = async (req: IRequestBody<IRefreshTokenBody>, res: Re
     if (!user || user.is_deleted || !user.refresh_token || user.refresh_token !== refreshToken) {
       return res.status(401).json(errorResponse('Unauthorized'));
     }
-    const accessToken = jwt.sign({ id: user.id, publicId: user.publicId }, config.ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
+    const accessToken = jwt.sign({ id: user.id, name: user.name }, config.ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
     res.status(200).json(successResponse({ accessToken }, 'Token refreshed successfully'));
   } catch (error) {
     logger.error({ err: error, method: req.method, path: req.path }, "Request failed");

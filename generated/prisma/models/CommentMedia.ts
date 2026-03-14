@@ -20,26 +20,13 @@ export type CommentMediaModel = runtime.Types.Result.DefaultSelection<Prisma.$Co
 
 export type AggregateCommentMedia = {
   _count: CommentMediaCountAggregateOutputType | null
-  _avg: CommentMediaAvgAggregateOutputType | null
-  _sum: CommentMediaSumAggregateOutputType | null
   _min: CommentMediaMinAggregateOutputType | null
   _max: CommentMediaMaxAggregateOutputType | null
 }
 
-export type CommentMediaAvgAggregateOutputType = {
-  id: number | null
-  commentId: number | null
-}
-
-export type CommentMediaSumAggregateOutputType = {
-  id: number | null
-  commentId: number | null
-}
-
 export type CommentMediaMinAggregateOutputType = {
-  id: number | null
-  publicId: string | null
-  commentId: number | null
+  id: string | null
+  commentId: string | null
   media_url: string | null
   type: $Enums.MediaTypeEnum | null
   createdAt: Date | null
@@ -47,9 +34,8 @@ export type CommentMediaMinAggregateOutputType = {
 }
 
 export type CommentMediaMaxAggregateOutputType = {
-  id: number | null
-  publicId: string | null
-  commentId: number | null
+  id: string | null
+  commentId: string | null
   media_url: string | null
   type: $Enums.MediaTypeEnum | null
   createdAt: Date | null
@@ -58,7 +44,6 @@ export type CommentMediaMaxAggregateOutputType = {
 
 export type CommentMediaCountAggregateOutputType = {
   id: number
-  publicId: number
   commentId: number
   media_url: number
   type: number
@@ -68,19 +53,8 @@ export type CommentMediaCountAggregateOutputType = {
 }
 
 
-export type CommentMediaAvgAggregateInputType = {
-  id?: true
-  commentId?: true
-}
-
-export type CommentMediaSumAggregateInputType = {
-  id?: true
-  commentId?: true
-}
-
 export type CommentMediaMinAggregateInputType = {
   id?: true
-  publicId?: true
   commentId?: true
   media_url?: true
   type?: true
@@ -90,7 +64,6 @@ export type CommentMediaMinAggregateInputType = {
 
 export type CommentMediaMaxAggregateInputType = {
   id?: true
-  publicId?: true
   commentId?: true
   media_url?: true
   type?: true
@@ -100,7 +73,6 @@ export type CommentMediaMaxAggregateInputType = {
 
 export type CommentMediaCountAggregateInputType = {
   id?: true
-  publicId?: true
   commentId?: true
   media_url?: true
   type?: true
@@ -147,18 +119,6 @@ export type CommentMediaAggregateArgs<ExtArgs extends runtime.Types.Extensions.I
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: CommentMediaAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: CommentMediaSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: CommentMediaMinAggregateInputType
@@ -189,23 +149,18 @@ export type CommentMediaGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   _count?: CommentMediaCountAggregateInputType | true
-  _avg?: CommentMediaAvgAggregateInputType
-  _sum?: CommentMediaSumAggregateInputType
   _min?: CommentMediaMinAggregateInputType
   _max?: CommentMediaMaxAggregateInputType
 }
 
 export type CommentMediaGroupByOutputType = {
-  id: number
-  publicId: string
-  commentId: number
+  id: string
+  commentId: string
   media_url: string
   type: $Enums.MediaTypeEnum
   createdAt: Date
   updatedAt: Date
   _count: CommentMediaCountAggregateOutputType | null
-  _avg: CommentMediaAvgAggregateOutputType | null
-  _sum: CommentMediaSumAggregateOutputType | null
   _min: CommentMediaMinAggregateOutputType | null
   _max: CommentMediaMaxAggregateOutputType | null
 }
@@ -229,9 +184,8 @@ export type CommentMediaWhereInput = {
   AND?: Prisma.CommentMediaWhereInput | Prisma.CommentMediaWhereInput[]
   OR?: Prisma.CommentMediaWhereInput[]
   NOT?: Prisma.CommentMediaWhereInput | Prisma.CommentMediaWhereInput[]
-  id?: Prisma.IntFilter<"CommentMedia"> | number
-  publicId?: Prisma.StringFilter<"CommentMedia"> | string
-  commentId?: Prisma.IntFilter<"CommentMedia"> | number
+  id?: Prisma.StringFilter<"CommentMedia"> | string
+  commentId?: Prisma.StringFilter<"CommentMedia"> | string
   media_url?: Prisma.StringFilter<"CommentMedia"> | string
   type?: Prisma.EnumMediaTypeEnumFilter<"CommentMedia"> | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFilter<"CommentMedia"> | Date | string
@@ -241,7 +195,6 @@ export type CommentMediaWhereInput = {
 
 export type CommentMediaOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   commentId?: Prisma.SortOrder
   media_url?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -251,41 +204,36 @@ export type CommentMediaOrderByWithRelationInput = {
 }
 
 export type CommentMediaWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
-  publicId?: string
+  id?: string
   AND?: Prisma.CommentMediaWhereInput | Prisma.CommentMediaWhereInput[]
   OR?: Prisma.CommentMediaWhereInput[]
   NOT?: Prisma.CommentMediaWhereInput | Prisma.CommentMediaWhereInput[]
-  commentId?: Prisma.IntFilter<"CommentMedia"> | number
+  commentId?: Prisma.StringFilter<"CommentMedia"> | string
   media_url?: Prisma.StringFilter<"CommentMedia"> | string
   type?: Prisma.EnumMediaTypeEnumFilter<"CommentMedia"> | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFilter<"CommentMedia"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CommentMedia"> | Date | string
   comment?: Prisma.XOR<Prisma.CommentScalarRelationFilter, Prisma.CommentWhereInput>
-}, "id" | "publicId">
+}, "id">
 
 export type CommentMediaOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   commentId?: Prisma.SortOrder
   media_url?: Prisma.SortOrder
   type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.CommentMediaCountOrderByAggregateInput
-  _avg?: Prisma.CommentMediaAvgOrderByAggregateInput
   _max?: Prisma.CommentMediaMaxOrderByAggregateInput
   _min?: Prisma.CommentMediaMinOrderByAggregateInput
-  _sum?: Prisma.CommentMediaSumOrderByAggregateInput
 }
 
 export type CommentMediaScalarWhereWithAggregatesInput = {
   AND?: Prisma.CommentMediaScalarWhereWithAggregatesInput | Prisma.CommentMediaScalarWhereWithAggregatesInput[]
   OR?: Prisma.CommentMediaScalarWhereWithAggregatesInput[]
   NOT?: Prisma.CommentMediaScalarWhereWithAggregatesInput | Prisma.CommentMediaScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"CommentMedia"> | number
-  publicId?: Prisma.StringWithAggregatesFilter<"CommentMedia"> | string
-  commentId?: Prisma.IntWithAggregatesFilter<"CommentMedia"> | number
+  id?: Prisma.StringWithAggregatesFilter<"CommentMedia"> | string
+  commentId?: Prisma.StringWithAggregatesFilter<"CommentMedia"> | string
   media_url?: Prisma.StringWithAggregatesFilter<"CommentMedia"> | string
   type?: Prisma.EnumMediaTypeEnumWithAggregatesFilter<"CommentMedia"> | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CommentMedia"> | Date | string
@@ -293,7 +241,7 @@ export type CommentMediaScalarWhereWithAggregatesInput = {
 }
 
 export type CommentMediaCreateInput = {
-  publicId?: string
+  id?: string
   media_url: string
   type: $Enums.MediaTypeEnum
   createdAt?: Date | string
@@ -302,9 +250,8 @@ export type CommentMediaCreateInput = {
 }
 
 export type CommentMediaUncheckedCreateInput = {
-  id?: number
-  publicId?: string
-  commentId: number
+  id?: string
+  commentId: string
   media_url: string
   type: $Enums.MediaTypeEnum
   createdAt?: Date | string
@@ -312,7 +259,7 @@ export type CommentMediaUncheckedCreateInput = {
 }
 
 export type CommentMediaUpdateInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMediaTypeEnumFieldUpdateOperationsInput | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -321,9 +268,8 @@ export type CommentMediaUpdateInput = {
 }
 
 export type CommentMediaUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
-  commentId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  commentId?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMediaTypeEnumFieldUpdateOperationsInput | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -331,9 +277,8 @@ export type CommentMediaUncheckedUpdateInput = {
 }
 
 export type CommentMediaCreateManyInput = {
-  id?: number
-  publicId?: string
-  commentId: number
+  id?: string
+  commentId: string
   media_url: string
   type: $Enums.MediaTypeEnum
   createdAt?: Date | string
@@ -341,7 +286,7 @@ export type CommentMediaCreateManyInput = {
 }
 
 export type CommentMediaUpdateManyMutationInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMediaTypeEnumFieldUpdateOperationsInput | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -349,9 +294,8 @@ export type CommentMediaUpdateManyMutationInput = {
 }
 
 export type CommentMediaUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
-  commentId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  commentId?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMediaTypeEnumFieldUpdateOperationsInput | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -370,7 +314,6 @@ export type CommentMediaOrderByRelationAggregateInput = {
 
 export type CommentMediaCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   commentId?: Prisma.SortOrder
   media_url?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -378,14 +321,8 @@ export type CommentMediaCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type CommentMediaAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  commentId?: Prisma.SortOrder
-}
-
 export type CommentMediaMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   commentId?: Prisma.SortOrder
   media_url?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -395,17 +332,11 @@ export type CommentMediaMaxOrderByAggregateInput = {
 
 export type CommentMediaMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   commentId?: Prisma.SortOrder
   media_url?: Prisma.SortOrder
   type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type CommentMediaSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  commentId?: Prisma.SortOrder
 }
 
 export type CommentMediaCreateNestedManyWithoutCommentInput = {
@@ -451,7 +382,7 @@ export type CommentMediaUncheckedUpdateManyWithoutCommentNestedInput = {
 }
 
 export type CommentMediaCreateWithoutCommentInput = {
-  publicId?: string
+  id?: string
   media_url: string
   type: $Enums.MediaTypeEnum
   createdAt?: Date | string
@@ -459,8 +390,7 @@ export type CommentMediaCreateWithoutCommentInput = {
 }
 
 export type CommentMediaUncheckedCreateWithoutCommentInput = {
-  id?: number
-  publicId?: string
+  id?: string
   media_url: string
   type: $Enums.MediaTypeEnum
   createdAt?: Date | string
@@ -497,9 +427,8 @@ export type CommentMediaScalarWhereInput = {
   AND?: Prisma.CommentMediaScalarWhereInput | Prisma.CommentMediaScalarWhereInput[]
   OR?: Prisma.CommentMediaScalarWhereInput[]
   NOT?: Prisma.CommentMediaScalarWhereInput | Prisma.CommentMediaScalarWhereInput[]
-  id?: Prisma.IntFilter<"CommentMedia"> | number
-  publicId?: Prisma.StringFilter<"CommentMedia"> | string
-  commentId?: Prisma.IntFilter<"CommentMedia"> | number
+  id?: Prisma.StringFilter<"CommentMedia"> | string
+  commentId?: Prisma.StringFilter<"CommentMedia"> | string
   media_url?: Prisma.StringFilter<"CommentMedia"> | string
   type?: Prisma.EnumMediaTypeEnumFilter<"CommentMedia"> | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFilter<"CommentMedia"> | Date | string
@@ -507,8 +436,7 @@ export type CommentMediaScalarWhereInput = {
 }
 
 export type CommentMediaCreateManyCommentInput = {
-  id?: number
-  publicId?: string
+  id?: string
   media_url: string
   type: $Enums.MediaTypeEnum
   createdAt?: Date | string
@@ -516,7 +444,7 @@ export type CommentMediaCreateManyCommentInput = {
 }
 
 export type CommentMediaUpdateWithoutCommentInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMediaTypeEnumFieldUpdateOperationsInput | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -524,8 +452,7 @@ export type CommentMediaUpdateWithoutCommentInput = {
 }
 
 export type CommentMediaUncheckedUpdateWithoutCommentInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMediaTypeEnumFieldUpdateOperationsInput | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -533,8 +460,7 @@ export type CommentMediaUncheckedUpdateWithoutCommentInput = {
 }
 
 export type CommentMediaUncheckedUpdateManyWithoutCommentInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMediaTypeEnumFieldUpdateOperationsInput | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -545,7 +471,6 @@ export type CommentMediaUncheckedUpdateManyWithoutCommentInput = {
 
 export type CommentMediaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   commentId?: boolean
   media_url?: boolean
   type?: boolean
@@ -556,7 +481,6 @@ export type CommentMediaSelect<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type CommentMediaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   commentId?: boolean
   media_url?: boolean
   type?: boolean
@@ -567,7 +491,6 @@ export type CommentMediaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
 
 export type CommentMediaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   commentId?: boolean
   media_url?: boolean
   type?: boolean
@@ -578,7 +501,6 @@ export type CommentMediaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
 
 export type CommentMediaSelectScalar = {
   id?: boolean
-  publicId?: boolean
   commentId?: boolean
   media_url?: boolean
   type?: boolean
@@ -586,7 +508,7 @@ export type CommentMediaSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CommentMediaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "commentId" | "media_url" | "type" | "createdAt" | "updatedAt", ExtArgs["result"]["commentMedia"]>
+export type CommentMediaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "commentId" | "media_url" | "type" | "createdAt" | "updatedAt", ExtArgs["result"]["commentMedia"]>
 export type CommentMediaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   comment?: boolean | Prisma.CommentDefaultArgs<ExtArgs>
 }
@@ -603,9 +525,8 @@ export type $CommentMediaPayload<ExtArgs extends runtime.Types.Extensions.Intern
     comment: Prisma.$CommentPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
-    publicId: string
-    commentId: number
+    id: string
+    commentId: string
     media_url: string
     type: $Enums.MediaTypeEnum
     createdAt: Date
@@ -1034,9 +955,8 @@ export interface Prisma__CommentMediaClient<T, Null = never, ExtArgs extends run
  * Fields of the CommentMedia model
  */
 export interface CommentMediaFieldRefs {
-  readonly id: Prisma.FieldRef<"CommentMedia", 'Int'>
-  readonly publicId: Prisma.FieldRef<"CommentMedia", 'String'>
-  readonly commentId: Prisma.FieldRef<"CommentMedia", 'Int'>
+  readonly id: Prisma.FieldRef<"CommentMedia", 'String'>
+  readonly commentId: Prisma.FieldRef<"CommentMedia", 'String'>
   readonly media_url: Prisma.FieldRef<"CommentMedia", 'String'>
   readonly type: Prisma.FieldRef<"CommentMedia", 'MediaTypeEnum'>
   readonly createdAt: Prisma.FieldRef<"CommentMedia", 'DateTime'>

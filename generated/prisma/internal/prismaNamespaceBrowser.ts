@@ -83,7 +83,6 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 export const UserScalarFieldEnum = {
   id: 'id',
-  publicId: 'publicId',
   email: 'email',
   name: 'name',
   avatar_url: 'avatar_url',
@@ -110,7 +109,6 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 export const PostScalarFieldEnum = {
   id: 'id',
-  publicId: 'publicId',
   content: 'content',
   published: 'published',
   is_deleted: 'is_deleted',
@@ -128,7 +126,6 @@ export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof Post
 
 export const CommentScalarFieldEnum = {
   id: 'id',
-  publicId: 'publicId',
   content: 'content',
   is_deleted: 'is_deleted',
   deleted_at: 'deleted_at',
@@ -146,7 +143,6 @@ export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeo
 
 export const CommunityScalarFieldEnum = {
   id: 'id',
-  publicId: 'publicId',
   name: 'name',
   description: 'description',
   avatar_url: 'avatar_url',
@@ -160,7 +156,6 @@ export type CommunityScalarFieldEnum = (typeof CommunityScalarFieldEnum)[keyof t
 
 export const CommunityMemberScalarFieldEnum = {
   id: 'id',
-  publicId: 'publicId',
   communityId: 'communityId',
   userId: 'userId',
   createdAt: 'createdAt',
@@ -172,7 +167,6 @@ export type CommunityMemberScalarFieldEnum = (typeof CommunityMemberScalarFieldE
 
 export const PostLikeScalarFieldEnum = {
   id: 'id',
-  publicId: 'publicId',
   postId: 'postId',
   userId: 'userId',
   createdAt: 'createdAt',
@@ -184,7 +178,6 @@ export type PostLikeScalarFieldEnum = (typeof PostLikeScalarFieldEnum)[keyof typ
 
 export const CommentLikeScalarFieldEnum = {
   id: 'id',
-  publicId: 'publicId',
   commentId: 'commentId',
   userId: 'userId',
   createdAt: 'createdAt',
@@ -196,7 +189,6 @@ export type CommentLikeScalarFieldEnum = (typeof CommentLikeScalarFieldEnum)[key
 
 export const NotificationScalarFieldEnum = {
   id: 'id',
-  publicId: 'publicId',
   type: 'type',
   title: 'title',
   media_url: 'media_url',
@@ -214,7 +206,6 @@ export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[k
 
 export const PostMediaScalarFieldEnum = {
   id: 'id',
-  publicId: 'publicId',
   postId: 'postId',
   media_url: 'media_url',
   type: 'type',
@@ -227,7 +218,6 @@ export type PostMediaScalarFieldEnum = (typeof PostMediaScalarFieldEnum)[keyof t
 
 export const CommentMediaScalarFieldEnum = {
   id: 'id',
-  publicId: 'publicId',
   commentId: 'commentId',
   media_url: 'media_url',
   type: 'type',
@@ -240,7 +230,6 @@ export type CommentMediaScalarFieldEnum = (typeof CommentMediaScalarFieldEnum)[k
 
 export const UserFollowScalarFieldEnum = {
   id: 'id',
-  publicId: 'publicId',
   followerId: 'followerId',
   followingId: 'followingId',
   createdAt: 'createdAt',
@@ -252,7 +241,6 @@ export type UserFollowScalarFieldEnum = (typeof UserFollowScalarFieldEnum)[keyof
 
 export const PushTokenScalarFieldEnum = {
   id: 'id',
-  publicId: 'publicId',
   token: 'token',
   userId: 'userId',
   createdAt: 'createdAt',

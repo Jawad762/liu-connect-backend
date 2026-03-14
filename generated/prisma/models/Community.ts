@@ -20,47 +20,32 @@ export type CommunityModel = runtime.Types.Result.DefaultSelection<Prisma.$Commu
 
 export type AggregateCommunity = {
   _count: CommunityCountAggregateOutputType | null
-  _avg: CommunityAvgAggregateOutputType | null
-  _sum: CommunitySumAggregateOutputType | null
   _min: CommunityMinAggregateOutputType | null
   _max: CommunityMaxAggregateOutputType | null
 }
 
-export type CommunityAvgAggregateOutputType = {
-  id: number | null
-  createdById: number | null
-}
-
-export type CommunitySumAggregateOutputType = {
-  id: number | null
-  createdById: number | null
-}
-
 export type CommunityMinAggregateOutputType = {
-  id: number | null
-  publicId: string | null
+  id: string | null
   name: string | null
   description: string | null
   avatar_url: string | null
-  createdById: number | null
+  createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type CommunityMaxAggregateOutputType = {
-  id: number | null
-  publicId: string | null
+  id: string | null
   name: string | null
   description: string | null
   avatar_url: string | null
-  createdById: number | null
+  createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type CommunityCountAggregateOutputType = {
   id: number
-  publicId: number
   name: number
   description: number
   avatar_url: number
@@ -71,19 +56,8 @@ export type CommunityCountAggregateOutputType = {
 }
 
 
-export type CommunityAvgAggregateInputType = {
-  id?: true
-  createdById?: true
-}
-
-export type CommunitySumAggregateInputType = {
-  id?: true
-  createdById?: true
-}
-
 export type CommunityMinAggregateInputType = {
   id?: true
-  publicId?: true
   name?: true
   description?: true
   avatar_url?: true
@@ -94,7 +68,6 @@ export type CommunityMinAggregateInputType = {
 
 export type CommunityMaxAggregateInputType = {
   id?: true
-  publicId?: true
   name?: true
   description?: true
   avatar_url?: true
@@ -105,7 +78,6 @@ export type CommunityMaxAggregateInputType = {
 
 export type CommunityCountAggregateInputType = {
   id?: true
-  publicId?: true
   name?: true
   description?: true
   avatar_url?: true
@@ -153,18 +125,6 @@ export type CommunityAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inte
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: CommunityAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: CommunitySumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: CommunityMinAggregateInputType
@@ -195,24 +155,19 @@ export type CommunityGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   _count?: CommunityCountAggregateInputType | true
-  _avg?: CommunityAvgAggregateInputType
-  _sum?: CommunitySumAggregateInputType
   _min?: CommunityMinAggregateInputType
   _max?: CommunityMaxAggregateInputType
 }
 
 export type CommunityGroupByOutputType = {
-  id: number
-  publicId: string
+  id: string
   name: string
   description: string | null
   avatar_url: string | null
-  createdById: number
+  createdById: string
   createdAt: Date
   updatedAt: Date
   _count: CommunityCountAggregateOutputType | null
-  _avg: CommunityAvgAggregateOutputType | null
-  _sum: CommunitySumAggregateOutputType | null
   _min: CommunityMinAggregateOutputType | null
   _max: CommunityMaxAggregateOutputType | null
 }
@@ -236,12 +191,11 @@ export type CommunityWhereInput = {
   AND?: Prisma.CommunityWhereInput | Prisma.CommunityWhereInput[]
   OR?: Prisma.CommunityWhereInput[]
   NOT?: Prisma.CommunityWhereInput | Prisma.CommunityWhereInput[]
-  id?: Prisma.IntFilter<"Community"> | number
-  publicId?: Prisma.StringFilter<"Community"> | string
+  id?: Prisma.StringFilter<"Community"> | string
   name?: Prisma.StringFilter<"Community"> | string
   description?: Prisma.StringNullableFilter<"Community"> | string | null
   avatar_url?: Prisma.StringNullableFilter<"Community"> | string | null
-  createdById?: Prisma.IntFilter<"Community"> | number
+  createdById?: Prisma.StringFilter<"Community"> | string
   createdAt?: Prisma.DateTimeFilter<"Community"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Community"> | Date | string
   posts?: Prisma.PostListRelationFilter
@@ -251,7 +205,6 @@ export type CommunityWhereInput = {
 
 export type CommunityOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   avatar_url?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -264,25 +217,23 @@ export type CommunityOrderByWithRelationInput = {
 }
 
 export type CommunityWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
-  publicId?: string
+  id?: string
   AND?: Prisma.CommunityWhereInput | Prisma.CommunityWhereInput[]
   OR?: Prisma.CommunityWhereInput[]
   NOT?: Prisma.CommunityWhereInput | Prisma.CommunityWhereInput[]
   name?: Prisma.StringFilter<"Community"> | string
   description?: Prisma.StringNullableFilter<"Community"> | string | null
   avatar_url?: Prisma.StringNullableFilter<"Community"> | string | null
-  createdById?: Prisma.IntFilter<"Community"> | number
+  createdById?: Prisma.StringFilter<"Community"> | string
   createdAt?: Prisma.DateTimeFilter<"Community"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Community"> | Date | string
   posts?: Prisma.PostListRelationFilter
   communityMembers?: Prisma.CommunityMemberListRelationFilter
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id" | "publicId">
+}, "id">
 
 export type CommunityOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   avatar_url?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -290,28 +241,25 @@ export type CommunityOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.CommunityCountOrderByAggregateInput
-  _avg?: Prisma.CommunityAvgOrderByAggregateInput
   _max?: Prisma.CommunityMaxOrderByAggregateInput
   _min?: Prisma.CommunityMinOrderByAggregateInput
-  _sum?: Prisma.CommunitySumOrderByAggregateInput
 }
 
 export type CommunityScalarWhereWithAggregatesInput = {
   AND?: Prisma.CommunityScalarWhereWithAggregatesInput | Prisma.CommunityScalarWhereWithAggregatesInput[]
   OR?: Prisma.CommunityScalarWhereWithAggregatesInput[]
   NOT?: Prisma.CommunityScalarWhereWithAggregatesInput | Prisma.CommunityScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Community"> | number
-  publicId?: Prisma.StringWithAggregatesFilter<"Community"> | string
+  id?: Prisma.StringWithAggregatesFilter<"Community"> | string
   name?: Prisma.StringWithAggregatesFilter<"Community"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Community"> | string | null
   avatar_url?: Prisma.StringNullableWithAggregatesFilter<"Community"> | string | null
-  createdById?: Prisma.IntWithAggregatesFilter<"Community"> | number
+  createdById?: Prisma.StringWithAggregatesFilter<"Community"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Community"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Community"> | Date | string
 }
 
 export type CommunityCreateInput = {
-  publicId?: string
+  id?: string
   name: string
   description?: string | null
   avatar_url?: string | null
@@ -323,12 +271,11 @@ export type CommunityCreateInput = {
 }
 
 export type CommunityUncheckedCreateInput = {
-  id?: number
-  publicId?: string
+  id?: string
   name: string
   description?: string | null
   avatar_url?: string | null
-  createdById: number
+  createdById: string
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
@@ -336,7 +283,7 @@ export type CommunityUncheckedCreateInput = {
 }
 
 export type CommunityUpdateInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -348,12 +295,11 @@ export type CommunityUpdateInput = {
 }
 
 export type CommunityUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdById?: Prisma.IntFieldUpdateOperationsInput | number
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
@@ -361,18 +307,17 @@ export type CommunityUncheckedUpdateInput = {
 }
 
 export type CommunityCreateManyInput = {
-  id?: number
-  publicId?: string
+  id?: string
   name: string
   description?: string | null
   avatar_url?: string | null
-  createdById: number
+  createdById: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type CommunityUpdateManyMutationInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -381,12 +326,11 @@ export type CommunityUpdateManyMutationInput = {
 }
 
 export type CommunityUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdById?: Prisma.IntFieldUpdateOperationsInput | number
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -408,7 +352,6 @@ export type CommunityNullableScalarRelationFilter = {
 
 export type CommunityCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   avatar_url?: Prisma.SortOrder
@@ -417,14 +360,8 @@ export type CommunityCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type CommunityAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  createdById?: Prisma.SortOrder
-}
-
 export type CommunityMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   avatar_url?: Prisma.SortOrder
@@ -435,18 +372,12 @@ export type CommunityMaxOrderByAggregateInput = {
 
 export type CommunityMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   avatar_url?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type CommunitySumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  createdById?: Prisma.SortOrder
 }
 
 export type CommunityScalarRelationFilter = {
@@ -527,7 +458,7 @@ export type CommunityUpdateOneRequiredWithoutCommunityMembersNestedInput = {
 }
 
 export type CommunityCreateWithoutCreatedByInput = {
-  publicId?: string
+  id?: string
   name: string
   description?: string | null
   avatar_url?: string | null
@@ -538,8 +469,7 @@ export type CommunityCreateWithoutCreatedByInput = {
 }
 
 export type CommunityUncheckedCreateWithoutCreatedByInput = {
-  id?: number
-  publicId?: string
+  id?: string
   name: string
   description?: string | null
   avatar_url?: string | null
@@ -579,18 +509,17 @@ export type CommunityScalarWhereInput = {
   AND?: Prisma.CommunityScalarWhereInput | Prisma.CommunityScalarWhereInput[]
   OR?: Prisma.CommunityScalarWhereInput[]
   NOT?: Prisma.CommunityScalarWhereInput | Prisma.CommunityScalarWhereInput[]
-  id?: Prisma.IntFilter<"Community"> | number
-  publicId?: Prisma.StringFilter<"Community"> | string
+  id?: Prisma.StringFilter<"Community"> | string
   name?: Prisma.StringFilter<"Community"> | string
   description?: Prisma.StringNullableFilter<"Community"> | string | null
   avatar_url?: Prisma.StringNullableFilter<"Community"> | string | null
-  createdById?: Prisma.IntFilter<"Community"> | number
+  createdById?: Prisma.StringFilter<"Community"> | string
   createdAt?: Prisma.DateTimeFilter<"Community"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Community"> | Date | string
 }
 
 export type CommunityCreateWithoutPostsInput = {
-  publicId?: string
+  id?: string
   name: string
   description?: string | null
   avatar_url?: string | null
@@ -601,12 +530,11 @@ export type CommunityCreateWithoutPostsInput = {
 }
 
 export type CommunityUncheckedCreateWithoutPostsInput = {
-  id?: number
-  publicId?: string
+  id?: string
   name: string
   description?: string | null
   avatar_url?: string | null
-  createdById: number
+  createdById: string
   createdAt?: Date | string
   updatedAt?: Date | string
   communityMembers?: Prisma.CommunityMemberUncheckedCreateNestedManyWithoutCommunityInput
@@ -629,7 +557,7 @@ export type CommunityUpdateToOneWithWhereWithoutPostsInput = {
 }
 
 export type CommunityUpdateWithoutPostsInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -640,19 +568,18 @@ export type CommunityUpdateWithoutPostsInput = {
 }
 
 export type CommunityUncheckedUpdateWithoutPostsInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdById?: Prisma.IntFieldUpdateOperationsInput | number
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   communityMembers?: Prisma.CommunityMemberUncheckedUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityCreateWithoutCommunityMembersInput = {
-  publicId?: string
+  id?: string
   name: string
   description?: string | null
   avatar_url?: string | null
@@ -663,12 +590,11 @@ export type CommunityCreateWithoutCommunityMembersInput = {
 }
 
 export type CommunityUncheckedCreateWithoutCommunityMembersInput = {
-  id?: number
-  publicId?: string
+  id?: string
   name: string
   description?: string | null
   avatar_url?: string | null
-  createdById: number
+  createdById: string
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
@@ -691,7 +617,7 @@ export type CommunityUpdateToOneWithWhereWithoutCommunityMembersInput = {
 }
 
 export type CommunityUpdateWithoutCommunityMembersInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -702,20 +628,18 @@ export type CommunityUpdateWithoutCommunityMembersInput = {
 }
 
 export type CommunityUncheckedUpdateWithoutCommunityMembersInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdById?: Prisma.IntFieldUpdateOperationsInput | number
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityCreateManyCreatedByInput = {
-  id?: number
-  publicId?: string
+  id?: string
   name: string
   description?: string | null
   avatar_url?: string | null
@@ -724,7 +648,7 @@ export type CommunityCreateManyCreatedByInput = {
 }
 
 export type CommunityUpdateWithoutCreatedByInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -735,8 +659,7 @@ export type CommunityUpdateWithoutCreatedByInput = {
 }
 
 export type CommunityUncheckedUpdateWithoutCreatedByInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -747,8 +670,7 @@ export type CommunityUncheckedUpdateWithoutCreatedByInput = {
 }
 
 export type CommunityUncheckedUpdateManyWithoutCreatedByInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -798,7 +720,6 @@ export type CommunityCountOutputTypeCountCommunityMembersArgs<ExtArgs extends ru
 
 export type CommunitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   name?: boolean
   description?: boolean
   avatar_url?: boolean
@@ -813,7 +734,6 @@ export type CommunitySelect<ExtArgs extends runtime.Types.Extensions.InternalArg
 
 export type CommunitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   name?: boolean
   description?: boolean
   avatar_url?: boolean
@@ -825,7 +745,6 @@ export type CommunitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
 
 export type CommunitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   name?: boolean
   description?: boolean
   avatar_url?: boolean
@@ -837,7 +756,6 @@ export type CommunitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
 
 export type CommunitySelectScalar = {
   id?: boolean
-  publicId?: boolean
   name?: boolean
   description?: boolean
   avatar_url?: boolean
@@ -846,7 +764,7 @@ export type CommunitySelectScalar = {
   updatedAt?: boolean
 }
 
-export type CommunityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "name" | "description" | "avatar_url" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["community"]>
+export type CommunityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "avatar_url" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["community"]>
 export type CommunityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   posts?: boolean | Prisma.Community$postsArgs<ExtArgs>
   communityMembers?: boolean | Prisma.Community$communityMembersArgs<ExtArgs>
@@ -868,12 +786,11 @@ export type $CommunityPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     createdBy: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
-    publicId: string
+    id: string
     name: string
     description: string | null
     avatar_url: string | null
-    createdById: number
+    createdById: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["community"]>
@@ -1302,12 +1219,11 @@ export interface Prisma__CommunityClient<T, Null = never, ExtArgs extends runtim
  * Fields of the Community model
  */
 export interface CommunityFieldRefs {
-  readonly id: Prisma.FieldRef<"Community", 'Int'>
-  readonly publicId: Prisma.FieldRef<"Community", 'String'>
+  readonly id: Prisma.FieldRef<"Community", 'String'>
   readonly name: Prisma.FieldRef<"Community", 'String'>
   readonly description: Prisma.FieldRef<"Community", 'String'>
   readonly avatar_url: Prisma.FieldRef<"Community", 'String'>
-  readonly createdById: Prisma.FieldRef<"Community", 'Int'>
+  readonly createdById: Prisma.FieldRef<"Community", 'String'>
   readonly createdAt: Prisma.FieldRef<"Community", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Community", 'DateTime'>
 }

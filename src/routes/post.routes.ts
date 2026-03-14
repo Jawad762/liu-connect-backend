@@ -8,10 +8,10 @@ router.use(authMiddleware);
 
 router.get('/', getPosts);
 router.post('/', createPost);
-router.get('/:publicId', getPost);
-router.put('/:publicId', updatePost);
+router.get('/:id', getPost);
+router.put('/:id', updatePost);
 router.patch('/like', likePost);
 router.patch('/unlike', unlikePost);
-router.delete('/:publicId', deletePost);
+router.delete('/:id', deletePost);
 
 export default router;

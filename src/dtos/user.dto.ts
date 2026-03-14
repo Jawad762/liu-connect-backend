@@ -5,7 +5,7 @@ export interface IUpdateProfileBody {
 }
 
 export interface IUserProfile {
-  publicId: string;
+  id: string;
   name: string | null;
   avatar_url: string | null;
   bio: string | null;
@@ -24,7 +24,7 @@ export interface IUserProfileSelf extends IUserProfile {
 }
 
 export interface IUserListItem {
-  publicId: string;
+  id: string;
   name: string | null;
   avatar_url: string | null;
 }

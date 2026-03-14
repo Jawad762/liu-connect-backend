@@ -20,59 +20,40 @@ export type NotificationModel = runtime.Types.Result.DefaultSelection<Prisma.$No
 
 export type AggregateNotification = {
   _count: NotificationCountAggregateOutputType | null
-  _avg: NotificationAvgAggregateOutputType | null
-  _sum: NotificationSumAggregateOutputType | null
   _min: NotificationMinAggregateOutputType | null
   _max: NotificationMaxAggregateOutputType | null
 }
 
-export type NotificationAvgAggregateOutputType = {
-  id: number | null
-  userId: number | null
-  postId: number | null
-  commentId: number | null
-}
-
-export type NotificationSumAggregateOutputType = {
-  id: number | null
-  userId: number | null
-  postId: number | null
-  commentId: number | null
-}
-
 export type NotificationMinAggregateOutputType = {
-  id: number | null
-  publicId: string | null
+  id: string | null
   type: $Enums.NotificationType | null
   title: string | null
   media_url: string | null
   redirect_url: string | null
   read: boolean | null
-  userId: number | null
-  postId: number | null
-  commentId: number | null
+  userId: string | null
+  postId: string | null
+  commentId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type NotificationMaxAggregateOutputType = {
-  id: number | null
-  publicId: string | null
+  id: string | null
   type: $Enums.NotificationType | null
   title: string | null
   media_url: string | null
   redirect_url: string | null
   read: boolean | null
-  userId: number | null
-  postId: number | null
-  commentId: number | null
+  userId: string | null
+  postId: string | null
+  commentId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type NotificationCountAggregateOutputType = {
   id: number
-  publicId: number
   type: number
   title: number
   media_url: number
@@ -87,23 +68,8 @@ export type NotificationCountAggregateOutputType = {
 }
 
 
-export type NotificationAvgAggregateInputType = {
-  id?: true
-  userId?: true
-  postId?: true
-  commentId?: true
-}
-
-export type NotificationSumAggregateInputType = {
-  id?: true
-  userId?: true
-  postId?: true
-  commentId?: true
-}
-
 export type NotificationMinAggregateInputType = {
   id?: true
-  publicId?: true
   type?: true
   title?: true
   media_url?: true
@@ -118,7 +84,6 @@ export type NotificationMinAggregateInputType = {
 
 export type NotificationMaxAggregateInputType = {
   id?: true
-  publicId?: true
   type?: true
   title?: true
   media_url?: true
@@ -133,7 +98,6 @@ export type NotificationMaxAggregateInputType = {
 
 export type NotificationCountAggregateInputType = {
   id?: true
-  publicId?: true
   type?: true
   title?: true
   media_url?: true
@@ -185,18 +149,6 @@ export type NotificationAggregateArgs<ExtArgs extends runtime.Types.Extensions.I
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: NotificationAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: NotificationSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: NotificationMinAggregateInputType
@@ -227,28 +179,23 @@ export type NotificationGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   _count?: NotificationCountAggregateInputType | true
-  _avg?: NotificationAvgAggregateInputType
-  _sum?: NotificationSumAggregateInputType
   _min?: NotificationMinAggregateInputType
   _max?: NotificationMaxAggregateInputType
 }
 
 export type NotificationGroupByOutputType = {
-  id: number
-  publicId: string
+  id: string
   type: $Enums.NotificationType
   title: string
   media_url: string | null
   redirect_url: string | null
   read: boolean
-  userId: number
-  postId: number | null
-  commentId: number | null
+  userId: string
+  postId: string | null
+  commentId: string | null
   createdAt: Date
   updatedAt: Date
   _count: NotificationCountAggregateOutputType | null
-  _avg: NotificationAvgAggregateOutputType | null
-  _sum: NotificationSumAggregateOutputType | null
   _min: NotificationMinAggregateOutputType | null
   _max: NotificationMaxAggregateOutputType | null
 }
@@ -272,16 +219,15 @@ export type NotificationWhereInput = {
   AND?: Prisma.NotificationWhereInput | Prisma.NotificationWhereInput[]
   OR?: Prisma.NotificationWhereInput[]
   NOT?: Prisma.NotificationWhereInput | Prisma.NotificationWhereInput[]
-  id?: Prisma.IntFilter<"Notification"> | number
-  publicId?: Prisma.StringFilter<"Notification"> | string
+  id?: Prisma.StringFilter<"Notification"> | string
   type?: Prisma.EnumNotificationTypeFilter<"Notification"> | $Enums.NotificationType
   title?: Prisma.StringFilter<"Notification"> | string
   media_url?: Prisma.StringNullableFilter<"Notification"> | string | null
   redirect_url?: Prisma.StringNullableFilter<"Notification"> | string | null
   read?: Prisma.BoolFilter<"Notification"> | boolean
-  userId?: Prisma.IntFilter<"Notification"> | number
-  postId?: Prisma.IntNullableFilter<"Notification"> | number | null
-  commentId?: Prisma.IntNullableFilter<"Notification"> | number | null
+  userId?: Prisma.StringFilter<"Notification"> | string
+  postId?: Prisma.StringNullableFilter<"Notification"> | string | null
+  commentId?: Prisma.StringNullableFilter<"Notification"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Notification"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Notification"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -291,7 +237,6 @@ export type NotificationWhereInput = {
 
 export type NotificationOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   title?: Prisma.SortOrder
   media_url?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -308,8 +253,7 @@ export type NotificationOrderByWithRelationInput = {
 }
 
 export type NotificationWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
-  publicId?: string
+  id?: string
   AND?: Prisma.NotificationWhereInput | Prisma.NotificationWhereInput[]
   OR?: Prisma.NotificationWhereInput[]
   NOT?: Prisma.NotificationWhereInput | Prisma.NotificationWhereInput[]
@@ -318,19 +262,18 @@ export type NotificationWhereUniqueInput = Prisma.AtLeast<{
   media_url?: Prisma.StringNullableFilter<"Notification"> | string | null
   redirect_url?: Prisma.StringNullableFilter<"Notification"> | string | null
   read?: Prisma.BoolFilter<"Notification"> | boolean
-  userId?: Prisma.IntFilter<"Notification"> | number
-  postId?: Prisma.IntNullableFilter<"Notification"> | number | null
-  commentId?: Prisma.IntNullableFilter<"Notification"> | number | null
+  userId?: Prisma.StringFilter<"Notification"> | string
+  postId?: Prisma.StringNullableFilter<"Notification"> | string | null
+  commentId?: Prisma.StringNullableFilter<"Notification"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Notification"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Notification"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   post?: Prisma.XOR<Prisma.PostNullableScalarRelationFilter, Prisma.PostWhereInput> | null
   comment?: Prisma.XOR<Prisma.CommentNullableScalarRelationFilter, Prisma.CommentWhereInput> | null
-}, "id" | "publicId">
+}, "id">
 
 export type NotificationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   title?: Prisma.SortOrder
   media_url?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -342,32 +285,29 @@ export type NotificationOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.NotificationCountOrderByAggregateInput
-  _avg?: Prisma.NotificationAvgOrderByAggregateInput
   _max?: Prisma.NotificationMaxOrderByAggregateInput
   _min?: Prisma.NotificationMinOrderByAggregateInput
-  _sum?: Prisma.NotificationSumOrderByAggregateInput
 }
 
 export type NotificationScalarWhereWithAggregatesInput = {
   AND?: Prisma.NotificationScalarWhereWithAggregatesInput | Prisma.NotificationScalarWhereWithAggregatesInput[]
   OR?: Prisma.NotificationScalarWhereWithAggregatesInput[]
   NOT?: Prisma.NotificationScalarWhereWithAggregatesInput | Prisma.NotificationScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Notification"> | number
-  publicId?: Prisma.StringWithAggregatesFilter<"Notification"> | string
+  id?: Prisma.StringWithAggregatesFilter<"Notification"> | string
   type?: Prisma.EnumNotificationTypeWithAggregatesFilter<"Notification"> | $Enums.NotificationType
   title?: Prisma.StringWithAggregatesFilter<"Notification"> | string
   media_url?: Prisma.StringNullableWithAggregatesFilter<"Notification"> | string | null
   redirect_url?: Prisma.StringNullableWithAggregatesFilter<"Notification"> | string | null
   read?: Prisma.BoolWithAggregatesFilter<"Notification"> | boolean
-  userId?: Prisma.IntWithAggregatesFilter<"Notification"> | number
-  postId?: Prisma.IntNullableWithAggregatesFilter<"Notification"> | number | null
-  commentId?: Prisma.IntNullableWithAggregatesFilter<"Notification"> | number | null
+  userId?: Prisma.StringWithAggregatesFilter<"Notification"> | string
+  postId?: Prisma.StringNullableWithAggregatesFilter<"Notification"> | string | null
+  commentId?: Prisma.StringNullableWithAggregatesFilter<"Notification"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Notification"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Notification"> | Date | string
 }
 
 export type NotificationCreateInput = {
-  publicId?: string
+  id?: string
   type: $Enums.NotificationType
   title: string
   media_url?: string | null
@@ -381,22 +321,21 @@ export type NotificationCreateInput = {
 }
 
 export type NotificationUncheckedCreateInput = {
-  id?: number
-  publicId?: string
+  id?: string
   type: $Enums.NotificationType
   title: string
   media_url?: string | null
   redirect_url?: string | null
   read?: boolean
-  userId: number
-  postId?: number | null
-  commentId?: number | null
+  userId: string
+  postId?: string | null
+  commentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type NotificationUpdateInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
   title?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -410,37 +349,35 @@ export type NotificationUpdateInput = {
 }
 
 export type NotificationUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
   title?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   redirect_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   read?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  postId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  commentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  postId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type NotificationCreateManyInput = {
-  id?: number
-  publicId?: string
+  id?: string
   type: $Enums.NotificationType
   title: string
   media_url?: string | null
   redirect_url?: string | null
   read?: boolean
-  userId: number
-  postId?: number | null
-  commentId?: number | null
+  userId: string
+  postId?: string | null
+  commentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type NotificationUpdateManyMutationInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
   title?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -451,16 +388,15 @@ export type NotificationUpdateManyMutationInput = {
 }
 
 export type NotificationUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
   title?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   redirect_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   read?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  postId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  commentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  postId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -477,7 +413,6 @@ export type NotificationOrderByRelationAggregateInput = {
 
 export type NotificationCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   title?: Prisma.SortOrder
   media_url?: Prisma.SortOrder
@@ -490,16 +425,8 @@ export type NotificationCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type NotificationAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
-  postId?: Prisma.SortOrder
-  commentId?: Prisma.SortOrder
-}
-
 export type NotificationMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   title?: Prisma.SortOrder
   media_url?: Prisma.SortOrder
@@ -514,7 +441,6 @@ export type NotificationMaxOrderByAggregateInput = {
 
 export type NotificationMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   title?: Prisma.SortOrder
   media_url?: Prisma.SortOrder
@@ -525,13 +451,6 @@ export type NotificationMinOrderByAggregateInput = {
   commentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type NotificationSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
-  postId?: Prisma.SortOrder
-  commentId?: Prisma.SortOrder
 }
 
 export type NotificationCreateNestedManyWithoutUserInput = {
@@ -665,7 +584,7 @@ export type EnumNotificationTypeFieldUpdateOperationsInput = {
 }
 
 export type NotificationCreateWithoutUserInput = {
-  publicId?: string
+  id?: string
   type: $Enums.NotificationType
   title: string
   media_url?: string | null
@@ -678,15 +597,14 @@ export type NotificationCreateWithoutUserInput = {
 }
 
 export type NotificationUncheckedCreateWithoutUserInput = {
-  id?: number
-  publicId?: string
+  id?: string
   type: $Enums.NotificationType
   title: string
   media_url?: string | null
   redirect_url?: string | null
   read?: boolean
-  postId?: number | null
-  commentId?: number | null
+  postId?: string | null
+  commentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -721,22 +639,21 @@ export type NotificationScalarWhereInput = {
   AND?: Prisma.NotificationScalarWhereInput | Prisma.NotificationScalarWhereInput[]
   OR?: Prisma.NotificationScalarWhereInput[]
   NOT?: Prisma.NotificationScalarWhereInput | Prisma.NotificationScalarWhereInput[]
-  id?: Prisma.IntFilter<"Notification"> | number
-  publicId?: Prisma.StringFilter<"Notification"> | string
+  id?: Prisma.StringFilter<"Notification"> | string
   type?: Prisma.EnumNotificationTypeFilter<"Notification"> | $Enums.NotificationType
   title?: Prisma.StringFilter<"Notification"> | string
   media_url?: Prisma.StringNullableFilter<"Notification"> | string | null
   redirect_url?: Prisma.StringNullableFilter<"Notification"> | string | null
   read?: Prisma.BoolFilter<"Notification"> | boolean
-  userId?: Prisma.IntFilter<"Notification"> | number
-  postId?: Prisma.IntNullableFilter<"Notification"> | number | null
-  commentId?: Prisma.IntNullableFilter<"Notification"> | number | null
+  userId?: Prisma.StringFilter<"Notification"> | string
+  postId?: Prisma.StringNullableFilter<"Notification"> | string | null
+  commentId?: Prisma.StringNullableFilter<"Notification"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Notification"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Notification"> | Date | string
 }
 
 export type NotificationCreateWithoutPostInput = {
-  publicId?: string
+  id?: string
   type: $Enums.NotificationType
   title: string
   media_url?: string | null
@@ -749,15 +666,14 @@ export type NotificationCreateWithoutPostInput = {
 }
 
 export type NotificationUncheckedCreateWithoutPostInput = {
-  id?: number
-  publicId?: string
+  id?: string
   type: $Enums.NotificationType
   title: string
   media_url?: string | null
   redirect_url?: string | null
   read?: boolean
-  userId: number
-  commentId?: number | null
+  userId: string
+  commentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -789,7 +705,7 @@ export type NotificationUpdateManyWithWhereWithoutPostInput = {
 }
 
 export type NotificationCreateWithoutCommentInput = {
-  publicId?: string
+  id?: string
   type: $Enums.NotificationType
   title: string
   media_url?: string | null
@@ -802,15 +718,14 @@ export type NotificationCreateWithoutCommentInput = {
 }
 
 export type NotificationUncheckedCreateWithoutCommentInput = {
-  id?: number
-  publicId?: string
+  id?: string
   type: $Enums.NotificationType
   title: string
   media_url?: string | null
   redirect_url?: string | null
   read?: boolean
-  userId: number
-  postId?: number | null
+  userId: string
+  postId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -842,21 +757,20 @@ export type NotificationUpdateManyWithWhereWithoutCommentInput = {
 }
 
 export type NotificationCreateManyUserInput = {
-  id?: number
-  publicId?: string
+  id?: string
   type: $Enums.NotificationType
   title: string
   media_url?: string | null
   redirect_url?: string | null
   read?: boolean
-  postId?: number | null
-  commentId?: number | null
+  postId?: string | null
+  commentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type NotificationUpdateWithoutUserInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
   title?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -869,49 +783,46 @@ export type NotificationUpdateWithoutUserInput = {
 }
 
 export type NotificationUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
   title?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   redirect_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   read?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  postId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  commentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  postId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type NotificationUncheckedUpdateManyWithoutUserInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
   title?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   redirect_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   read?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  postId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  commentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  postId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type NotificationCreateManyPostInput = {
-  id?: number
-  publicId?: string
+  id?: string
   type: $Enums.NotificationType
   title: string
   media_url?: string | null
   redirect_url?: string | null
   read?: boolean
-  userId: number
-  commentId?: number | null
+  userId: string
+  commentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type NotificationUpdateWithoutPostInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
   title?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -924,49 +835,46 @@ export type NotificationUpdateWithoutPostInput = {
 }
 
 export type NotificationUncheckedUpdateWithoutPostInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
   title?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   redirect_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   read?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  commentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  commentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type NotificationUncheckedUpdateManyWithoutPostInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
   title?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   redirect_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   read?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  commentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  commentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type NotificationCreateManyCommentInput = {
-  id?: number
-  publicId?: string
+  id?: string
   type: $Enums.NotificationType
   title: string
   media_url?: string | null
   redirect_url?: string | null
   read?: boolean
-  userId: number
-  postId?: number | null
+  userId: string
+  postId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type NotificationUpdateWithoutCommentInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
   title?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -979,29 +887,27 @@ export type NotificationUpdateWithoutCommentInput = {
 }
 
 export type NotificationUncheckedUpdateWithoutCommentInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
   title?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   redirect_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   read?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  postId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  postId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type NotificationUncheckedUpdateManyWithoutCommentInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
   title?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   redirect_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   read?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  postId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  postId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1010,7 +916,6 @@ export type NotificationUncheckedUpdateManyWithoutCommentInput = {
 
 export type NotificationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   type?: boolean
   title?: boolean
   media_url?: boolean
@@ -1028,7 +933,6 @@ export type NotificationSelect<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type NotificationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   type?: boolean
   title?: boolean
   media_url?: boolean
@@ -1046,7 +950,6 @@ export type NotificationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
 
 export type NotificationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   type?: boolean
   title?: boolean
   media_url?: boolean
@@ -1064,7 +967,6 @@ export type NotificationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
 
 export type NotificationSelectScalar = {
   id?: boolean
-  publicId?: boolean
   type?: boolean
   title?: boolean
   media_url?: boolean
@@ -1077,7 +979,7 @@ export type NotificationSelectScalar = {
   updatedAt?: boolean
 }
 
-export type NotificationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "type" | "title" | "media_url" | "redirect_url" | "read" | "userId" | "postId" | "commentId" | "createdAt" | "updatedAt", ExtArgs["result"]["notification"]>
+export type NotificationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "title" | "media_url" | "redirect_url" | "read" | "userId" | "postId" | "commentId" | "createdAt" | "updatedAt", ExtArgs["result"]["notification"]>
 export type NotificationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   post?: boolean | Prisma.Notification$postArgs<ExtArgs>
@@ -1102,16 +1004,15 @@ export type $NotificationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     comment: Prisma.$CommentPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
-    publicId: string
+    id: string
     type: $Enums.NotificationType
     title: string
     media_url: string | null
     redirect_url: string | null
     read: boolean
-    userId: number
-    postId: number | null
-    commentId: number | null
+    userId: string
+    postId: string | null
+    commentId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["notification"]>
@@ -1540,16 +1441,15 @@ export interface Prisma__NotificationClient<T, Null = never, ExtArgs extends run
  * Fields of the Notification model
  */
 export interface NotificationFieldRefs {
-  readonly id: Prisma.FieldRef<"Notification", 'Int'>
-  readonly publicId: Prisma.FieldRef<"Notification", 'String'>
+  readonly id: Prisma.FieldRef<"Notification", 'String'>
   readonly type: Prisma.FieldRef<"Notification", 'NotificationType'>
   readonly title: Prisma.FieldRef<"Notification", 'String'>
   readonly media_url: Prisma.FieldRef<"Notification", 'String'>
   readonly redirect_url: Prisma.FieldRef<"Notification", 'String'>
   readonly read: Prisma.FieldRef<"Notification", 'Boolean'>
-  readonly userId: Prisma.FieldRef<"Notification", 'Int'>
-  readonly postId: Prisma.FieldRef<"Notification", 'Int'>
-  readonly commentId: Prisma.FieldRef<"Notification", 'Int'>
+  readonly userId: Prisma.FieldRef<"Notification", 'String'>
+  readonly postId: Prisma.FieldRef<"Notification", 'String'>
+  readonly commentId: Prisma.FieldRef<"Notification", 'String'>
   readonly createdAt: Prisma.FieldRef<"Notification", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Notification", 'DateTime'>
 }

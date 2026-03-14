@@ -11,14 +11,14 @@ import { validatePost } from "../utils/post.utils.ts";
 export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, res: Response) => {
     try {
         const userId = req.user?.id;
-        const { postPublicId, content, media: rawMedia, parentPublicId } = req.body;
+        const { postId: bodyPostId, content, media: rawMedia, parentCommentId } = req.body;
         const media = rawMedia ?? [];
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
-        if (!postPublicId) return res.status(400).json(errorResponse("Post public ID is required"));
+        if (!bodyPostId) return res.status(400).json(errorResponse("Post ID is required"));
 
         const user = await prisma.user.findUnique({
             where: { id: userId },
-            select: { name: true, publicId: true },
+            select: { name: true },
         });
         if (!user) return res.status(404).json(errorResponse("User not found"));
 
@@ -26,15 +26,15 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
         if (!commentValidation.success) return res.status(400).json(errorResponse(commentValidation.message));
 
         const post = await prisma.post.findUnique({
-            where: { publicId: postPublicId as string },
-            select: { id: true, userId: true, publicId: true },
+            where: { id: bodyPostId },
+            select: { id: true, userId: true },
         });
         if (!post) return res.status(404).json(errorResponse("Post not found"));
 
-        let parentId = null;
-        if (parentPublicId) {
+        let parentId: string | null = null;
+        if (parentCommentId) {
             const parent = await prisma.comment.findUnique({
-                where: { publicId: parentPublicId as string },
+                where: { id: parentCommentId },
                 select: { id: true, postId: true, is_deleted: true },
             });
             if (!parent || parent.is_deleted) {
@@ -45,6 +45,7 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
             }
             parentId = parent.id;
         }
+        
         const comment = await prisma.comment.create({
             data: {
                 content,
@@ -55,16 +56,25 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
             },
         });
 
+        await prisma.post.update({
+            where: { id: post.id },
+            data: { comments_count: { increment: 1 } },
+        });
+
         if (parentId) {
             const parent = await prisma.comment.findUnique({
                 where: { id: parentId },
-                select: { userId: true, publicId: true },
+                select: { userId: true },
             });
             if (!parent) return res.status(404).json(errorResponse("Parent comment not found"));
+            await prisma.comment.update({
+                where: { id: parentId },
+                data: { replies_count: { increment: 1 } },
+            });
             if (parent.userId !== userId) {
                 const notificationTitle = `${user.name ?? "Someone"} replied to your comment`;
                 const notificationBody = "You have a new reply to your comment";
-                const redirectPath = `/posts/${post.publicId}`;
+                const redirectPath = `/posts/${post.id}`;
 
                 await prisma.notification.create({
                     data: {
@@ -83,10 +93,10 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
                 enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
                     type: NotificationType.COMMENT,
                     entity: "comment_reply",
-                    postPublicId: post.publicId,
-                    commentPublicId: comment.publicId,
-                    parentCommentPublicId: parent.publicId,
-                    actorPublicId: req.user?.publicId ?? "",
+                    postId: post.id,
+                    commentId: comment.id,
+                    parentCommentId: parentId,
+                    actorId: req.user?.id ?? "",
                     actorName: user.name ?? "",
                 });
             }
@@ -94,7 +104,7 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
             if (post.userId !== userId) {
                 const notificationTitle = `${user.name ?? "Someone"} commented on your post`;
                 const notificationBody = "You have a new comment on your post";
-                const redirectPath = `/posts/${post.publicId}`;
+                const redirectPath = `/posts/${post.id}`;
 
                 await prisma.notification.create({
                     data: {
@@ -113,9 +123,9 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
                 enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
                     type: NotificationType.COMMENT,
                     entity: "comment",
-                    postPublicId: post.publicId,
-                    commentPublicId: comment.publicId,
-                    actorPublicId: req.user?.publicId ?? "",
+                    postId: post.id,
+                    commentId: comment.id,
+                    actorId: req.user?.id ?? "",
                     actorName: user.name ?? "",
                 });
             }
@@ -131,37 +141,31 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
 
 export const getComments = async (req: IAuthRequest, res: Response) => {
     try {
-        const { page = 1, size = 10, postPublicId, userPublicId, parentPublicId } = req.query;
+        const currentUserId = req.user?.id;
+        if (!currentUserId) return res.status(401).json(errorResponse("Unauthorized"));
+        const { page = 1, size = 10, postId: queryPostId, userId: queryUserId, parentCommentId } = req.query;
 
-        if (!postPublicId) return res.status(400).json(errorResponse("Post public ID is required"));
+        if (!queryPostId) return res.status(400).json(errorResponse("Post ID is required"));
         const post = await prisma.post.findUnique({
-            where: { publicId: postPublicId as string },
+            where: { id: queryPostId as string },
             select: { id: true },
         });
         if (!post) return res.status(404).json(errorResponse("Post not found"));
 
-        let userId = null;
-        if (userPublicId) {
-            const user = await prisma.user.findUnique({
-                where: { publicId: userPublicId as string },
-                select: { id: true },
-            });
-            if (!user) return res.status(404).json(errorResponse("User not found"));
-            userId = user.id;
-        }
+        const userId = typeof queryUserId === "string" ? queryUserId : null;
 
         // Build base where clause (by post and optional user)
-        const where: any = {
+        const where = {
             postId: post.id,
             ...(userId != null && { userId }),
             is_deleted: false,
-        };
+        } as { postId: string; userId?: string; is_deleted: boolean; parentId?: string | null };
 
-        // If parentPublicId is provided, return replies to that comment.
+        // If parentCommentId is provided, return replies to that comment.
         // Otherwise, return only top-level comments.
-        if (parentPublicId) {
+        if (parentCommentId) {
             const parent = await prisma.comment.findUnique({
-                where: { publicId: parentPublicId as string },
+                where: { id: parentCommentId as string },
                 select: { id: true, is_deleted: true },
             });
             if (!parent || parent.is_deleted) {
@@ -172,6 +176,8 @@ export const getComments = async (req: IAuthRequest, res: Response) => {
             where.parentId = null;
         }
 
+        console.log(where);
+
         const comments = await prisma.comment.findMany({
             where,
             orderBy: {
@@ -180,11 +186,47 @@ export const getComments = async (req: IAuthRequest, res: Response) => {
             skip: (Number(page) - 1) * Number(size),
             take: Number(size),
             include: {
-                user: { select: { id: true, name: true, avatar_url: true, publicId: true } },
-                media: { select: { publicId: true, media_url: true, type: true } },
+                user: { select: { id: true, name: true, avatar_url: true } },
+                media: { select: { id: true, media_url: true, type: true } },
             },
         });
-        return res.status(200).json(successResponse(comments));
+
+        const commentIds = comments.map(c => c.id);
+        const likes = await prisma.commentLike.findMany({
+            where: { commentId: { in: commentIds }, userId: currentUserId },
+            select: { commentId: true },
+        });
+        const likedCommentIds = new Set(likes.map(l => l.commentId));
+        const commentsWithIsLiked = comments.map(c => ({
+            ...c,
+            isLiked: likedCommentIds.has(c.id),
+        }));
+        return res.status(200).json(successResponse(commentsWithIsLiked));
+    }
+    catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
+        return res.status(500).json(errorResponse("Internal server error"));
+    }
+}
+
+export const getComment = async (req: IAuthRequest, res: Response) => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
+        const id = getRouteParam(req, "id");
+        if (!id) return res.status(400).json(errorResponse("Comment ID is required"));
+        const comment = await prisma.comment.findUnique({
+            where: { id },
+            include: {
+                user: { select: { id: true, name: true, avatar_url: true } },
+                media: { select: { id: true, media_url: true, type: true } }
+            },
+        });
+        if (!comment) return res.status(404).json(errorResponse("Comment not found"));
+        const isLiked = await prisma.commentLike.findUnique({
+            where: { commentId_userId: { commentId: comment.id, userId } },
+        });
+        return res.status(200).json(successResponse({ ...comment, isLiked: !!isLiked }));
     }
     catch (error) {
         logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
@@ -195,25 +237,25 @@ export const getComments = async (req: IAuthRequest, res: Response) => {
 export const likeComment = async (req: IAuthRequest, res: Response) => {
     try {
         const userId = req.user?.id;
-        const publicId = getRouteParam(req, "publicId");
+        const id = getRouteParam(req, "id");
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
-        if (!publicId) return res.status(400).json(errorResponse("Comment public ID is required"));
+        if (!id) return res.status(400).json(errorResponse("Comment ID is required"));
 
         const user = await prisma.user.findUnique({
             where: { id: userId },
-            select: { name: true, publicId: true },
+            select: { name: true },
         });
         if (!user) return res.status(404).json(errorResponse("User not found"));
 
         const comment = await prisma.comment.findUnique({
-            where: { publicId: publicId as string },
-            select: { id: true, publicId: true, userId: true, postId: true, post: { select: { publicId: true } } },
+            where: { id },
+            select: { id: true, userId: true, postId: true, post: { select: { id: true } } },
         });
         if (!comment) return res.status(404).json(errorResponse("Comment not found"));
 
         const notificationTitle = `${user.name ?? "Someone"} liked your comment`;
         const notificationBody = "You have a new like on your comment";
-        const redirectPath = `/posts/${comment.post.publicId}`;
+        const redirectPath = `/posts/${comment.post.id}`;
 
         await prisma.$transaction([
             prisma.commentLike.create({
@@ -243,9 +285,9 @@ export const likeComment = async (req: IAuthRequest, res: Response) => {
             enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
                 type: NotificationType.LIKE,
                 entity: "comment",
-                postPublicId: comment.post.publicId,
-                commentPublicId: comment.publicId,
-                actorPublicId: req.user?.publicId ?? "",
+                postId: comment.post.id,
+                commentId: comment.id,
+                actorId: req.user?.id ?? "",
                 actorName: user.name ?? "",
             });
         }
@@ -261,12 +303,12 @@ export const likeComment = async (req: IAuthRequest, res: Response) => {
 export const unlikeComment = async (req: IAuthRequest, res: Response) => {
     try {
         const userId = req.user?.id;
-        const publicId = getRouteParam(req, "publicId");
+        const id = getRouteParam(req, "id");
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
-        if (!publicId) return res.status(400).json(errorResponse("Comment public ID is required"));
+        if (!id) return res.status(400).json(errorResponse("Comment ID is required"));
 
         const comment = await prisma.comment.findUnique({
-            where: { publicId: publicId as string },
+            where: { id },
             select: { id: true },
         });
         if (!comment) return res.status(404).json(errorResponse("Comment not found"));
@@ -294,17 +336,17 @@ export const unlikeComment = async (req: IAuthRequest, res: Response) => {
 export const updateComment = async (req: IAuthRequestBody<IUpdateCommentBody>, res: Response) => {
     try {
         const userId = req.user?.id;
-        const publicId = getRouteParam(req, "publicId");
+        const id = getRouteParam(req, "id");
         const { content, media: rawMedia } = req.body;
         const media = rawMedia ?? [];
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
-        if (!publicId) return res.status(400).json(errorResponse("Comment public ID is required"));
+        if (!id) return res.status(400).json(errorResponse("Comment ID is required"));
 
         const commentValidation = validatePost(content, media);
         if (!commentValidation.success) return res.status(400).json(errorResponse(commentValidation.message));
 
         const comment = await prisma.comment.findUnique({
-            where: { publicId: publicId as string },
+            where: { id },
             select: { id: true, userId: true },
         });
         if (!comment) return res.status(404).json(errorResponse("Comment not found"));
@@ -331,13 +373,13 @@ export const updateComment = async (req: IAuthRequestBody<IUpdateCommentBody>, r
 export const deleteComment = async (req: IAuthRequest, res: Response) => {
     try {
         const userId = req.user?.id;
-        const publicId = getRouteParam(req, "publicId");
+        const id = getRouteParam(req, "id");
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
-        if (!publicId) return res.status(400).json(errorResponse("Comment public ID is required"));
+        if (!id) return res.status(400).json(errorResponse("Comment ID is required"));
 
         const comment = await prisma.comment.findUnique({
-            where: { publicId: publicId as string },
-            select: { id: true, userId: true },
+            where: { id },
+            select: { id: true, userId: true, parentId: true, postId: true },
         });
         if (!comment) return res.status(404).json(errorResponse("Comment not found"));
         if (comment.userId !== userId) return res.status(403).json(errorResponse("Forbidden"));
@@ -346,6 +388,18 @@ export const deleteComment = async (req: IAuthRequest, res: Response) => {
             where: { id: comment.id },
             data: { is_deleted: true },
         });
+
+        await prisma.post.update({
+            where: { id: comment.postId },
+            data: { comments_count: { increment: 1 } },
+        });
+
+        if (comment.parentId) {
+            await prisma.comment.update({
+                where: { id: comment.parentId },
+                data: { replies_count: { decrement: 1 } },
+            });
+        }
 
         return res.status(200).json(successResponse(undefined, "Comment deleted"));
     } catch (error) {

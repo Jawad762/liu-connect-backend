@@ -20,43 +20,28 @@ export type PushTokenModel = runtime.Types.Result.DefaultSelection<Prisma.$PushT
 
 export type AggregatePushToken = {
   _count: PushTokenCountAggregateOutputType | null
-  _avg: PushTokenAvgAggregateOutputType | null
-  _sum: PushTokenSumAggregateOutputType | null
   _min: PushTokenMinAggregateOutputType | null
   _max: PushTokenMaxAggregateOutputType | null
 }
 
-export type PushTokenAvgAggregateOutputType = {
-  id: number | null
-  userId: number | null
-}
-
-export type PushTokenSumAggregateOutputType = {
-  id: number | null
-  userId: number | null
-}
-
 export type PushTokenMinAggregateOutputType = {
-  id: number | null
-  publicId: string | null
+  id: string | null
   token: string | null
-  userId: number | null
+  userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type PushTokenMaxAggregateOutputType = {
-  id: number | null
-  publicId: string | null
+  id: string | null
   token: string | null
-  userId: number | null
+  userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type PushTokenCountAggregateOutputType = {
   id: number
-  publicId: number
   token: number
   userId: number
   createdAt: number
@@ -65,19 +50,8 @@ export type PushTokenCountAggregateOutputType = {
 }
 
 
-export type PushTokenAvgAggregateInputType = {
-  id?: true
-  userId?: true
-}
-
-export type PushTokenSumAggregateInputType = {
-  id?: true
-  userId?: true
-}
-
 export type PushTokenMinAggregateInputType = {
   id?: true
-  publicId?: true
   token?: true
   userId?: true
   createdAt?: true
@@ -86,7 +60,6 @@ export type PushTokenMinAggregateInputType = {
 
 export type PushTokenMaxAggregateInputType = {
   id?: true
-  publicId?: true
   token?: true
   userId?: true
   createdAt?: true
@@ -95,7 +68,6 @@ export type PushTokenMaxAggregateInputType = {
 
 export type PushTokenCountAggregateInputType = {
   id?: true
-  publicId?: true
   token?: true
   userId?: true
   createdAt?: true
@@ -141,18 +113,6 @@ export type PushTokenAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inte
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: PushTokenAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: PushTokenSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: PushTokenMinAggregateInputType
@@ -183,22 +143,17 @@ export type PushTokenGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   _count?: PushTokenCountAggregateInputType | true
-  _avg?: PushTokenAvgAggregateInputType
-  _sum?: PushTokenSumAggregateInputType
   _min?: PushTokenMinAggregateInputType
   _max?: PushTokenMaxAggregateInputType
 }
 
 export type PushTokenGroupByOutputType = {
-  id: number
-  publicId: string
+  id: string
   token: string
-  userId: number
+  userId: string
   createdAt: Date
   updatedAt: Date
   _count: PushTokenCountAggregateOutputType | null
-  _avg: PushTokenAvgAggregateOutputType | null
-  _sum: PushTokenSumAggregateOutputType | null
   _min: PushTokenMinAggregateOutputType | null
   _max: PushTokenMaxAggregateOutputType | null
 }
@@ -222,10 +177,9 @@ export type PushTokenWhereInput = {
   AND?: Prisma.PushTokenWhereInput | Prisma.PushTokenWhereInput[]
   OR?: Prisma.PushTokenWhereInput[]
   NOT?: Prisma.PushTokenWhereInput | Prisma.PushTokenWhereInput[]
-  id?: Prisma.IntFilter<"PushToken"> | number
-  publicId?: Prisma.StringFilter<"PushToken"> | string
+  id?: Prisma.StringFilter<"PushToken"> | string
   token?: Prisma.StringFilter<"PushToken"> | string
-  userId?: Prisma.IntFilter<"PushToken"> | number
+  userId?: Prisma.StringFilter<"PushToken"> | string
   createdAt?: Prisma.DateTimeFilter<"PushToken"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PushToken"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -233,7 +187,6 @@ export type PushTokenWhereInput = {
 
 export type PushTokenOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   token?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -242,46 +195,41 @@ export type PushTokenOrderByWithRelationInput = {
 }
 
 export type PushTokenWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
-  publicId?: string
+  id?: string
   token?: string
   AND?: Prisma.PushTokenWhereInput | Prisma.PushTokenWhereInput[]
   OR?: Prisma.PushTokenWhereInput[]
   NOT?: Prisma.PushTokenWhereInput | Prisma.PushTokenWhereInput[]
-  userId?: Prisma.IntFilter<"PushToken"> | number
+  userId?: Prisma.StringFilter<"PushToken"> | string
   createdAt?: Prisma.DateTimeFilter<"PushToken"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PushToken"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id" | "publicId" | "token">
+}, "id" | "token">
 
 export type PushTokenOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   token?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PushTokenCountOrderByAggregateInput
-  _avg?: Prisma.PushTokenAvgOrderByAggregateInput
   _max?: Prisma.PushTokenMaxOrderByAggregateInput
   _min?: Prisma.PushTokenMinOrderByAggregateInput
-  _sum?: Prisma.PushTokenSumOrderByAggregateInput
 }
 
 export type PushTokenScalarWhereWithAggregatesInput = {
   AND?: Prisma.PushTokenScalarWhereWithAggregatesInput | Prisma.PushTokenScalarWhereWithAggregatesInput[]
   OR?: Prisma.PushTokenScalarWhereWithAggregatesInput[]
   NOT?: Prisma.PushTokenScalarWhereWithAggregatesInput | Prisma.PushTokenScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"PushToken"> | number
-  publicId?: Prisma.StringWithAggregatesFilter<"PushToken"> | string
+  id?: Prisma.StringWithAggregatesFilter<"PushToken"> | string
   token?: Prisma.StringWithAggregatesFilter<"PushToken"> | string
-  userId?: Prisma.IntWithAggregatesFilter<"PushToken"> | number
+  userId?: Prisma.StringWithAggregatesFilter<"PushToken"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PushToken"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"PushToken"> | Date | string
 }
 
 export type PushTokenCreateInput = {
-  publicId?: string
+  id?: string
   token: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -289,16 +237,15 @@ export type PushTokenCreateInput = {
 }
 
 export type PushTokenUncheckedCreateInput = {
-  id?: number
-  publicId?: string
+  id?: string
   token: string
-  userId: number
+  userId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type PushTokenUpdateInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -306,35 +253,32 @@ export type PushTokenUpdateInput = {
 }
 
 export type PushTokenUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PushTokenCreateManyInput = {
-  id?: number
-  publicId?: string
+  id?: string
   token: string
-  userId: number
+  userId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type PushTokenUpdateManyMutationInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PushTokenUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -351,21 +295,14 @@ export type PushTokenOrderByRelationAggregateInput = {
 
 export type PushTokenCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   token?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
-export type PushTokenAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
-}
-
 export type PushTokenMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   token?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -374,16 +311,10 @@ export type PushTokenMaxOrderByAggregateInput = {
 
 export type PushTokenMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   token?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type PushTokenSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
 }
 
 export type PushTokenCreateNestedManyWithoutUserInput = {
@@ -429,15 +360,14 @@ export type PushTokenUncheckedUpdateManyWithoutUserNestedInput = {
 }
 
 export type PushTokenCreateWithoutUserInput = {
-  publicId?: string
+  id?: string
   token: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type PushTokenUncheckedCreateWithoutUserInput = {
-  id?: number
-  publicId?: string
+  id?: string
   token: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -473,40 +403,36 @@ export type PushTokenScalarWhereInput = {
   AND?: Prisma.PushTokenScalarWhereInput | Prisma.PushTokenScalarWhereInput[]
   OR?: Prisma.PushTokenScalarWhereInput[]
   NOT?: Prisma.PushTokenScalarWhereInput | Prisma.PushTokenScalarWhereInput[]
-  id?: Prisma.IntFilter<"PushToken"> | number
-  publicId?: Prisma.StringFilter<"PushToken"> | string
+  id?: Prisma.StringFilter<"PushToken"> | string
   token?: Prisma.StringFilter<"PushToken"> | string
-  userId?: Prisma.IntFilter<"PushToken"> | number
+  userId?: Prisma.StringFilter<"PushToken"> | string
   createdAt?: Prisma.DateTimeFilter<"PushToken"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PushToken"> | Date | string
 }
 
 export type PushTokenCreateManyUserInput = {
-  id?: number
-  publicId?: string
+  id?: string
   token: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type PushTokenUpdateWithoutUserInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PushTokenUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PushTokenUncheckedUpdateManyWithoutUserInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -516,7 +442,6 @@ export type PushTokenUncheckedUpdateManyWithoutUserInput = {
 
 export type PushTokenSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   token?: boolean
   userId?: boolean
   createdAt?: boolean
@@ -526,7 +451,6 @@ export type PushTokenSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
 
 export type PushTokenSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   token?: boolean
   userId?: boolean
   createdAt?: boolean
@@ -536,7 +460,6 @@ export type PushTokenSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
 
 export type PushTokenSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   token?: boolean
   userId?: boolean
   createdAt?: boolean
@@ -546,14 +469,13 @@ export type PushTokenSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
 
 export type PushTokenSelectScalar = {
   id?: boolean
-  publicId?: boolean
   token?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PushTokenOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "token" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["pushToken"]>
+export type PushTokenOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "token" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["pushToken"]>
 export type PushTokenInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -570,10 +492,9 @@ export type $PushTokenPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     user: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
-    publicId: string
+    id: string
     token: string
-    userId: number
+    userId: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["pushToken"]>
@@ -1000,10 +921,9 @@ export interface Prisma__PushTokenClient<T, Null = never, ExtArgs extends runtim
  * Fields of the PushToken model
  */
 export interface PushTokenFieldRefs {
-  readonly id: Prisma.FieldRef<"PushToken", 'Int'>
-  readonly publicId: Prisma.FieldRef<"PushToken", 'String'>
+  readonly id: Prisma.FieldRef<"PushToken", 'String'>
   readonly token: Prisma.FieldRef<"PushToken", 'String'>
-  readonly userId: Prisma.FieldRef<"PushToken", 'Int'>
+  readonly userId: Prisma.FieldRef<"PushToken", 'String'>
   readonly createdAt: Prisma.FieldRef<"PushToken", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"PushToken", 'DateTime'>
 }

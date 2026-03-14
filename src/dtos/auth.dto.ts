@@ -9,8 +9,7 @@ export interface ISignInBody {
 }
 
 export interface IAuthUser {
-  id: number;
-  publicId: string;
+  id: string;
   email: string;
   name: string | null;
   avatar_url: string | null;

@@ -20,9 +20,8 @@ enum MediaTypeEnum {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  publicId String  @unique @default(uuid()) @map("public_id")
-  email    String  @unique
+  id       String   @id @default(uuid())
+  email    String   @unique
   name     String?
   avatar_url String?
   bio      String?
@@ -56,19 +55,18 @@ model User {
 }
 
 model Post {
-  id        Int     @id @default(autoincrement())
-  publicId  String  @unique @default(uuid()) @map("public_id")
+  id        String   @id @default(uuid())
   content   String
   published Boolean @default(false)
   is_deleted Boolean @default(false) @map("is_deleted")
   deleted_at DateTime? @map("deleted_at")
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
+  userId    String
   comments Comment[]
   likes_count Int @default(0)
   comments_count Int @default(0)
   community Community? @relation(fields: [communityId], references: [id])
-  communityId Int?
+  communityId String?
   likes PostLike[]
   media PostMedia[]
   notifications Notification[]
@@ -83,16 +81,15 @@ model Post {
 }
 
 model Comment {
-  id        Int     @id @default(autoincrement())
-  publicId  String  @unique @default(uuid()) @map("public_id")
+  id        String   @id @default(uuid())
   content   String
   is_deleted Boolean @default(false) @map("is_deleted")
   deleted_at DateTime? @map("deleted_at")
   post      Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId    Int
+  postId    String
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
-  parentId  Int?
+  userId    String
+  parentId  String?
   parent   Comment?  @relation("Comment", fields: [parentId], references: [id], onDelete: Cascade)
   replies  Comment[] @relation("Comment")
   likes_count Int @default(0)
@@ -111,15 +108,14 @@ model Comment {
 }
 
 model Community {
-  id        Int     @id @default(autoincrement())
-  publicId  String  @unique @default(uuid()) @map("public_id")
+  id        String   @id @default(uuid())
   name      String
   description String?
   avatar_url String?
   posts Post[]
   communityMembers CommunityMember[]
   createdBy User @relation(fields: [createdById], references: [id], onDelete: Cascade)
-  createdById Int
+  createdById String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -127,12 +123,11 @@ model Community {
 }
 
 model CommunityMember {
-  id        Int     @id @default(autoincrement())
-  publicId  String  @unique @default(uuid()) @map("public_id")
+  id        String   @id @default(uuid())
   community Community @relation(fields: [communityId], references: [id])
-  communityId Int
+  communityId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
+  userId String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -142,12 +137,11 @@ model CommunityMember {
 }
 
 model PostLike {
-  id        Int     @id @default(autoincrement())
-  publicId  String  @unique @default(uuid()) @map("public_id")
+  id        String   @id @default(uuid())
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId Int
+  postId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
+  userId String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -157,12 +151,11 @@ model PostLike {
 }
 
 model CommentLike {
-  id        Int     @id @default(autoincrement())
-  publicId  String  @unique @default(uuid()) @map("public_id")
+  id        String   @id @default(uuid())
   comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  commentId Int
+  commentId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
+  userId String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -172,19 +165,18 @@ model CommentLike {
 }
 
 model Notification {
-  id        Int     @id @default(autoincrement())
-  publicId  String  @unique @default(uuid()) @map("public_id")
+  id        String   @id @default(uuid())
   type      NotificationType
   title     String
   media_url String?
   redirect_url String?
   read      Boolean @default(false)
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
+  userId    String
   post      Post?   @relation(fields: [postId], references: [id], onDelete: SetNull)
-  postId    Int?
+  postId    String?
   comment   Comment? @relation(fields: [commentId], references: [id], onDelete: SetNull)
-  commentId Int?
+  commentId String?
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -194,10 +186,9 @@ model Notification {
 }
 
 model PostMedia {
-  id        Int     @id @default(autoincrement())
-  publicId  String  @unique @default(uuid()) @map("public_id")
+  id        String   @id @default(uuid())
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId Int
+  postId String
   media_url String
   type MediaTypeEnum
   createdAt DateTime @default(now()) @map("created_at")
@@ -205,10 +196,9 @@ model PostMedia {
 }
 
 model CommentMedia {
-  id        Int     @id @default(autoincrement())
-  publicId  String  @unique @default(uuid()) @map("public_id")
+  id        String   @id @default(uuid())
   comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  commentId Int
+  commentId String
   media_url String
   type MediaTypeEnum
   createdAt DateTime @default(now()) @map("created_at")
@@ -216,12 +206,11 @@ model CommentMedia {
 }
 
 model UserFollow {
-  id         Int      @id @default(autoincrement())
-  publicId   String   @unique @default(uuid()) @map("public_id")
+  id         String   @id @default(uuid())
   follower   User     @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
-  followerId Int
+  followerId String
   following  User     @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
-  followingId Int
+  followingId String
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
 
@@ -231,11 +220,10 @@ model UserFollow {
 }
 
 model PushToken {
-  id        Int     @id @default(autoincrement())
-  publicId  String  @unique @default(uuid()) @map("public_id")
+  id        String   @id @default(uuid())
   token     String @unique
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
+  userId    String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

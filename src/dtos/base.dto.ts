@@ -5,8 +5,7 @@ export interface IRequestBody<T> extends Request<{}, {}, T> {
 }
 
 export interface IAuthRequest extends Request {
-  userId?: number;
-  userPublicId?: string;
+  userId?: string;
 }
 
 export interface IAuthRequestBody<T> extends IAuthRequest {

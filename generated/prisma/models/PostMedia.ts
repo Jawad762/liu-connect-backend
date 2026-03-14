@@ -20,26 +20,13 @@ export type PostMediaModel = runtime.Types.Result.DefaultSelection<Prisma.$PostM
 
 export type AggregatePostMedia = {
   _count: PostMediaCountAggregateOutputType | null
-  _avg: PostMediaAvgAggregateOutputType | null
-  _sum: PostMediaSumAggregateOutputType | null
   _min: PostMediaMinAggregateOutputType | null
   _max: PostMediaMaxAggregateOutputType | null
 }
 
-export type PostMediaAvgAggregateOutputType = {
-  id: number | null
-  postId: number | null
-}
-
-export type PostMediaSumAggregateOutputType = {
-  id: number | null
-  postId: number | null
-}
-
 export type PostMediaMinAggregateOutputType = {
-  id: number | null
-  publicId: string | null
-  postId: number | null
+  id: string | null
+  postId: string | null
   media_url: string | null
   type: $Enums.MediaTypeEnum | null
   createdAt: Date | null
@@ -47,9 +34,8 @@ export type PostMediaMinAggregateOutputType = {
 }
 
 export type PostMediaMaxAggregateOutputType = {
-  id: number | null
-  publicId: string | null
-  postId: number | null
+  id: string | null
+  postId: string | null
   media_url: string | null
   type: $Enums.MediaTypeEnum | null
   createdAt: Date | null
@@ -58,7 +44,6 @@ export type PostMediaMaxAggregateOutputType = {
 
 export type PostMediaCountAggregateOutputType = {
   id: number
-  publicId: number
   postId: number
   media_url: number
   type: number
@@ -68,19 +53,8 @@ export type PostMediaCountAggregateOutputType = {
 }
 
 
-export type PostMediaAvgAggregateInputType = {
-  id?: true
-  postId?: true
-}
-
-export type PostMediaSumAggregateInputType = {
-  id?: true
-  postId?: true
-}
-
 export type PostMediaMinAggregateInputType = {
   id?: true
-  publicId?: true
   postId?: true
   media_url?: true
   type?: true
@@ -90,7 +64,6 @@ export type PostMediaMinAggregateInputType = {
 
 export type PostMediaMaxAggregateInputType = {
   id?: true
-  publicId?: true
   postId?: true
   media_url?: true
   type?: true
@@ -100,7 +73,6 @@ export type PostMediaMaxAggregateInputType = {
 
 export type PostMediaCountAggregateInputType = {
   id?: true
-  publicId?: true
   postId?: true
   media_url?: true
   type?: true
@@ -147,18 +119,6 @@ export type PostMediaAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inte
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: PostMediaAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: PostMediaSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: PostMediaMinAggregateInputType
@@ -189,23 +149,18 @@ export type PostMediaGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   _count?: PostMediaCountAggregateInputType | true
-  _avg?: PostMediaAvgAggregateInputType
-  _sum?: PostMediaSumAggregateInputType
   _min?: PostMediaMinAggregateInputType
   _max?: PostMediaMaxAggregateInputType
 }
 
 export type PostMediaGroupByOutputType = {
-  id: number
-  publicId: string
-  postId: number
+  id: string
+  postId: string
   media_url: string
   type: $Enums.MediaTypeEnum
   createdAt: Date
   updatedAt: Date
   _count: PostMediaCountAggregateOutputType | null
-  _avg: PostMediaAvgAggregateOutputType | null
-  _sum: PostMediaSumAggregateOutputType | null
   _min: PostMediaMinAggregateOutputType | null
   _max: PostMediaMaxAggregateOutputType | null
 }
@@ -229,9 +184,8 @@ export type PostMediaWhereInput = {
   AND?: Prisma.PostMediaWhereInput | Prisma.PostMediaWhereInput[]
   OR?: Prisma.PostMediaWhereInput[]
   NOT?: Prisma.PostMediaWhereInput | Prisma.PostMediaWhereInput[]
-  id?: Prisma.IntFilter<"PostMedia"> | number
-  publicId?: Prisma.StringFilter<"PostMedia"> | string
-  postId?: Prisma.IntFilter<"PostMedia"> | number
+  id?: Prisma.StringFilter<"PostMedia"> | string
+  postId?: Prisma.StringFilter<"PostMedia"> | string
   media_url?: Prisma.StringFilter<"PostMedia"> | string
   type?: Prisma.EnumMediaTypeEnumFilter<"PostMedia"> | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFilter<"PostMedia"> | Date | string
@@ -241,7 +195,6 @@ export type PostMediaWhereInput = {
 
 export type PostMediaOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   postId?: Prisma.SortOrder
   media_url?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -251,41 +204,36 @@ export type PostMediaOrderByWithRelationInput = {
 }
 
 export type PostMediaWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
-  publicId?: string
+  id?: string
   AND?: Prisma.PostMediaWhereInput | Prisma.PostMediaWhereInput[]
   OR?: Prisma.PostMediaWhereInput[]
   NOT?: Prisma.PostMediaWhereInput | Prisma.PostMediaWhereInput[]
-  postId?: Prisma.IntFilter<"PostMedia"> | number
+  postId?: Prisma.StringFilter<"PostMedia"> | string
   media_url?: Prisma.StringFilter<"PostMedia"> | string
   type?: Prisma.EnumMediaTypeEnumFilter<"PostMedia"> | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFilter<"PostMedia"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PostMedia"> | Date | string
   post?: Prisma.XOR<Prisma.PostScalarRelationFilter, Prisma.PostWhereInput>
-}, "id" | "publicId">
+}, "id">
 
 export type PostMediaOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   postId?: Prisma.SortOrder
   media_url?: Prisma.SortOrder
   type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PostMediaCountOrderByAggregateInput
-  _avg?: Prisma.PostMediaAvgOrderByAggregateInput
   _max?: Prisma.PostMediaMaxOrderByAggregateInput
   _min?: Prisma.PostMediaMinOrderByAggregateInput
-  _sum?: Prisma.PostMediaSumOrderByAggregateInput
 }
 
 export type PostMediaScalarWhereWithAggregatesInput = {
   AND?: Prisma.PostMediaScalarWhereWithAggregatesInput | Prisma.PostMediaScalarWhereWithAggregatesInput[]
   OR?: Prisma.PostMediaScalarWhereWithAggregatesInput[]
   NOT?: Prisma.PostMediaScalarWhereWithAggregatesInput | Prisma.PostMediaScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"PostMedia"> | number
-  publicId?: Prisma.StringWithAggregatesFilter<"PostMedia"> | string
-  postId?: Prisma.IntWithAggregatesFilter<"PostMedia"> | number
+  id?: Prisma.StringWithAggregatesFilter<"PostMedia"> | string
+  postId?: Prisma.StringWithAggregatesFilter<"PostMedia"> | string
   media_url?: Prisma.StringWithAggregatesFilter<"PostMedia"> | string
   type?: Prisma.EnumMediaTypeEnumWithAggregatesFilter<"PostMedia"> | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PostMedia"> | Date | string
@@ -293,7 +241,7 @@ export type PostMediaScalarWhereWithAggregatesInput = {
 }
 
 export type PostMediaCreateInput = {
-  publicId?: string
+  id?: string
   media_url: string
   type: $Enums.MediaTypeEnum
   createdAt?: Date | string
@@ -302,9 +250,8 @@ export type PostMediaCreateInput = {
 }
 
 export type PostMediaUncheckedCreateInput = {
-  id?: number
-  publicId?: string
-  postId: number
+  id?: string
+  postId: string
   media_url: string
   type: $Enums.MediaTypeEnum
   createdAt?: Date | string
@@ -312,7 +259,7 @@ export type PostMediaUncheckedCreateInput = {
 }
 
 export type PostMediaUpdateInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMediaTypeEnumFieldUpdateOperationsInput | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -321,9 +268,8 @@ export type PostMediaUpdateInput = {
 }
 
 export type PostMediaUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
-  postId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  postId?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMediaTypeEnumFieldUpdateOperationsInput | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -331,9 +277,8 @@ export type PostMediaUncheckedUpdateInput = {
 }
 
 export type PostMediaCreateManyInput = {
-  id?: number
-  publicId?: string
-  postId: number
+  id?: string
+  postId: string
   media_url: string
   type: $Enums.MediaTypeEnum
   createdAt?: Date | string
@@ -341,7 +286,7 @@ export type PostMediaCreateManyInput = {
 }
 
 export type PostMediaUpdateManyMutationInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMediaTypeEnumFieldUpdateOperationsInput | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -349,9 +294,8 @@ export type PostMediaUpdateManyMutationInput = {
 }
 
 export type PostMediaUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
-  postId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  postId?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMediaTypeEnumFieldUpdateOperationsInput | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -370,7 +314,6 @@ export type PostMediaOrderByRelationAggregateInput = {
 
 export type PostMediaCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   postId?: Prisma.SortOrder
   media_url?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -378,14 +321,8 @@ export type PostMediaCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type PostMediaAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  postId?: Prisma.SortOrder
-}
-
 export type PostMediaMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   postId?: Prisma.SortOrder
   media_url?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -395,17 +332,11 @@ export type PostMediaMaxOrderByAggregateInput = {
 
 export type PostMediaMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   postId?: Prisma.SortOrder
   media_url?: Prisma.SortOrder
   type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type PostMediaSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  postId?: Prisma.SortOrder
 }
 
 export type PostMediaCreateNestedManyWithoutPostInput = {
@@ -455,7 +386,7 @@ export type EnumMediaTypeEnumFieldUpdateOperationsInput = {
 }
 
 export type PostMediaCreateWithoutPostInput = {
-  publicId?: string
+  id?: string
   media_url: string
   type: $Enums.MediaTypeEnum
   createdAt?: Date | string
@@ -463,8 +394,7 @@ export type PostMediaCreateWithoutPostInput = {
 }
 
 export type PostMediaUncheckedCreateWithoutPostInput = {
-  id?: number
-  publicId?: string
+  id?: string
   media_url: string
   type: $Enums.MediaTypeEnum
   createdAt?: Date | string
@@ -501,9 +431,8 @@ export type PostMediaScalarWhereInput = {
   AND?: Prisma.PostMediaScalarWhereInput | Prisma.PostMediaScalarWhereInput[]
   OR?: Prisma.PostMediaScalarWhereInput[]
   NOT?: Prisma.PostMediaScalarWhereInput | Prisma.PostMediaScalarWhereInput[]
-  id?: Prisma.IntFilter<"PostMedia"> | number
-  publicId?: Prisma.StringFilter<"PostMedia"> | string
-  postId?: Prisma.IntFilter<"PostMedia"> | number
+  id?: Prisma.StringFilter<"PostMedia"> | string
+  postId?: Prisma.StringFilter<"PostMedia"> | string
   media_url?: Prisma.StringFilter<"PostMedia"> | string
   type?: Prisma.EnumMediaTypeEnumFilter<"PostMedia"> | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFilter<"PostMedia"> | Date | string
@@ -511,8 +440,7 @@ export type PostMediaScalarWhereInput = {
 }
 
 export type PostMediaCreateManyPostInput = {
-  id?: number
-  publicId?: string
+  id?: string
   media_url: string
   type: $Enums.MediaTypeEnum
   createdAt?: Date | string
@@ -520,7 +448,7 @@ export type PostMediaCreateManyPostInput = {
 }
 
 export type PostMediaUpdateWithoutPostInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMediaTypeEnumFieldUpdateOperationsInput | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -528,8 +456,7 @@ export type PostMediaUpdateWithoutPostInput = {
 }
 
 export type PostMediaUncheckedUpdateWithoutPostInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMediaTypeEnumFieldUpdateOperationsInput | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -537,8 +464,7 @@ export type PostMediaUncheckedUpdateWithoutPostInput = {
 }
 
 export type PostMediaUncheckedUpdateManyWithoutPostInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   media_url?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMediaTypeEnumFieldUpdateOperationsInput | $Enums.MediaTypeEnum
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -549,7 +475,6 @@ export type PostMediaUncheckedUpdateManyWithoutPostInput = {
 
 export type PostMediaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   postId?: boolean
   media_url?: boolean
   type?: boolean
@@ -560,7 +485,6 @@ export type PostMediaSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
 
 export type PostMediaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   postId?: boolean
   media_url?: boolean
   type?: boolean
@@ -571,7 +495,6 @@ export type PostMediaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
 
 export type PostMediaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   postId?: boolean
   media_url?: boolean
   type?: boolean
@@ -582,7 +505,6 @@ export type PostMediaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
 
 export type PostMediaSelectScalar = {
   id?: boolean
-  publicId?: boolean
   postId?: boolean
   media_url?: boolean
   type?: boolean
@@ -590,7 +512,7 @@ export type PostMediaSelectScalar = {
   updatedAt?: boolean
 }
 
-export type PostMediaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "postId" | "media_url" | "type" | "createdAt" | "updatedAt", ExtArgs["result"]["postMedia"]>
+export type PostMediaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "postId" | "media_url" | "type" | "createdAt" | "updatedAt", ExtArgs["result"]["postMedia"]>
 export type PostMediaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   post?: boolean | Prisma.PostDefaultArgs<ExtArgs>
 }
@@ -607,9 +529,8 @@ export type $PostMediaPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     post: Prisma.$PostPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
-    publicId: string
-    postId: number
+    id: string
+    postId: string
     media_url: string
     type: $Enums.MediaTypeEnum
     createdAt: Date
@@ -1038,9 +959,8 @@ export interface Prisma__PostMediaClient<T, Null = never, ExtArgs extends runtim
  * Fields of the PostMedia model
  */
 export interface PostMediaFieldRefs {
-  readonly id: Prisma.FieldRef<"PostMedia", 'Int'>
-  readonly publicId: Prisma.FieldRef<"PostMedia", 'String'>
-  readonly postId: Prisma.FieldRef<"PostMedia", 'Int'>
+  readonly id: Prisma.FieldRef<"PostMedia", 'String'>
+  readonly postId: Prisma.FieldRef<"PostMedia", 'String'>
   readonly media_url: Prisma.FieldRef<"PostMedia", 'String'>
   readonly type: Prisma.FieldRef<"PostMedia", 'MediaTypeEnum'>
   readonly createdAt: Prisma.FieldRef<"PostMedia", 'DateTime'>

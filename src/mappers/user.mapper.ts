@@ -1,8 +1,7 @@
 import type { IUserProfile, IUserProfileSelf, IUserListItem } from "../dtos/user.dto.ts";
 
 export function toProfileSelf(user: {
-  id: number;
-  publicId: string;
+  id: string;
   email: string;
   name: string | null;
   avatar_url: string | null;
@@ -16,7 +15,6 @@ export function toProfileSelf(user: {
 }): IUserProfileSelf {
   return {
     id: user.id,
-    publicId: user.publicId,
     email: user.email,
     name: user.name,
     avatar_url: user.avatar_url,
@@ -32,7 +30,7 @@ export function toProfileSelf(user: {
 
 export function toProfile(
   user: {
-    publicId: string;
+    id: string;
     name: string | null;
     avatar_url: string | null;
     bio: string | null;
@@ -52,12 +50,12 @@ export function toProfile(
 }
 
 export function toUserListItem(user: {
-  publicId: string;
+  id: string;
   name: string | null;
   avatar_url: string | null;
 }): IUserListItem {
   return {
-    publicId: user.publicId,
+    id: user.id,
     name: user.name,
     avatar_url: user.avatar_url,
   };

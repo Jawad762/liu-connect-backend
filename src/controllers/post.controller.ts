@@ -13,33 +13,31 @@ export const getPosts = async (req: IAuthRequest, res: Response) => {
         const currentUserId = req.user?.id;
         if (!currentUserId) return res.status(401).json(errorResponse("Unauthorized"));
 
-        const { page: rawPage, size: rawSize, followingOnly: rawFollowingOnly, communityPublicId, authorPublicId } = req.query;
+        const { page: rawPage, size: rawSize, followingOnly: rawFollowingOnly, communityId: queryCommunityId, authorId: queryAuthorId } = req.query;
 
         const pageNumber = Math.max(1, Number(rawPage));
         const sizeNumber = Math.min(30, Math.max(1, Number(rawSize)));
         const followingOnly = rawFollowingOnly === "true";
 
-        if (followingOnly && communityPublicId) return res.status(400).json(errorResponse("Please either choose following only or a community, but not both."));
-        if (followingOnly && authorPublicId) return res.status(400).json(errorResponse("Please either choose following only or an author, but not both."));
+        if (followingOnly && queryCommunityId) return res.status(400).json(errorResponse("Please either choose following only or a community, but not both."));
+        if (followingOnly && queryAuthorId) return res.status(400).json(errorResponse("Please either choose following only or an author, but not both."));
         
-        let authorId = null;
-        if (authorPublicId) {
+        const authorId = typeof queryAuthorId === "string" ? queryAuthorId : null;
+        if (authorId) {
             const author = await prisma.user.findUnique({
-                where: { publicId: authorPublicId as string },
+                where: { id: authorId },
                 select: { id: true },
             });
             if (!author) return res.status(404).json(errorResponse("User not found"));
-            authorId = author.id;
         }
 
-        let communityId = null;
-        if (communityPublicId) {
+        const communityId = typeof queryCommunityId === "string" ? queryCommunityId : null;
+        if (communityId) {
             const community = await prisma.community.findUnique({
-                where: { publicId: communityPublicId as string },
+                where: { id: communityId },
                 select: { id: true },
             });
             if (!community) return res.status(404).json(errorResponse("Community not found"));
-            communityId = community.id;
         }
 
         const userFollowings = followingOnly ? await prisma.userFollow.findMany({
@@ -66,7 +64,6 @@ export const getPosts = async (req: IAuthRequest, res: Response) => {
                         id: true,
                         name: true,
                         avatar_url: true,
-                        publicId: true,
                         major: true,
                     },
                 },
@@ -74,12 +71,11 @@ export const getPosts = async (req: IAuthRequest, res: Response) => {
                     select: {
                         id: true,
                         name: true,
-                        publicId: true,
                     },
                 },
                 media: {
                     select: {
-                        publicId: true,
+                        id: true,
                         media_url: true,
                         type: true,
                     },
@@ -123,16 +119,16 @@ export const getPosts = async (req: IAuthRequest, res: Response) => {
 export const createPost = async (req: IAuthRequestBody<ICreatePostBody>, res: Response) => {
     try {
         const userId = req.user?.id;
-        const { content, communityPublicId, media: rawMedia } = req.body;
+        const { content, communityId: bodyCommunityId, media: rawMedia } = req.body;
         const media = rawMedia ?? [];
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
         const postValidation = validatePost(content, media);
         if (!postValidation.success) return res.status(400).json(errorResponse(postValidation.message));
 
-        let communityId = null;
-        if (communityPublicId) {
+        let communityId: string | null = null;
+        if (bodyCommunityId) {
             const community = await prisma.community.findUnique({
-                where: { publicId: communityPublicId as string },
+                where: { id: bodyCommunityId },
                 select: { id: true },
             });
             if (!community) return res.status(404).json(errorResponse("Community not found"));
@@ -146,7 +142,7 @@ export const createPost = async (req: IAuthRequestBody<ICreatePostBody>, res: Re
                 communityId,
                 media: { create: media.map((m) => ({ media_url: m.url, type: m.type })) },
             },
-            include: { media: { select: { publicId: true, media_url: true, type: true } } },
+            include: { media: { select: { id: true, media_url: true, type: true } } },
         });
         res.status(201).json(successResponse(post));
     } catch (error) {
@@ -158,19 +154,19 @@ export const createPost = async (req: IAuthRequestBody<ICreatePostBody>, res: Re
 export const likePost = async (req: IAuthRequestBody<ILikePostBody>, res: Response) => {
     try {
         const userId = req.user?.id;
-        const { publicId } = req.body;
+        const { postId } = req.body;
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
-        if (!publicId) return res.status(400).json(errorResponse("Post public ID is required"));
+        if (!postId) return res.status(400).json(errorResponse("Post ID is required"));
 
         const user = await prisma.user.findUnique({
             where: { id: userId },
-            select: { name: true, publicId: true },
+            select: { name: true },
         });
         if (!user) return res.status(404).json(errorResponse("User not found"));
 
         const post = await prisma.post.findUnique({
-            where: { publicId: publicId as string },
-            select: { id: true, userId: true, publicId: true },
+            where: { id: postId },
+            select: { id: true, userId: true },
         });
         if (!post) return res.status(404).json(errorResponse("Post not found"));
 
@@ -183,7 +179,7 @@ export const likePost = async (req: IAuthRequestBody<ILikePostBody>, res: Respon
 
         const notificationTitle = `${user.name ?? "Someone"} liked your post`;
         const notificationBody = "You have a new like on your post";
-        const redirectPath = `/posts/${post.publicId}`;
+        const redirectPath = `/posts/${post.id}`;
 
         await prisma.$transaction([
             prisma.postLike.create({
@@ -212,8 +208,8 @@ export const likePost = async (req: IAuthRequestBody<ILikePostBody>, res: Respon
             enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
                 type: NotificationType.LIKE,
                 entity: "post",
-                postPublicId: post.publicId,
-                actorPublicId: req.user?.publicId ?? "",
+                postId: post.id,
+                actorId: req.user?.id ?? "",
                 actorName: user.name ?? "",
             });
         }
@@ -232,12 +228,12 @@ export const likePost = async (req: IAuthRequestBody<ILikePostBody>, res: Respon
 export const unlikePost = async (req: IAuthRequestBody<ILikePostBody>, res: Response) => {
     try {
         const userId = req.user?.id;
-        const { publicId } = req.body;
+        const { postId } = req.body;
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
-        if (!publicId) return res.status(400).json(errorResponse("Post public ID is required"));
+        if (!postId) return res.status(400).json(errorResponse("Post ID is required"));
 
         const post = await prisma.post.findUnique({
-            where: { publicId: publicId as string },
+            where: { id: postId },
             select: { id: true },
         });
         if (!post) return res.status(404).json(errorResponse("Post not found"));
@@ -270,19 +266,18 @@ export const getPost = async (req: IAuthRequest, res: Response) => {
         const userId = req.user?.id;
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
 
-        const publicId = getRouteParam(req, "publicId");
-        if (!publicId) return res.status(400).json(errorResponse("Post public ID is required"));
+        const id = getRouteParam(req, "id");
+        if (!id) return res.status(400).json(errorResponse("Post ID is required"));
 
         const post = await prisma.post.findUnique({
-            where: { publicId: publicId as string },
+            where: { id },
             include: {
-                media: { select: { publicId: true, media_url: true, type: true } },
+                media: { select: { id: true, media_url: true, type: true } },
                 user: {
                     select: {
                         id: true,
                         name: true,
                         avatar_url: true,
-                        publicId: true,
                         major: true,
                     },
                 },
@@ -306,16 +301,16 @@ export const getPost = async (req: IAuthRequest, res: Response) => {
 export const updatePost = async (req: IAuthRequestBody<IUpdatePostBody>, res: Response) => {
     try {
         const userId = req.user?.id;
-        const publicId = getRouteParam(req, "publicId");
+        const id = getRouteParam(req, "id");
         const { content, media: rawMedia } = req.body;
         const media = rawMedia ?? [];
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
-        if (!publicId) return res.status(400).json(errorResponse("Post public ID is required"));
+        if (!id) return res.status(400).json(errorResponse("Post ID is required"));
         const postValidation = validatePost(content, media);
         if (!postValidation.success) return res.status(400).json(errorResponse(postValidation.message));
 
         const post = await prisma.post.findUnique({
-            where: { publicId: publicId as string },
+            where: { id },
             select: { id: true, userId: true },
         });
         if (!post) return res.status(404).json(errorResponse("Post not found"));
@@ -336,12 +331,12 @@ export const updatePost = async (req: IAuthRequestBody<IUpdatePostBody>, res: Re
 export const deletePost = async (req: IAuthRequest, res: Response) => {
     try {
         const userId = req.user?.id;
-        const publicId = getRouteParam(req, "publicId");
+        const id = getRouteParam(req, "id");
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
-        if (!publicId) return res.status(400).json(errorResponse("Post public ID is required"));
+        if (!id) return res.status(400).json(errorResponse("Post ID is required"));
 
         const post = await prisma.post.findUnique({
-            where: { publicId: publicId as string },
+            where: { id },
             select: { id: true, userId: true },
         });
         if (!post) return res.status(404).json(errorResponse("Post not found"));

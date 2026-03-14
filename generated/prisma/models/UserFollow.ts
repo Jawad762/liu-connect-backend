@@ -20,45 +20,28 @@ export type UserFollowModel = runtime.Types.Result.DefaultSelection<Prisma.$User
 
 export type AggregateUserFollow = {
   _count: UserFollowCountAggregateOutputType | null
-  _avg: UserFollowAvgAggregateOutputType | null
-  _sum: UserFollowSumAggregateOutputType | null
   _min: UserFollowMinAggregateOutputType | null
   _max: UserFollowMaxAggregateOutputType | null
 }
 
-export type UserFollowAvgAggregateOutputType = {
-  id: number | null
-  followerId: number | null
-  followingId: number | null
-}
-
-export type UserFollowSumAggregateOutputType = {
-  id: number | null
-  followerId: number | null
-  followingId: number | null
-}
-
 export type UserFollowMinAggregateOutputType = {
-  id: number | null
-  publicId: string | null
-  followerId: number | null
-  followingId: number | null
+  id: string | null
+  followerId: string | null
+  followingId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type UserFollowMaxAggregateOutputType = {
-  id: number | null
-  publicId: string | null
-  followerId: number | null
-  followingId: number | null
+  id: string | null
+  followerId: string | null
+  followingId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type UserFollowCountAggregateOutputType = {
   id: number
-  publicId: number
   followerId: number
   followingId: number
   createdAt: number
@@ -67,21 +50,8 @@ export type UserFollowCountAggregateOutputType = {
 }
 
 
-export type UserFollowAvgAggregateInputType = {
-  id?: true
-  followerId?: true
-  followingId?: true
-}
-
-export type UserFollowSumAggregateInputType = {
-  id?: true
-  followerId?: true
-  followingId?: true
-}
-
 export type UserFollowMinAggregateInputType = {
   id?: true
-  publicId?: true
   followerId?: true
   followingId?: true
   createdAt?: true
@@ -90,7 +60,6 @@ export type UserFollowMinAggregateInputType = {
 
 export type UserFollowMaxAggregateInputType = {
   id?: true
-  publicId?: true
   followerId?: true
   followingId?: true
   createdAt?: true
@@ -99,7 +68,6 @@ export type UserFollowMaxAggregateInputType = {
 
 export type UserFollowCountAggregateInputType = {
   id?: true
-  publicId?: true
   followerId?: true
   followingId?: true
   createdAt?: true
@@ -145,18 +113,6 @@ export type UserFollowAggregateArgs<ExtArgs extends runtime.Types.Extensions.Int
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: UserFollowAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: UserFollowSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: UserFollowMinAggregateInputType
@@ -187,22 +143,17 @@ export type UserFollowGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   _count?: UserFollowCountAggregateInputType | true
-  _avg?: UserFollowAvgAggregateInputType
-  _sum?: UserFollowSumAggregateInputType
   _min?: UserFollowMinAggregateInputType
   _max?: UserFollowMaxAggregateInputType
 }
 
 export type UserFollowGroupByOutputType = {
-  id: number
-  publicId: string
-  followerId: number
-  followingId: number
+  id: string
+  followerId: string
+  followingId: string
   createdAt: Date
   updatedAt: Date
   _count: UserFollowCountAggregateOutputType | null
-  _avg: UserFollowAvgAggregateOutputType | null
-  _sum: UserFollowSumAggregateOutputType | null
   _min: UserFollowMinAggregateOutputType | null
   _max: UserFollowMaxAggregateOutputType | null
 }
@@ -226,10 +177,9 @@ export type UserFollowWhereInput = {
   AND?: Prisma.UserFollowWhereInput | Prisma.UserFollowWhereInput[]
   OR?: Prisma.UserFollowWhereInput[]
   NOT?: Prisma.UserFollowWhereInput | Prisma.UserFollowWhereInput[]
-  id?: Prisma.IntFilter<"UserFollow"> | number
-  publicId?: Prisma.StringFilter<"UserFollow"> | string
-  followerId?: Prisma.IntFilter<"UserFollow"> | number
-  followingId?: Prisma.IntFilter<"UserFollow"> | number
+  id?: Prisma.StringFilter<"UserFollow"> | string
+  followerId?: Prisma.StringFilter<"UserFollow"> | string
+  followingId?: Prisma.StringFilter<"UserFollow"> | string
   createdAt?: Prisma.DateTimeFilter<"UserFollow"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserFollow"> | Date | string
   follower?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -238,7 +188,6 @@ export type UserFollowWhereInput = {
 
 export type UserFollowOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   followerId?: Prisma.SortOrder
   followingId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -248,48 +197,43 @@ export type UserFollowOrderByWithRelationInput = {
 }
 
 export type UserFollowWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
-  publicId?: string
+  id?: string
   followerId_followingId?: Prisma.UserFollowFollowerIdFollowingIdCompoundUniqueInput
   AND?: Prisma.UserFollowWhereInput | Prisma.UserFollowWhereInput[]
   OR?: Prisma.UserFollowWhereInput[]
   NOT?: Prisma.UserFollowWhereInput | Prisma.UserFollowWhereInput[]
-  followerId?: Prisma.IntFilter<"UserFollow"> | number
-  followingId?: Prisma.IntFilter<"UserFollow"> | number
+  followerId?: Prisma.StringFilter<"UserFollow"> | string
+  followingId?: Prisma.StringFilter<"UserFollow"> | string
   createdAt?: Prisma.DateTimeFilter<"UserFollow"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserFollow"> | Date | string
   follower?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   following?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id" | "publicId" | "followerId_followingId">
+}, "id" | "followerId_followingId">
 
 export type UserFollowOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   followerId?: Prisma.SortOrder
   followingId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserFollowCountOrderByAggregateInput
-  _avg?: Prisma.UserFollowAvgOrderByAggregateInput
   _max?: Prisma.UserFollowMaxOrderByAggregateInput
   _min?: Prisma.UserFollowMinOrderByAggregateInput
-  _sum?: Prisma.UserFollowSumOrderByAggregateInput
 }
 
 export type UserFollowScalarWhereWithAggregatesInput = {
   AND?: Prisma.UserFollowScalarWhereWithAggregatesInput | Prisma.UserFollowScalarWhereWithAggregatesInput[]
   OR?: Prisma.UserFollowScalarWhereWithAggregatesInput[]
   NOT?: Prisma.UserFollowScalarWhereWithAggregatesInput | Prisma.UserFollowScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"UserFollow"> | number
-  publicId?: Prisma.StringWithAggregatesFilter<"UserFollow"> | string
-  followerId?: Prisma.IntWithAggregatesFilter<"UserFollow"> | number
-  followingId?: Prisma.IntWithAggregatesFilter<"UserFollow"> | number
+  id?: Prisma.StringWithAggregatesFilter<"UserFollow"> | string
+  followerId?: Prisma.StringWithAggregatesFilter<"UserFollow"> | string
+  followingId?: Prisma.StringWithAggregatesFilter<"UserFollow"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"UserFollow"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"UserFollow"> | Date | string
 }
 
 export type UserFollowCreateInput = {
-  publicId?: string
+  id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   follower: Prisma.UserCreateNestedOneWithoutFollowersInput
@@ -297,16 +241,15 @@ export type UserFollowCreateInput = {
 }
 
 export type UserFollowUncheckedCreateInput = {
-  id?: number
-  publicId?: string
-  followerId: number
-  followingId: number
+  id?: string
+  followerId: string
+  followingId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type UserFollowUpdateInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   follower?: Prisma.UserUpdateOneRequiredWithoutFollowersNestedInput
@@ -314,34 +257,31 @@ export type UserFollowUpdateInput = {
 }
 
 export type UserFollowUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
-  followerId?: Prisma.IntFieldUpdateOperationsInput | number
-  followingId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  followerId?: Prisma.StringFieldUpdateOperationsInput | string
+  followingId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserFollowCreateManyInput = {
-  id?: number
-  publicId?: string
-  followerId: number
-  followingId: number
+  id?: string
+  followerId: string
+  followingId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type UserFollowUpdateManyMutationInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserFollowUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
-  followerId?: Prisma.IntFieldUpdateOperationsInput | number
-  followingId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  followerId?: Prisma.StringFieldUpdateOperationsInput | string
+  followingId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -357,28 +297,20 @@ export type UserFollowOrderByRelationAggregateInput = {
 }
 
 export type UserFollowFollowerIdFollowingIdCompoundUniqueInput = {
-  followerId: number
-  followingId: number
+  followerId: string
+  followingId: string
 }
 
 export type UserFollowCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   followerId?: Prisma.SortOrder
   followingId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
-export type UserFollowAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  followerId?: Prisma.SortOrder
-  followingId?: Prisma.SortOrder
-}
-
 export type UserFollowMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   followerId?: Prisma.SortOrder
   followingId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -387,17 +319,10 @@ export type UserFollowMaxOrderByAggregateInput = {
 
 export type UserFollowMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   followerId?: Prisma.SortOrder
   followingId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type UserFollowSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  followerId?: Prisma.SortOrder
-  followingId?: Prisma.SortOrder
 }
 
 export type UserFollowCreateNestedManyWithoutFollowerInput = {
@@ -485,16 +410,15 @@ export type UserFollowUncheckedUpdateManyWithoutFollowingNestedInput = {
 }
 
 export type UserFollowCreateWithoutFollowerInput = {
-  publicId?: string
+  id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   following: Prisma.UserCreateNestedOneWithoutFollowingInput
 }
 
 export type UserFollowUncheckedCreateWithoutFollowerInput = {
-  id?: number
-  publicId?: string
-  followingId: number
+  id?: string
+  followingId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -510,16 +434,15 @@ export type UserFollowCreateManyFollowerInputEnvelope = {
 }
 
 export type UserFollowCreateWithoutFollowingInput = {
-  publicId?: string
+  id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   follower: Prisma.UserCreateNestedOneWithoutFollowersInput
 }
 
 export type UserFollowUncheckedCreateWithoutFollowingInput = {
-  id?: number
-  publicId?: string
-  followerId: number
+  id?: string
+  followerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -554,10 +477,9 @@ export type UserFollowScalarWhereInput = {
   AND?: Prisma.UserFollowScalarWhereInput | Prisma.UserFollowScalarWhereInput[]
   OR?: Prisma.UserFollowScalarWhereInput[]
   NOT?: Prisma.UserFollowScalarWhereInput | Prisma.UserFollowScalarWhereInput[]
-  id?: Prisma.IntFilter<"UserFollow"> | number
-  publicId?: Prisma.StringFilter<"UserFollow"> | string
-  followerId?: Prisma.IntFilter<"UserFollow"> | number
-  followingId?: Prisma.IntFilter<"UserFollow"> | number
+  id?: Prisma.StringFilter<"UserFollow"> | string
+  followerId?: Prisma.StringFilter<"UserFollow"> | string
+  followingId?: Prisma.StringFilter<"UserFollow"> | string
   createdAt?: Prisma.DateTimeFilter<"UserFollow"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserFollow"> | Date | string
 }
@@ -579,63 +501,57 @@ export type UserFollowUpdateManyWithWhereWithoutFollowingInput = {
 }
 
 export type UserFollowCreateManyFollowerInput = {
-  id?: number
-  publicId?: string
-  followingId: number
+  id?: string
+  followingId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type UserFollowCreateManyFollowingInput = {
-  id?: number
-  publicId?: string
-  followerId: number
+  id?: string
+  followerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type UserFollowUpdateWithoutFollowerInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   following?: Prisma.UserUpdateOneRequiredWithoutFollowingNestedInput
 }
 
 export type UserFollowUncheckedUpdateWithoutFollowerInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
-  followingId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  followingId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserFollowUncheckedUpdateManyWithoutFollowerInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
-  followingId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  followingId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserFollowUpdateWithoutFollowingInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   follower?: Prisma.UserUpdateOneRequiredWithoutFollowersNestedInput
 }
 
 export type UserFollowUncheckedUpdateWithoutFollowingInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
-  followerId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  followerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserFollowUncheckedUpdateManyWithoutFollowingInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
-  followerId?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  followerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -644,7 +560,6 @@ export type UserFollowUncheckedUpdateManyWithoutFollowingInput = {
 
 export type UserFollowSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   followerId?: boolean
   followingId?: boolean
   createdAt?: boolean
@@ -655,7 +570,6 @@ export type UserFollowSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
 
 export type UserFollowSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   followerId?: boolean
   followingId?: boolean
   createdAt?: boolean
@@ -666,7 +580,6 @@ export type UserFollowSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
 
 export type UserFollowSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   followerId?: boolean
   followingId?: boolean
   createdAt?: boolean
@@ -677,14 +590,13 @@ export type UserFollowSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
 
 export type UserFollowSelectScalar = {
   id?: boolean
-  publicId?: boolean
   followerId?: boolean
   followingId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserFollowOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "followerId" | "followingId" | "createdAt" | "updatedAt", ExtArgs["result"]["userFollow"]>
+export type UserFollowOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "followerId" | "followingId" | "createdAt" | "updatedAt", ExtArgs["result"]["userFollow"]>
 export type UserFollowInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   follower?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   following?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -705,10 +617,9 @@ export type $UserFollowPayload<ExtArgs extends runtime.Types.Extensions.Internal
     following: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
-    publicId: string
-    followerId: number
-    followingId: number
+    id: string
+    followerId: string
+    followingId: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["userFollow"]>
@@ -1136,10 +1047,9 @@ export interface Prisma__UserFollowClient<T, Null = never, ExtArgs extends runti
  * Fields of the UserFollow model
  */
 export interface UserFollowFieldRefs {
-  readonly id: Prisma.FieldRef<"UserFollow", 'Int'>
-  readonly publicId: Prisma.FieldRef<"UserFollow", 'String'>
-  readonly followerId: Prisma.FieldRef<"UserFollow", 'Int'>
-  readonly followingId: Prisma.FieldRef<"UserFollow", 'Int'>
+  readonly id: Prisma.FieldRef<"UserFollow", 'String'>
+  readonly followerId: Prisma.FieldRef<"UserFollow", 'String'>
+  readonly followingId: Prisma.FieldRef<"UserFollow", 'String'>
   readonly createdAt: Prisma.FieldRef<"UserFollow", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"UserFollow", 'DateTime'>
 }

@@ -125,7 +125,7 @@
                   "success": true,
                   "message": "Signed in successfully",
                   "data": {
-                    "user": { "id": 1, "publicId": "abc123", "email": "john@example.com", "name": "John" },
+                    "user": { "id": "550e8400-e29b-41d4-a716-446655440000", "email": "john@example.com", "name": "John" },
                     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                   }
                 }
@@ -330,17 +330,17 @@
         }
       }
     },
-    "/api/users/{publicId}": {
+    "/api/users/{id}": {
       "get": {
-        "summary": "Get user by public ID",
+        "summary": "Get user by ID",
         "tags": ["Users"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
           {
-            "name": "publicId",
+            "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string", "example": "usr_abc123xyz" }
+            "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440000" }
           }
         ],
         "responses": {
@@ -350,17 +350,17 @@
         }
       }
     },
-    "/api/users/{publicId}/follow": {
+    "/api/users/{id}/follow": {
       "post": {
         "summary": "Follow user",
         "tags": ["Users"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
           {
-            "name": "publicId",
+            "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string", "example": "usr_abc123xyz" }
+            "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440000" }
           }
         ],
         "responses": {
@@ -375,10 +375,10 @@
         "security": [{ "bearerAuth": [] }],
         "parameters": [
           {
-            "name": "publicId",
+            "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string", "example": "usr_abc123xyz" }
+            "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440000" }
           }
         ],
         "responses": {
@@ -387,13 +387,13 @@
         }
       }
     },
-    "/api/users/{publicId}/followers": {
+    "/api/users/{id}/followers": {
       "get": {
         "summary": "Get user's followers",
         "tags": ["Users"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
-          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "usr_abc123xyz" } },
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440000" } },
           { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
           { "name": "size", "in": "query", "schema": { "type": "integer", "default": 10 } }
         ],
@@ -403,13 +403,13 @@
         }
       }
     },
-    "/api/users/{publicId}/following": {
+    "/api/users/{id}/following": {
       "get": {
         "summary": "Get users that user follows",
         "tags": ["Users"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
-          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "usr_abc123xyz" } },
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440000" } },
           { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
           { "name": "size", "in": "query", "schema": { "type": "integer", "default": 10 } }
         ],
@@ -427,8 +427,8 @@
         "parameters": [
           { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
           { "name": "size", "in": "query", "schema": { "type": "integer", "default": 10 } },
-          { "name": "communityPublicId", "in": "query", "schema": { "type": "string", "example": "com_xyz789" } },
-          { "name": "userPublicId", "in": "query", "schema": { "type": "string", "example": "usr_abc123xyz" } }
+          { "name": "communityId", "in": "query", "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440001" } },
+          { "name": "authorId", "in": "query", "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440000" } }
         ],
         "responses": {
           "200": { "description": "List of posts" },
@@ -448,7 +448,7 @@
                 "required": ["content", "media"],
                 "properties": {
                   "content": { "type": "string", "example": "Hello world! This is my first post." },
-                  "communityPublicId": { "type": "string", "nullable": true, "example": "com_xyz789" },
+                  "communityId": { "type": "string", "nullable": true, "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440001" },
                   "media": {
                     "type": "array",
                     "items": { "type": "string" },
@@ -466,13 +466,13 @@
         }
       }
     },
-    "/api/posts/{publicId}": {
+    "/api/posts/{id}": {
       "get": {
         "summary": "Get single post",
         "tags": ["Posts"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
-          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "pst_abc123" } }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440002" } }
         ],
         "responses": {
           "200": { "description": "Post details" },
@@ -485,7 +485,7 @@
         "tags": ["Posts"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
-          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "pst_abc123" } }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440002" } }
         ],
         "requestBody": {
           "required": true,
@@ -519,7 +519,7 @@
         "tags": ["Posts"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
-          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "pst_abc123" } }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440002" } }
         ],
         "responses": {
           "200": { "description": "Post deleted" },
@@ -540,9 +540,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["publicId"],
+                "required": ["postId"],
                 "properties": {
-                  "publicId": { "type": "string", "example": "pst_abc123" }
+                  "postId": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440002" }
                 }
               }
             }
@@ -566,9 +566,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["publicId"],
+                "required": ["postId"],
                 "properties": {
-                  "publicId": { "type": "string", "example": "pst_abc123" }
+                  "postId": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440002" }
                 }
               }
             }
@@ -591,9 +591,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["postPublicId", "content", "media"],
+                "required": ["postId", "content", "media"],
                 "properties": {
-                  "postPublicId": { "type": "string", "example": "pst_abc123" },
+                  "postId": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440002" },
                   "content": { "type": "string", "example": "Great post!" },
                   "media": {
                     "type": "array",
@@ -601,7 +601,7 @@
                     "maxItems": 4,
                     "example": []
                   },
-                  "parentPublicId": { "type": "string", "example": "cmt_xyz789", "description": "For replies" }
+                  "parentCommentId": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440003", "description": "For replies" }
                 }
               }
             }
@@ -618,26 +618,39 @@
         "tags": ["Comments"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
-          { "name": "postPublicId", "in": "query", "required": true, "schema": { "type": "string", "example": "pst_abc123" } },
+          { "name": "postId", "in": "query", "required": true, "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440002" } },
           { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
           { "name": "size", "in": "query", "schema": { "type": "integer", "default": 10 } },
-          { "name": "userPublicId", "in": "query", "schema": { "type": "string", "example": "usr_abc123" } },
-          { "name": "parentPublicId", "in": "query", "schema": { "type": "string", "description": "Get replies to this comment" } }
+          { "name": "userId", "in": "query", "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440000" } },
+          { "name": "parentCommentId", "in": "query", "schema": { "type": "string", "format": "uuid", "description": "Get replies to this comment" } }
         ],
         "responses": {
           "200": { "description": "List of comments" },
-          "400": { "description": "postPublicId required" },
+          "400": { "description": "postId required" },
           "404": { "description": "Post not found" }
         }
       }
     },
-    "/api/comments/{publicId}": {
+    "/api/comments/{id}": {
+      "get": {
+        "summary": "Get comment",
+        "tags": ["Comments"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440003" } }
+        ],
+        "responses": {
+          "200": { "description": "Comment details" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Comment not found" }
+        }
+      },
       "put": {
         "summary": "Update comment",
         "tags": ["Comments"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
-          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "cmt_abc123" } }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440003" } }
         ],
         "requestBody": {
           "required": true,
@@ -671,7 +684,7 @@
         "tags": ["Comments"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
-          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "cmt_abc123" } }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440003" } }
         ],
         "responses": {
           "200": { "description": "Comment deleted" },
@@ -681,13 +694,13 @@
         }
       }
     },
-    "/api/comments/{publicId}/like": {
+    "/api/comments/{id}/like": {
       "patch": {
         "summary": "Like comment",
         "tags": ["Comments"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
-          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "cmt_abc123" } }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440003" } }
         ],
         "responses": {
           "200": { "description": "Liked" },
@@ -696,13 +709,13 @@
         }
       }
     },
-    "/api/comments/{publicId}/unlike": {
+    "/api/comments/{id}/unlike": {
       "patch": {
         "summary": "Unlike comment",
         "tags": ["Comments"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
-          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "cmt_abc123" } }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440003" } }
         ],
         "responses": {
           "200": { "description": "Unliked" },
@@ -752,13 +765,13 @@
         }
       }
     },
-    "/api/communities/{publicId}": {
+    "/api/communities/{id}": {
       "get": {
         "summary": "Get community",
         "tags": ["Communities"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
-          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "com_xyz789" } }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440001" } }
         ],
         "responses": {
           "200": { "description": "Community details" },
@@ -771,7 +784,7 @@
         "tags": ["Communities"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
-          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "com_xyz789" } }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440001" } }
         ],
         "requestBody": {
           "content": {
@@ -799,7 +812,7 @@
         "tags": ["Communities"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
-          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "com_xyz789" } }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440001" } }
         ],
         "responses": {
           "200": { "description": "Community deleted" },
@@ -810,13 +823,13 @@
         }
       }
     },
-    "/api/communities/{publicId}/join": {
+    "/api/communities/{id}/join": {
       "post": {
         "summary": "Join community",
         "tags": ["Communities"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
-          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "com_xyz789" } }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440001" } }
         ],
         "responses": {
           "201": { "description": "Joined" },
@@ -829,7 +842,7 @@
         "tags": ["Communities"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
-          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string", "example": "com_xyz789" } }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440001" } }
         ],
         "responses": {
           "200": { "description": "Left" },

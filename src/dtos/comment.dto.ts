@@ -1,10 +1,10 @@
 import { MediaTypeEnum } from "../../generated/prisma/enums.ts";
 
 export interface ICreateCommentBody {
-    postPublicId: string;
+    postId: string;
     content: string;
     media: { url: string, type: MediaTypeEnum }[];
-    parentPublicId?: string;
+    parentCommentId?: string;
 }
 
 export interface IUpdateCommentBody {

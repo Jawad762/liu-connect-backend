@@ -16,7 +16,7 @@ export const listNotifications = async (req: IAuthRequest, res: Response) => {
       skip: (Number(page) - 1) * Number(size),
       take: Number(size),
       select: {
-        publicId: true,
+        id: true,
         type: true,
         title: true,
         media_url: true,

@@ -46,16 +46,16 @@ export const updateProfile = async (req: IAuthRequestBody<IUpdateProfileBody>, r
   }
 };
 
-export const getUserByPublicId = async (req: IAuthRequest, res: Response) => {
+export const getUserById = async (req: IAuthRequest, res: Response) => {
   try {
     const currentUserId = req.user?.id;
     if (!currentUserId) return res.status(401).json(errorResponse("Unauthorized"));
 
-    const publicId = getRouteParam(req, "publicId");
-    if (!publicId) return res.status(400).json(errorResponse("Invalid user"));
+    const id = getRouteParam(req, "id");
+    if (!id) return res.status(400).json(errorResponse("Invalid user"));
 
     const user = await prisma.user.findUnique({
-      where: { publicId },
+      where: { id },
     });
     if (!user || user.is_deleted) return res.status(404).json(errorResponse("User not found"));
 
@@ -77,11 +77,11 @@ export const followUser = async (req: IAuthRequest, res: Response) => {
     const followerId = req.user.id;
     if (!followerId) return res.status(401).json(errorResponse("Unauthorized"));
 
-    const publicId = getRouteParam(req, "publicId");
-    if (!publicId) return res.status(400).json(errorResponse("Invalid user"));
+    const id = getRouteParam(req, "id");
+    if (!id) return res.status(400).json(errorResponse("Invalid user"));
 
     const targetUser = await prisma.user.findUnique({
-      where: { publicId },
+      where: { id },
     });
     if (!targetUser || targetUser.is_deleted) return res.status(404).json(errorResponse("User not found"));
     if (targetUser.id === followerId) return res.status(400).json(errorResponse("Cannot follow yourself"));
@@ -102,7 +102,7 @@ export const followUser = async (req: IAuthRequest, res: Response) => {
 
     const notificationTitle = `${req.user.name ?? "Someone"} followed you`;
     const notificationBody = "You have a new follower";
-    const redirectPath = req.user.publicId ? `/users/${req.user.publicId}` : undefined;
+    const redirectPath = req.user.id ? `/users/${req.user.id}` : undefined;
 
     await prisma.notification.create({
       data: {
@@ -119,8 +119,8 @@ export const followUser = async (req: IAuthRequest, res: Response) => {
     enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
       type: NotificationType.FOLLOW,
       entity: "user",
-      followerPublicId: req.user.publicId ?? "",
-      actorPublicId: req.user.publicId ?? "",
+      followerId: req.user.id ?? "",
+      actorId: req.user.id ?? "",
       actorName: req.user.name ?? "",
     });
 
@@ -136,11 +136,11 @@ export const unfollowUser = async (req: IAuthRequest, res: Response) => {
     const followerId = req.user?.id;
     if (!followerId) return res.status(401).json(errorResponse("Unauthorized"));
 
-    const publicId = getRouteParam(req, "publicId");
-    if (!publicId) return res.status(400).json(errorResponse("Invalid user"));
+    const id = getRouteParam(req, "id");
+    if (!id) return res.status(400).json(errorResponse("Invalid user"));
 
     const targetUser = await prisma.user.findUnique({
-      where: { publicId },
+      where: { id },
     });
     if (!targetUser || targetUser.is_deleted) return res.status(404).json(errorResponse("User not found"));
 
@@ -168,19 +168,19 @@ export const unfollowUser = async (req: IAuthRequest, res: Response) => {
 
 export const getFollowers = async (req: IAuthRequest, res: Response) => {
   try {
-    const publicId = getRouteParam(req, "publicId");
-    if (!publicId) return res.status(400).json(errorResponse("Invalid user"));
+    const id = getRouteParam(req, "id");
+    if (!id) return res.status(400).json(errorResponse("Invalid user"));
 
     const { page = 1, size = 10 } = req.query;
 
     const user = await prisma.user.findUnique({
-      where: { publicId },
+      where: { id },
     });
     if (!user || user.is_deleted) return res.status(404).json(errorResponse("User not found"));
 
     const follows = await prisma.userFollow.findMany({
       where: { followingId: user.id },
-      include: { follower: { select: { publicId: true, name: true, avatar_url: true, bio: true, school: true, major: true } } },
+      include: { follower: { select: { id: true, name: true, avatar_url: true, bio: true, school: true, major: true } } },
       orderBy: { createdAt: "desc" },
       skip: (Number(page) - 1) * Number(size),
       take: Number(size),
@@ -196,19 +196,19 @@ export const getFollowers = async (req: IAuthRequest, res: Response) => {
 
 export const getFollowing = async (req: IAuthRequest, res: Response) => {
   try {
-    const publicId = getRouteParam(req, "publicId");
-    if (!publicId) return res.status(400).json(errorResponse("Invalid user"));
+    const id = getRouteParam(req, "id");
+    if (!id) return res.status(400).json(errorResponse("Invalid user"));
 
     const { page = 1, size = 10 } = req.query;
 
     const user = await prisma.user.findUnique({
-      where: { publicId },
+      where: { id },
     });
     if (!user || user.is_deleted) return res.status(404).json(errorResponse("User not found"));
 
     const follows = await prisma.userFollow.findMany({
       where: { followerId: user.id },
-      include: { following: { select: { publicId: true, name: true, avatar_url: true, bio: true, school: true, major: true } } },
+      include: { following: { select: { id: true, name: true, avatar_url: true, bio: true, school: true, major: true } } },
       orderBy: { createdAt: "desc" },
       skip: (Number(page) - 1) * Number(size),
       take: Number(size),

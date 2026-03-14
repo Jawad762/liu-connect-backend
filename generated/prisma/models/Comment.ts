@@ -27,32 +27,23 @@ export type AggregateComment = {
 }
 
 export type CommentAvgAggregateOutputType = {
-  id: number | null
-  postId: number | null
-  userId: number | null
-  parentId: number | null
   likes_count: number | null
   replies_count: number | null
 }
 
 export type CommentSumAggregateOutputType = {
-  id: number | null
-  postId: number | null
-  userId: number | null
-  parentId: number | null
   likes_count: number | null
   replies_count: number | null
 }
 
 export type CommentMinAggregateOutputType = {
-  id: number | null
-  publicId: string | null
+  id: string | null
   content: string | null
   is_deleted: boolean | null
   deleted_at: Date | null
-  postId: number | null
-  userId: number | null
-  parentId: number | null
+  postId: string | null
+  userId: string | null
+  parentId: string | null
   likes_count: number | null
   replies_count: number | null
   createdAt: Date | null
@@ -60,14 +51,13 @@ export type CommentMinAggregateOutputType = {
 }
 
 export type CommentMaxAggregateOutputType = {
-  id: number | null
-  publicId: string | null
+  id: string | null
   content: string | null
   is_deleted: boolean | null
   deleted_at: Date | null
-  postId: number | null
-  userId: number | null
-  parentId: number | null
+  postId: string | null
+  userId: string | null
+  parentId: string | null
   likes_count: number | null
   replies_count: number | null
   createdAt: Date | null
@@ -76,7 +66,6 @@ export type CommentMaxAggregateOutputType = {
 
 export type CommentCountAggregateOutputType = {
   id: number
-  publicId: number
   content: number
   is_deleted: number
   deleted_at: number
@@ -92,26 +81,17 @@ export type CommentCountAggregateOutputType = {
 
 
 export type CommentAvgAggregateInputType = {
-  id?: true
-  postId?: true
-  userId?: true
-  parentId?: true
   likes_count?: true
   replies_count?: true
 }
 
 export type CommentSumAggregateInputType = {
-  id?: true
-  postId?: true
-  userId?: true
-  parentId?: true
   likes_count?: true
   replies_count?: true
 }
 
 export type CommentMinAggregateInputType = {
   id?: true
-  publicId?: true
   content?: true
   is_deleted?: true
   deleted_at?: true
@@ -126,7 +106,6 @@ export type CommentMinAggregateInputType = {
 
 export type CommentMaxAggregateInputType = {
   id?: true
-  publicId?: true
   content?: true
   is_deleted?: true
   deleted_at?: true
@@ -141,7 +120,6 @@ export type CommentMaxAggregateInputType = {
 
 export type CommentCountAggregateInputType = {
   id?: true
-  publicId?: true
   content?: true
   is_deleted?: true
   deleted_at?: true
@@ -242,14 +220,13 @@ export type CommentGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 export type CommentGroupByOutputType = {
-  id: number
-  publicId: string
+  id: string
   content: string
   is_deleted: boolean
   deleted_at: Date | null
-  postId: number
-  userId: number
-  parentId: number | null
+  postId: string
+  userId: string
+  parentId: string | null
   likes_count: number
   replies_count: number
   createdAt: Date
@@ -280,14 +257,13 @@ export type CommentWhereInput = {
   AND?: Prisma.CommentWhereInput | Prisma.CommentWhereInput[]
   OR?: Prisma.CommentWhereInput[]
   NOT?: Prisma.CommentWhereInput | Prisma.CommentWhereInput[]
-  id?: Prisma.IntFilter<"Comment"> | number
-  publicId?: Prisma.StringFilter<"Comment"> | string
+  id?: Prisma.StringFilter<"Comment"> | string
   content?: Prisma.StringFilter<"Comment"> | string
   is_deleted?: Prisma.BoolFilter<"Comment"> | boolean
   deleted_at?: Prisma.DateTimeNullableFilter<"Comment"> | Date | string | null
-  postId?: Prisma.IntFilter<"Comment"> | number
-  userId?: Prisma.IntFilter<"Comment"> | number
-  parentId?: Prisma.IntNullableFilter<"Comment"> | number | null
+  postId?: Prisma.StringFilter<"Comment"> | string
+  userId?: Prisma.StringFilter<"Comment"> | string
+  parentId?: Prisma.StringNullableFilter<"Comment"> | string | null
   likes_count?: Prisma.IntFilter<"Comment"> | number
   replies_count?: Prisma.IntFilter<"Comment"> | number
   createdAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
@@ -303,7 +279,6 @@ export type CommentWhereInput = {
 
 export type CommentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   content?: Prisma.SortOrder
   is_deleted?: Prisma.SortOrder
   deleted_at?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -324,17 +299,16 @@ export type CommentOrderByWithRelationInput = {
 }
 
 export type CommentWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
-  publicId?: string
+  id?: string
   AND?: Prisma.CommentWhereInput | Prisma.CommentWhereInput[]
   OR?: Prisma.CommentWhereInput[]
   NOT?: Prisma.CommentWhereInput | Prisma.CommentWhereInput[]
   content?: Prisma.StringFilter<"Comment"> | string
   is_deleted?: Prisma.BoolFilter<"Comment"> | boolean
   deleted_at?: Prisma.DateTimeNullableFilter<"Comment"> | Date | string | null
-  postId?: Prisma.IntFilter<"Comment"> | number
-  userId?: Prisma.IntFilter<"Comment"> | number
-  parentId?: Prisma.IntNullableFilter<"Comment"> | number | null
+  postId?: Prisma.StringFilter<"Comment"> | string
+  userId?: Prisma.StringFilter<"Comment"> | string
+  parentId?: Prisma.StringNullableFilter<"Comment"> | string | null
   likes_count?: Prisma.IntFilter<"Comment"> | number
   replies_count?: Prisma.IntFilter<"Comment"> | number
   createdAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
@@ -346,11 +320,10 @@ export type CommentWhereUniqueInput = Prisma.AtLeast<{
   likes?: Prisma.CommentLikeListRelationFilter
   media?: Prisma.CommentMediaListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
-}, "id" | "publicId">
+}, "id">
 
 export type CommentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   content?: Prisma.SortOrder
   is_deleted?: Prisma.SortOrder
   deleted_at?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -372,14 +345,13 @@ export type CommentScalarWhereWithAggregatesInput = {
   AND?: Prisma.CommentScalarWhereWithAggregatesInput | Prisma.CommentScalarWhereWithAggregatesInput[]
   OR?: Prisma.CommentScalarWhereWithAggregatesInput[]
   NOT?: Prisma.CommentScalarWhereWithAggregatesInput | Prisma.CommentScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Comment"> | number
-  publicId?: Prisma.StringWithAggregatesFilter<"Comment"> | string
+  id?: Prisma.StringWithAggregatesFilter<"Comment"> | string
   content?: Prisma.StringWithAggregatesFilter<"Comment"> | string
   is_deleted?: Prisma.BoolWithAggregatesFilter<"Comment"> | boolean
   deleted_at?: Prisma.DateTimeNullableWithAggregatesFilter<"Comment"> | Date | string | null
-  postId?: Prisma.IntWithAggregatesFilter<"Comment"> | number
-  userId?: Prisma.IntWithAggregatesFilter<"Comment"> | number
-  parentId?: Prisma.IntNullableWithAggregatesFilter<"Comment"> | number | null
+  postId?: Prisma.StringWithAggregatesFilter<"Comment"> | string
+  userId?: Prisma.StringWithAggregatesFilter<"Comment"> | string
+  parentId?: Prisma.StringNullableWithAggregatesFilter<"Comment"> | string | null
   likes_count?: Prisma.IntWithAggregatesFilter<"Comment"> | number
   replies_count?: Prisma.IntWithAggregatesFilter<"Comment"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Comment"> | Date | string
@@ -387,7 +359,7 @@ export type CommentScalarWhereWithAggregatesInput = {
 }
 
 export type CommentCreateInput = {
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
@@ -405,14 +377,13 @@ export type CommentCreateInput = {
 }
 
 export type CommentUncheckedCreateInput = {
-  id?: number
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
-  postId: number
-  userId: number
-  parentId?: number | null
+  postId: string
+  userId: string
+  parentId?: string | null
   likes_count?: number
   replies_count?: number
   createdAt?: Date | string
@@ -424,7 +395,7 @@ export type CommentUncheckedCreateInput = {
 }
 
 export type CommentUpdateInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -442,14 +413,13 @@ export type CommentUpdateInput = {
 }
 
 export type CommentUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  postId?: Prisma.IntFieldUpdateOperationsInput | number
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  postId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likes_count?: Prisma.IntFieldUpdateOperationsInput | number
   replies_count?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -461,14 +431,13 @@ export type CommentUncheckedUpdateInput = {
 }
 
 export type CommentCreateManyInput = {
-  id?: number
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
-  postId: number
-  userId: number
-  parentId?: number | null
+  postId: string
+  userId: string
+  parentId?: string | null
   likes_count?: number
   replies_count?: number
   createdAt?: Date | string
@@ -476,7 +445,7 @@ export type CommentCreateManyInput = {
 }
 
 export type CommentUpdateManyMutationInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -487,14 +456,13 @@ export type CommentUpdateManyMutationInput = {
 }
 
 export type CommentUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  postId?: Prisma.IntFieldUpdateOperationsInput | number
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  postId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likes_count?: Prisma.IntFieldUpdateOperationsInput | number
   replies_count?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -518,7 +486,6 @@ export type CommentNullableScalarRelationFilter = {
 
 export type CommentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   content?: Prisma.SortOrder
   is_deleted?: Prisma.SortOrder
   deleted_at?: Prisma.SortOrder
@@ -532,17 +499,12 @@ export type CommentCountOrderByAggregateInput = {
 }
 
 export type CommentAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  postId?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
-  parentId?: Prisma.SortOrder
   likes_count?: Prisma.SortOrder
   replies_count?: Prisma.SortOrder
 }
 
 export type CommentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   content?: Prisma.SortOrder
   is_deleted?: Prisma.SortOrder
   deleted_at?: Prisma.SortOrder
@@ -557,7 +519,6 @@ export type CommentMaxOrderByAggregateInput = {
 
 export type CommentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  publicId?: Prisma.SortOrder
   content?: Prisma.SortOrder
   is_deleted?: Prisma.SortOrder
   deleted_at?: Prisma.SortOrder
@@ -571,10 +532,6 @@ export type CommentMinOrderByAggregateInput = {
 }
 
 export type CommentSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  postId?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
-  parentId?: Prisma.SortOrder
   likes_count?: Prisma.SortOrder
   replies_count?: Prisma.SortOrder
 }
@@ -771,7 +728,7 @@ export type CommentUpdateOneRequiredWithoutMediaNestedInput = {
 }
 
 export type CommentCreateWithoutUserInput = {
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
@@ -788,13 +745,12 @@ export type CommentCreateWithoutUserInput = {
 }
 
 export type CommentUncheckedCreateWithoutUserInput = {
-  id?: number
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
-  postId: number
-  parentId?: number | null
+  postId: string
+  parentId?: string | null
   likes_count?: number
   replies_count?: number
   createdAt?: Date | string
@@ -835,14 +791,13 @@ export type CommentScalarWhereInput = {
   AND?: Prisma.CommentScalarWhereInput | Prisma.CommentScalarWhereInput[]
   OR?: Prisma.CommentScalarWhereInput[]
   NOT?: Prisma.CommentScalarWhereInput | Prisma.CommentScalarWhereInput[]
-  id?: Prisma.IntFilter<"Comment"> | number
-  publicId?: Prisma.StringFilter<"Comment"> | string
+  id?: Prisma.StringFilter<"Comment"> | string
   content?: Prisma.StringFilter<"Comment"> | string
   is_deleted?: Prisma.BoolFilter<"Comment"> | boolean
   deleted_at?: Prisma.DateTimeNullableFilter<"Comment"> | Date | string | null
-  postId?: Prisma.IntFilter<"Comment"> | number
-  userId?: Prisma.IntFilter<"Comment"> | number
-  parentId?: Prisma.IntNullableFilter<"Comment"> | number | null
+  postId?: Prisma.StringFilter<"Comment"> | string
+  userId?: Prisma.StringFilter<"Comment"> | string
+  parentId?: Prisma.StringNullableFilter<"Comment"> | string | null
   likes_count?: Prisma.IntFilter<"Comment"> | number
   replies_count?: Prisma.IntFilter<"Comment"> | number
   createdAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
@@ -850,7 +805,7 @@ export type CommentScalarWhereInput = {
 }
 
 export type CommentCreateWithoutPostInput = {
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
@@ -867,13 +822,12 @@ export type CommentCreateWithoutPostInput = {
 }
 
 export type CommentUncheckedCreateWithoutPostInput = {
-  id?: number
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
-  userId: number
-  parentId?: number | null
+  userId: string
+  parentId?: string | null
   likes_count?: number
   replies_count?: number
   createdAt?: Date | string
@@ -911,7 +865,7 @@ export type CommentUpdateManyWithWhereWithoutPostInput = {
 }
 
 export type CommentCreateWithoutRepliesInput = {
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
@@ -928,14 +882,13 @@ export type CommentCreateWithoutRepliesInput = {
 }
 
 export type CommentUncheckedCreateWithoutRepliesInput = {
-  id?: number
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
-  postId: number
-  userId: number
-  parentId?: number | null
+  postId: string
+  userId: string
+  parentId?: string | null
   likes_count?: number
   replies_count?: number
   createdAt?: Date | string
@@ -951,7 +904,7 @@ export type CommentCreateOrConnectWithoutRepliesInput = {
 }
 
 export type CommentCreateWithoutParentInput = {
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
@@ -968,13 +921,12 @@ export type CommentCreateWithoutParentInput = {
 }
 
 export type CommentUncheckedCreateWithoutParentInput = {
-  id?: number
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
-  postId: number
-  userId: number
+  postId: string
+  userId: string
   likes_count?: number
   replies_count?: number
   createdAt?: Date | string
@@ -1007,7 +959,7 @@ export type CommentUpdateToOneWithWhereWithoutRepliesInput = {
 }
 
 export type CommentUpdateWithoutRepliesInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1024,14 +976,13 @@ export type CommentUpdateWithoutRepliesInput = {
 }
 
 export type CommentUncheckedUpdateWithoutRepliesInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  postId?: Prisma.IntFieldUpdateOperationsInput | number
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  postId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likes_count?: Prisma.IntFieldUpdateOperationsInput | number
   replies_count?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1058,7 +1009,7 @@ export type CommentUpdateManyWithWhereWithoutParentInput = {
 }
 
 export type CommentCreateWithoutLikesInput = {
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
@@ -1075,14 +1026,13 @@ export type CommentCreateWithoutLikesInput = {
 }
 
 export type CommentUncheckedCreateWithoutLikesInput = {
-  id?: number
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
-  postId: number
-  userId: number
-  parentId?: number | null
+  postId: string
+  userId: string
+  parentId?: string | null
   likes_count?: number
   replies_count?: number
   createdAt?: Date | string
@@ -1109,7 +1059,7 @@ export type CommentUpdateToOneWithWhereWithoutLikesInput = {
 }
 
 export type CommentUpdateWithoutLikesInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1126,14 +1076,13 @@ export type CommentUpdateWithoutLikesInput = {
 }
 
 export type CommentUncheckedUpdateWithoutLikesInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  postId?: Prisma.IntFieldUpdateOperationsInput | number
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  postId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likes_count?: Prisma.IntFieldUpdateOperationsInput | number
   replies_count?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1144,7 +1093,7 @@ export type CommentUncheckedUpdateWithoutLikesInput = {
 }
 
 export type CommentCreateWithoutNotificationsInput = {
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
@@ -1161,14 +1110,13 @@ export type CommentCreateWithoutNotificationsInput = {
 }
 
 export type CommentUncheckedCreateWithoutNotificationsInput = {
-  id?: number
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
-  postId: number
-  userId: number
-  parentId?: number | null
+  postId: string
+  userId: string
+  parentId?: string | null
   likes_count?: number
   replies_count?: number
   createdAt?: Date | string
@@ -1195,7 +1143,7 @@ export type CommentUpdateToOneWithWhereWithoutNotificationsInput = {
 }
 
 export type CommentUpdateWithoutNotificationsInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1212,14 +1160,13 @@ export type CommentUpdateWithoutNotificationsInput = {
 }
 
 export type CommentUncheckedUpdateWithoutNotificationsInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  postId?: Prisma.IntFieldUpdateOperationsInput | number
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  postId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likes_count?: Prisma.IntFieldUpdateOperationsInput | number
   replies_count?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1230,7 +1177,7 @@ export type CommentUncheckedUpdateWithoutNotificationsInput = {
 }
 
 export type CommentCreateWithoutMediaInput = {
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
@@ -1247,14 +1194,13 @@ export type CommentCreateWithoutMediaInput = {
 }
 
 export type CommentUncheckedCreateWithoutMediaInput = {
-  id?: number
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
-  postId: number
-  userId: number
-  parentId?: number | null
+  postId: string
+  userId: string
+  parentId?: string | null
   likes_count?: number
   replies_count?: number
   createdAt?: Date | string
@@ -1281,7 +1227,7 @@ export type CommentUpdateToOneWithWhereWithoutMediaInput = {
 }
 
 export type CommentUpdateWithoutMediaInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1298,14 +1244,13 @@ export type CommentUpdateWithoutMediaInput = {
 }
 
 export type CommentUncheckedUpdateWithoutMediaInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  postId?: Prisma.IntFieldUpdateOperationsInput | number
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  postId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likes_count?: Prisma.IntFieldUpdateOperationsInput | number
   replies_count?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1316,13 +1261,12 @@ export type CommentUncheckedUpdateWithoutMediaInput = {
 }
 
 export type CommentCreateManyUserInput = {
-  id?: number
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
-  postId: number
-  parentId?: number | null
+  postId: string
+  parentId?: string | null
   likes_count?: number
   replies_count?: number
   createdAt?: Date | string
@@ -1330,7 +1274,7 @@ export type CommentCreateManyUserInput = {
 }
 
 export type CommentUpdateWithoutUserInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1347,13 +1291,12 @@ export type CommentUpdateWithoutUserInput = {
 }
 
 export type CommentUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  postId?: Prisma.IntFieldUpdateOperationsInput | number
-  parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  postId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likes_count?: Prisma.IntFieldUpdateOperationsInput | number
   replies_count?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1365,13 +1308,12 @@ export type CommentUncheckedUpdateWithoutUserInput = {
 }
 
 export type CommentUncheckedUpdateManyWithoutUserInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  postId?: Prisma.IntFieldUpdateOperationsInput | number
-  parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  postId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likes_count?: Prisma.IntFieldUpdateOperationsInput | number
   replies_count?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1379,13 +1321,12 @@ export type CommentUncheckedUpdateManyWithoutUserInput = {
 }
 
 export type CommentCreateManyPostInput = {
-  id?: number
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
-  userId: number
-  parentId?: number | null
+  userId: string
+  parentId?: string | null
   likes_count?: number
   replies_count?: number
   createdAt?: Date | string
@@ -1393,7 +1334,7 @@ export type CommentCreateManyPostInput = {
 }
 
 export type CommentUpdateWithoutPostInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1410,13 +1351,12 @@ export type CommentUpdateWithoutPostInput = {
 }
 
 export type CommentUncheckedUpdateWithoutPostInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likes_count?: Prisma.IntFieldUpdateOperationsInput | number
   replies_count?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1428,13 +1368,12 @@ export type CommentUncheckedUpdateWithoutPostInput = {
 }
 
 export type CommentUncheckedUpdateManyWithoutPostInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
-  parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likes_count?: Prisma.IntFieldUpdateOperationsInput | number
   replies_count?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1442,13 +1381,12 @@ export type CommentUncheckedUpdateManyWithoutPostInput = {
 }
 
 export type CommentCreateManyParentInput = {
-  id?: number
-  publicId?: string
+  id?: string
   content: string
   is_deleted?: boolean
   deleted_at?: Date | string | null
-  postId: number
-  userId: number
+  postId: string
+  userId: string
   likes_count?: number
   replies_count?: number
   createdAt?: Date | string
@@ -1456,7 +1394,7 @@ export type CommentCreateManyParentInput = {
 }
 
 export type CommentUpdateWithoutParentInput = {
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1473,13 +1411,12 @@ export type CommentUpdateWithoutParentInput = {
 }
 
 export type CommentUncheckedUpdateWithoutParentInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  postId?: Prisma.IntFieldUpdateOperationsInput | number
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
+  postId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
   likes_count?: Prisma.IntFieldUpdateOperationsInput | number
   replies_count?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1491,13 +1428,12 @@ export type CommentUncheckedUpdateWithoutParentInput = {
 }
 
 export type CommentUncheckedUpdateManyWithoutParentInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  postId?: Prisma.IntFieldUpdateOperationsInput | number
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
+  postId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
   likes_count?: Prisma.IntFieldUpdateOperationsInput | number
   replies_count?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1564,7 +1500,6 @@ export type CommentCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime
 
 export type CommentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   content?: boolean
   is_deleted?: boolean
   deleted_at?: boolean
@@ -1587,7 +1522,6 @@ export type CommentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 
 export type CommentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   content?: boolean
   is_deleted?: boolean
   deleted_at?: boolean
@@ -1605,7 +1539,6 @@ export type CommentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
 
 export type CommentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  publicId?: boolean
   content?: boolean
   is_deleted?: boolean
   deleted_at?: boolean
@@ -1623,7 +1556,6 @@ export type CommentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
 
 export type CommentSelectScalar = {
   id?: boolean
-  publicId?: boolean
   content?: boolean
   is_deleted?: boolean
   deleted_at?: boolean
@@ -1636,7 +1568,7 @@ export type CommentSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CommentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "content" | "is_deleted" | "deleted_at" | "postId" | "userId" | "parentId" | "likes_count" | "replies_count" | "createdAt" | "updatedAt", ExtArgs["result"]["comment"]>
+export type CommentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "content" | "is_deleted" | "deleted_at" | "postId" | "userId" | "parentId" | "likes_count" | "replies_count" | "createdAt" | "updatedAt", ExtArgs["result"]["comment"]>
 export type CommentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   post?: boolean | Prisma.PostDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1670,14 +1602,13 @@ export type $CommentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
-    publicId: string
+    id: string
     content: string
     is_deleted: boolean
     deleted_at: Date | null
-    postId: number
-    userId: number
-    parentId: number | null
+    postId: string
+    userId: string
+    parentId: string | null
     likes_count: number
     replies_count: number
     createdAt: Date
@@ -2112,14 +2043,13 @@ export interface Prisma__CommentClient<T, Null = never, ExtArgs extends runtime.
  * Fields of the Comment model
  */
 export interface CommentFieldRefs {
-  readonly id: Prisma.FieldRef<"Comment", 'Int'>
-  readonly publicId: Prisma.FieldRef<"Comment", 'String'>
+  readonly id: Prisma.FieldRef<"Comment", 'String'>
   readonly content: Prisma.FieldRef<"Comment", 'String'>
   readonly is_deleted: Prisma.FieldRef<"Comment", 'Boolean'>
   readonly deleted_at: Prisma.FieldRef<"Comment", 'DateTime'>
-  readonly postId: Prisma.FieldRef<"Comment", 'Int'>
-  readonly userId: Prisma.FieldRef<"Comment", 'Int'>
-  readonly parentId: Prisma.FieldRef<"Comment", 'Int'>
+  readonly postId: Prisma.FieldRef<"Comment", 'String'>
+  readonly userId: Prisma.FieldRef<"Comment", 'String'>
+  readonly parentId: Prisma.FieldRef<"Comment", 'String'>
   readonly likes_count: Prisma.FieldRef<"Comment", 'Int'>
   readonly replies_count: Prisma.FieldRef<"Comment", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Comment", 'DateTime'>

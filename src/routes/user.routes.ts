@@ -5,7 +5,7 @@ import {
   getFollowers,
   getFollowing,
   getMe,
-  getUserByPublicId,
+  getUserById,
   unfollowUser,
   updateProfile,
 } from '../controllers/user.controller.ts';
@@ -18,10 +18,10 @@ router.use(authMiddleware);
 router.get('/me', getMe);
 router.patch('/me', updateProfile);
 router.post('/me/push-token', addPushToken);
-router.get('/:publicId', getUserByPublicId);
-router.post('/:publicId/follow', followUser);
-router.delete('/:publicId/follow', unfollowUser);
-router.get('/:publicId/followers', getFollowers);
-router.get('/:publicId/following', getFollowing);
+router.get('/:id', getUserById);
+router.post('/:id/follow', followUser);
+router.delete('/:id/follow', unfollowUser);
+router.get('/:id/followers', getFollowers);
+router.get('/:id/following', getFollowing);
 
 export default router;

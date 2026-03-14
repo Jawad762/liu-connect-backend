@@ -65,15 +65,15 @@ export const createCommunity = async (
 
 export const getCommunity = async (req: IAuthRequest, res: Response) => {
     try {
-        const publicId = getRouteParam(req, "publicId");
-        if (!publicId) {
+        const id = getRouteParam(req, "id");
+        if (!id) {
             return res
                 .status(400)
-                .json(errorResponse("Community public ID is required"));
+                .json(errorResponse("Community ID is required"));
         }
 
         const community = await prisma.community.findUnique({
-            where: { publicId },
+            where: { id },
         });
 
         if (!community) {
@@ -95,15 +95,15 @@ export const updateCommunity = async (
         const userId = req.user?.id;
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
 
-        const publicId = getRouteParam(req, "publicId");
-        if (!publicId) {
+        const id = getRouteParam(req, "id");
+        if (!id) {
             return res
                 .status(400)
-                .json(errorResponse("Community public ID is required"));
+                .json(errorResponse("Community ID is required"));
         }
 
         const existing = await prisma.community.findUnique({
-            where: { publicId },
+            where: { id },
             select: { id: true, createdById: true },
         });
 
@@ -144,15 +144,15 @@ export const deleteCommunity = async (req: IAuthRequest, res: Response) => {
         const userId = req.user?.id;
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
 
-        const publicId = getRouteParam(req, "publicId");
-        if (!publicId) {
+        const id = getRouteParam(req, "id");
+        if (!id) {
             return res
                 .status(400)
-                .json(errorResponse("Community public ID is required"));
+                .json(errorResponse("Community ID is required"));
         }
 
         const existing = await prisma.community.findUnique({
-            where: { publicId },
+            where: { id },
             select: { id: true, createdById: true },
         });
 
@@ -193,15 +193,15 @@ export const joinCommunity = async (req: IAuthRequest, res: Response) => {
         const userId = req.user?.id;
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
 
-        const publicId = getRouteParam(req, "publicId");
-        if (!publicId) {
+        const id = getRouteParam(req, "id");
+        if (!id) {
             return res
                 .status(400)
-                .json(errorResponse("Community public ID is required"));
+                .json(errorResponse("Community ID is required"));
         }
 
         const community = await prisma.community.findUnique({
-            where: { publicId },
+            where: { id },
             select: { id: true },
         });
 
@@ -235,15 +235,15 @@ export const leaveCommunity = async (req: IAuthRequest, res: Response) => {
         const userId = req.user?.id;
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
 
-        const publicId = getRouteParam(req, "publicId");
-        if (!publicId) {
+        const id = getRouteParam(req, "id");
+        if (!id) {
             return res
                 .status(400)
-                .json(errorResponse("Community public ID is required"));
+                .json(errorResponse("Community ID is required"));
         }
 
         const community = await prisma.community.findUnique({
-            where: { publicId },
+            where: { id },
             select: { id: true, createdById: true },
         });
 
