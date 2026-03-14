@@ -176,8 +176,6 @@ export const getComments = async (req: IAuthRequest, res: Response) => {
             where.parentId = null;
         }
 
-        console.log(where);
-
         const comments = await prisma.comment.findMany({
             where,
             orderBy: {
