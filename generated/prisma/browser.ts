@@ -77,3 +77,8 @@ export type UserFollow = Prisma.UserFollowModel
  * 
  */
 export type PushToken = Prisma.PushTokenModel
+/**
+ * Model Bookmark
+ * 
+ */
+export type Bookmark = Prisma.BookmarkModel

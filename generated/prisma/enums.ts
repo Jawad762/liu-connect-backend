@@ -25,3 +25,11 @@ export const MediaTypeEnum = {
 } as const
 
 export type MediaTypeEnum = (typeof MediaTypeEnum)[keyof typeof MediaTypeEnum]
+
+
+export const BookmarkableType = {
+  POST: 'POST',
+  COMMENT: 'COMMENT'
+} as const
+
+export type BookmarkableType = (typeof BookmarkableType)[keyof typeof BookmarkableType]

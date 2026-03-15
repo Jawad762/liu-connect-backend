@@ -1,10 +1,10 @@
 import { errorResponse, IAuthRequest, IAuthRequestBody, successResponse } from "../dtos/base.dto.ts";
-import { ICreatePostBody, ILikePostBody, IUpdatePostBody } from "../dtos/post.dto.ts";
+import { ICreatePostBody, IUpdatePostBody } from "../dtos/post.dto.ts";
 import { prisma } from "../lib/prisma.ts";
 import { Response } from "express";
 import { validatePost } from "../utils/post.utils.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
-import { NotificationType } from "../../generated/prisma/enums.ts";
+import { BookmarkableType, NotificationType } from "../../generated/prisma/enums.ts";
 import { enqueuePushNotifications } from "../queue/enqueuePushNotifications.ts";
 import logger from "../lib/logger.ts";
 
@@ -15,8 +15,8 @@ export const getPosts = async (req: IAuthRequest, res: Response) => {
 
         const { page: rawPage, size: rawSize, followingOnly: rawFollowingOnly, communityId: queryCommunityId, authorId: queryAuthorId } = req.query;
 
-        const pageNumber = Math.max(1, Number(rawPage));
-        const sizeNumber = Math.min(30, Math.max(1, Number(rawSize)));
+        const pageNumber = Math.max(1, parseInt(rawPage as string) || 1);
+        const sizeNumber = Math.min(30, Math.max(1, parseInt(rawSize as string) || 20));
         const followingOnly = rawFollowingOnly === "true";
 
         if (followingOnly && queryCommunityId) return res.status(400).json(errorResponse("Please either choose following only or a community, but not both."));
@@ -93,12 +93,25 @@ export const getPosts = async (req: IAuthRequest, res: Response) => {
                 select: { postId: true },
             })
             : [];
-
+        
         const likedPostIds = new Set(likes.map((like) => like.postId));
+
+        const bookmarks = postIds.length > 0
+            ? await prisma.bookmark.findMany({
+                where: {
+                    userId: currentUserId,
+                    type: BookmarkableType.POST,
+                    entityId: { in: postIds },
+                },
+                select: { entityId: true },
+            })
+            : [];
+        const bookmarkedPostIds = new Set(bookmarks.map((bookmark) => bookmark.entityId));
 
         const postsWithIsLiked = posts.map((post) => ({
             ...post,
             isLiked: likedPostIds.has(post.id),
+            isBookmarked: bookmarkedPostIds.has(post.id),
         }));
         res.status(200).json(successResponse(postsWithIsLiked));
     } catch (error) {
@@ -151,10 +164,10 @@ export const createPost = async (req: IAuthRequestBody<ICreatePostBody>, res: Re
     }
 };
 
-export const likePost = async (req: IAuthRequestBody<ILikePostBody>, res: Response) => {
+export const likePost = async (req: IAuthRequest, res: Response) => {
     try {
         const userId = req.user?.id;
-        const { postId } = req.body;
+        const postId = getRouteParam(req, "id");
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
         if (!postId) return res.status(400).json(errorResponse("Post ID is required"));
 
@@ -225,10 +238,10 @@ export const likePost = async (req: IAuthRequestBody<ILikePostBody>, res: Respon
     }
 };
 
-export const unlikePost = async (req: IAuthRequestBody<ILikePostBody>, res: Response) => {
+export const unlikePost = async (req: IAuthRequest, res: Response) => {
     try {
         const userId = req.user?.id;
-        const { postId } = req.body;
+        const postId = getRouteParam(req, "id");
         if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
         if (!postId) return res.status(400).json(errorResponse("Post ID is required"));
 
@@ -252,10 +265,6 @@ export const unlikePost = async (req: IAuthRequestBody<ILikePostBody>, res: Resp
 
         res.status(200).json(successResponse(undefined, "Unliked post"));
     } catch (error) {
-        const prismaError = error as { code?: string };
-        if (prismaError.code === "P2002") {
-            return res.status(200).json(successResponse(undefined, "Already unliked"));
-        }
         logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
     }
@@ -269,8 +278,8 @@ export const getPost = async (req: IAuthRequest, res: Response) => {
         const id = getRouteParam(req, "id");
         if (!id) return res.status(400).json(errorResponse("Post ID is required"));
 
-        const post = await prisma.post.findUnique({
-            where: { id },
+        const post = await prisma.post.findFirst({
+            where: { id, is_deleted: false },
             include: {
                 media: { select: { id: true, media_url: true, type: true } },
                 user: {
@@ -290,8 +299,11 @@ export const getPost = async (req: IAuthRequest, res: Response) => {
         const isLiked = await prisma.postLike.findUnique({
             where: { postId_userId: { postId: post.id, userId } },
         });
+        const isBookmarked = await prisma.bookmark.findUnique({
+            where: { userId_type_entityId: { userId, type: BookmarkableType.POST, entityId: post.id } },
+        });
 
-        res.status(200).json(successResponse({ ...post, isLiked: !!isLiked }));
+        res.status(200).json(successResponse({ ...post, isLiked: !!isLiked, isBookmarked: !!isBookmarked }));
     } catch (error) {
         logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
@@ -309,8 +321,8 @@ export const updatePost = async (req: IAuthRequestBody<IUpdatePostBody>, res: Re
         const postValidation = validatePost(content, media);
         if (!postValidation.success) return res.status(400).json(errorResponse(postValidation.message));
 
-        const post = await prisma.post.findUnique({
-            where: { id },
+        const post = await prisma.post.findFirst({
+            where: { id, is_deleted: false },
             select: { id: true, userId: true },
         });
         if (!post) return res.status(404).json(errorResponse("Post not found"));
@@ -344,10 +356,130 @@ export const deletePost = async (req: IAuthRequest, res: Response) => {
 
         await prisma.post.update({
             where: { id: post.id },
-            data: { is_deleted: true },
+            data: { is_deleted: true, deleted_at: new Date() },
         });
 
         return res.status(200).json(successResponse(undefined, "Post deleted"));
+    } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
+        return res.status(500).json(errorResponse("Internal server error"));
+    }
+};
+
+export const getBookmarks = async (req: IAuthRequest, res: Response) => {
+    try {
+        const userId = req.user?.id;
+        const { page: rawPage, size: rawSize } = req.query;
+        const pageNumber = Math.max(1, parseInt(rawPage as string) || 1);
+        const sizeNumber = Math.min(30, Math.max(1, parseInt(rawSize as string) || 20));
+        if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
+
+        const bookmarks = await prisma.bookmark.findMany({
+            where: { userId, type: BookmarkableType.POST },
+            orderBy: { createdAt: "desc" },
+            skip: (pageNumber - 1) * sizeNumber,
+            take: sizeNumber,
+            select: { entityId: true },
+        });
+
+        const postIds = bookmarks.map((b) => b.entityId);
+        if (postIds.length === 0) {
+            return res.status(200).json(successResponse([]));
+        }
+
+        const posts = await prisma.post.findMany({
+            where: { id: { in: postIds }, is_deleted: false },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar_url: true,
+                        major: true,
+                    },
+                },
+                community: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+                media: {
+                    select: {
+                        id: true,
+                        media_url: true,
+                        type: true,
+                    },
+                },
+            },
+        });
+        const postById = new Map(posts.map((p) => [p.id, p]));
+        const postsInOrder = postIds.map((id) => postById.get(id)).filter(Boolean) as typeof posts;
+        const likes = await prisma.postLike.findMany({
+            where: { postId: { in: postsInOrder.map((p) => p.id) }, userId },
+            select: { postId: true },
+        });
+        const likedPostIds = new Set(likes.map((l) => l.postId));
+        const postsWithMeta = postsInOrder.map((post) => ({
+            ...post,
+            isLiked: likedPostIds.has(post.id),
+            isBookmarked: true,
+        }));
+
+        return res.status(200).json(successResponse(postsWithMeta));
+    } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
+        return res.status(500).json(errorResponse("Internal server error"));
+    }
+};
+
+export const bookmarkPost = async (req: IAuthRequest, res: Response) => {
+    try {
+        const userId = req.user?.id;
+        const postId = getRouteParam(req, "id");
+        if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
+        if (!postId) return res.status(400).json(errorResponse("Post ID is required"));
+
+        const post = await prisma.post.findFirst({
+            where: { id: postId, is_deleted: false },
+            select: { id: true },
+        });
+        if (!post) return res.status(404).json(errorResponse("Post not found"));
+
+        const existing = await prisma.bookmark.findUnique({
+            where: { userId_type_entityId: { userId, type: BookmarkableType.POST, entityId: postId } },
+        });
+        if (existing) {
+            return res.status(200).json(successResponse(undefined, "Already bookmarked"));
+        }
+
+        await prisma.bookmark.create({
+            data: { userId, type: BookmarkableType.POST, entityId: postId },
+        });
+        return res.status(201).json(successResponse(undefined, "Bookmarked post"));
+    } catch (error) {
+        const prismaError = error as { code?: string };
+        if (prismaError.code === "P2002") return res.status(200).json(successResponse(undefined, "Already bookmarked"));
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
+        return res.status(500).json(errorResponse("Internal server error"));
+    }
+};
+
+export const unbookmarkPost = async (req: IAuthRequest, res: Response) => {
+    try {
+        const userId = req.user?.id;
+        const postId = getRouteParam(req, "id");
+        if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
+        if (!postId) return res.status(400).json(errorResponse("Post ID is required"));
+
+        const bookmark = await prisma.bookmark.findUnique({
+            where: { userId_type_entityId: { userId, type: BookmarkableType.POST, entityId: postId } },
+        });
+        if (!bookmark) {
+            return res.status(200).json(successResponse(undefined, "Not bookmarked"));
+        }
+        await prisma.bookmark.delete({ where: { id: bookmark.id } });
+        return res.status(200).json(successResponse(undefined, "Unbookmarked post"));
     } catch (error) {
         logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
