@@ -240,3 +240,26 @@ export const addPushToken = async (req: IAuthRequestBody<IAddPushTokenBody>, res
     return res.status(500).json(errorResponse("Internal server error"));
   }
 };
+
+export const search = async (req: IAuthRequest, res: Response) => {
+  try {
+    const { query, page = 1, size = 10 } = req.query;
+    const pageNumber = Math.max(1, parseInt(page as string) || 1);
+    const sizeNumber = Math.min(30, Math.max(1, parseInt(size as string) || 20));
+    const sanitizedQuery = typeof query === "string" ? query.trim().toLowerCase() : null;
+    if (!sanitizedQuery) return res.status(400).json(errorResponse("Query is required"));
+
+    const users = await prisma.user.findMany({
+      where: {
+        name: { contains: sanitizedQuery, mode: "insensitive" },
+      },
+      skip: (pageNumber - 1) * sizeNumber,
+      take: sizeNumber,
+    })
+
+    return res.status(200).json(successResponse(users.map((user) => toProfile(user, false))));
+  } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
+    return res.status(500).json(errorResponse("Internal server error"));
+  }
+};

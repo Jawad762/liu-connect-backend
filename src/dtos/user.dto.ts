@@ -19,7 +19,6 @@ export interface IUserProfile {
 }
 
 export interface IUserProfileSelf extends IUserProfile {
-  id: number;
   email: string;
 }
 

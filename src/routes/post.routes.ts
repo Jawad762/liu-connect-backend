@@ -1,5 +1,5 @@
 import express from 'express';
-import { bookmarkPost, createPost, deletePost, getBookmarks, getPost, getPosts, likePost, unbookmarkPost, unlikePost, updatePost } from '../controllers/post.controller.ts';
+import { bookmarkPost, createPost, deletePost, getBookmarks, getPost, getPosts, likePost, search, unbookmarkPost, unlikePost, updatePost } from '../controllers/post.controller.ts';
 import { authMiddleware } from '../middleware/auth.middleware.ts';
 
 const router = express.Router();
@@ -9,6 +9,7 @@ router.use(authMiddleware);
 router.get('/', getPosts);
 router.post('/', createPost);
 router.get('/bookmarks', getBookmarks);
+router.get('/search', search);
 router.post('/:id/bookmark', bookmarkPost);
 router.delete('/:id/unbookmark', unbookmarkPost);
 router.patch('/:id/like', likePost);
