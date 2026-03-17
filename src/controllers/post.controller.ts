@@ -489,6 +489,8 @@ export const unbookmarkPost = async (req: IAuthRequest, res: Response) => {
 
 export const search = async (req: IAuthRequest, res: Response) => {
     try {
+        const userId = req.user?.id;
+        if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
         const { query, page = 1, size = 10 } = req.query;
         const pageNumber = Math.max(1, parseInt(page as string) || 1);
         const sizeNumber = Math.min(30, Math.max(1, parseInt(size as string) || 20));
@@ -508,7 +510,18 @@ export const search = async (req: IAuthRequest, res: Response) => {
             take: sizeNumber,
         })
 
-        return res.status(200).json(successResponse(posts));
+        const postIds = posts.map((p) => p.id);
+        const likes = await prisma.postLike.findMany({
+            where: { postId: { in: postIds }, userId },
+            select: { postId: true },
+        });
+        const likedPostIds = new Set(likes.map((l) => l.postId));
+        const postsWithIsLiked = posts.map((post) => ({
+            ...post,
+            isLiked: likedPostIds.has(post.id),
+        }));
+        
+        return res.status(200).json(successResponse(postsWithIsLiked));
     } catch (error) {
         logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));

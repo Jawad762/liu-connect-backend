@@ -146,25 +146,27 @@ export const getComments = async (req: IAuthRequest, res: Response) => {
         if (!currentUserId) return res.status(401).json(errorResponse("Unauthorized"));
         const { page = 1, size = 10, postId: queryPostId, userId: queryUserId, parentCommentId } = req.query;
 
-        if (!queryPostId) return res.status(400).json(errorResponse("Post ID is required"));
-        const post = await prisma.post.findFirst({
-            where: { id: queryPostId as string, is_deleted: false },
-            select: { id: true },
-        });
-        if (!post) return res.status(404).json(errorResponse("Post not found"));
+        if (!queryPostId && !queryUserId) return res.status(400).json(errorResponse("Post ID or User ID is required"));
 
-        const userId = typeof queryUserId === "string" ? queryUserId : null;
+        let post = null;
+        if (queryPostId) {
+            post = await prisma.post.findFirst({
+                where: { id: queryPostId as string, is_deleted: false },
+                select: { id: true },
+            });
+            if (!post) return res.status(404).json(errorResponse("Post not found"));
+        }
 
         // Build base where clause: non-deleted comments OR deleted comments that have replies
         const where = {
-            postId: post.id,
-            ...(userId != null && { userId }),
+            ...(post ? { postId: post.id } : {}),
+            ...(queryUserId != null && { userId: queryUserId as string }),
             OR: [
                 { is_deleted: false },
                 { is_deleted: true, replies: { some: {} } },
             ],
         } as {
-            postId: string;
+            postId?: string;
             userId?: string;
             OR: Array<{ is_deleted: boolean; replies?: { some: Record<string, never> } }>;
             parentId?: string | null;
@@ -177,7 +179,7 @@ export const getComments = async (req: IAuthRequest, res: Response) => {
                 where: { id: parentCommentId as string },
                 select: { id: true, postId: true },
             });
-            if (!parent || parent.postId !== post.id) {
+            if (!parent || parent.postId !== post?.id) {
                 return res.status(404).json(errorResponse("Parent comment not found"));
             }
             where.parentId = parent.id;
@@ -211,7 +213,7 @@ export const getComments = async (req: IAuthRequest, res: Response) => {
             select: { entityId: true },
         });
         const bookmarkedCommentIds = new Set(bookmarks.map(b => b.entityId));
-        
+
         const mappedComments = comments.map(c => ({
             ...c,
             isLiked: likedCommentIds.has(c.id),

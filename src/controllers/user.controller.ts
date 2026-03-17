@@ -4,7 +4,7 @@ import { IAddPushTokenBody, IUpdateProfileBody, IUserListItem } from "../dtos/us
 import { prisma } from "../lib/prisma.ts";
 import { Response } from "express";
 import { toProfile, toProfileSelf, toUserListItem } from "../mappers/user.mapper.ts";
-import { validateName } from "../utils/auth.utils.ts";
+import { validateBio, validateName } from "../utils/user.utils.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
 import { NotificationType } from "../../generated/prisma/enums.ts";
 import { enqueuePushNotifications } from "../queue/enqueuePushNotifications.ts";
@@ -33,7 +33,11 @@ export const updateProfile = async (req: IAuthRequestBody<IUpdateProfileBody>, r
     if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
 
     const { name, avatar_url, bio } = req.body;
-    if (!validateName(name)) return res.status(400).json(errorResponse("Name must be at least 2 characters"));
+    const nameValidation = validateName(name);
+    if (!nameValidation.success) return res.status(400).json(errorResponse(nameValidation.message));
+
+    const bioValidation = validateBio(bio);
+    if (!bioValidation.success) return res.status(400).json(errorResponse(bioValidation.message));
 
     const user = await prisma.user.update({
       where: { id: userId },
@@ -116,6 +120,7 @@ export const followUser = async (req: IAuthRequest, res: Response) => {
     const pushTokens = await prisma.pushToken.findMany({
       where: { userId: targetUser.id },
     });
+    
     enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
       type: NotificationType.FOLLOW,
       entity: "user",
@@ -124,7 +129,19 @@ export const followUser = async (req: IAuthRequest, res: Response) => {
       actorName: req.user.name ?? "",
     });
 
-    res.status(201).json(successResponse(undefined, "Following"));
+    const requestUser = await prisma.user.findUnique({
+      where: { id: followerId },
+      select: { following_count: true, followers_count: true },
+    });
+
+    if (!requestUser) return res.status(404).json(errorResponse("User not found"));
+
+    const response = {
+      following_count: requestUser.following_count,
+      followers_count: requestUser.followers_count,
+    }
+
+    res.status(201).json(successResponse(response, "Following"));
   } catch (error) {
     logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse("Internal server error"));
@@ -159,7 +176,20 @@ export const unfollowUser = async (req: IAuthRequest, res: Response) => {
         });
       }
     });
-    res.status(200).json(successResponse(undefined, "Unfollowed"));
+
+    const requestUser = await prisma.user.findUnique({
+      where: { id: followerId },
+      select: { following_count: true, followers_count: true },
+    });
+
+    if (!requestUser) return res.status(404).json(errorResponse("User not found"));
+
+    const response = {
+      following_count: requestUser.following_count,
+      followers_count: requestUser.followers_count,
+    }
+
+    res.status(200).json(successResponse(response, "Unfollowed"));
   } catch (error) {
     logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse("Internal server error"));

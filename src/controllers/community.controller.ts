@@ -2,9 +2,9 @@ import { errorResponse, IAuthRequest, IAuthRequestBody, successResponse } from "
 import { Response } from "express";
 import { prisma } from "../lib/prisma.ts";
 import { ICreateCommunityBody, IUpdateCommunityBody } from "../dtos/community.dto.ts";
-import { validateName } from "../utils/auth.utils.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
 import logger from "../lib/logger.ts";
+import { validateName } from "../utils/user.utils.ts";
 
 export const getCommunities = async (req: IAuthRequest, res: Response) => {
     try {
@@ -42,10 +42,11 @@ export const createCommunity = async (
 
         const { name, description, avatar_url } = req.body;
 
-        if (!validateName(name)) {
+        const nameValidation = validateName(name);
+        if (!nameValidation.success) {
             return res
                 .status(400)
-                .json(errorResponse("Name must be at least 2 characters"));
+                .json(errorResponse(nameValidation.message));
         }
 
         const community = await prisma.community.create({

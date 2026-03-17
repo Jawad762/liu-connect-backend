@@ -5,3 +5,7 @@ export const AUTH_RATE_LIMIT_MAX = 10; // 10 requests per 15 minutes per IP
 
 export const POST_CONTENT_MAX_LENGTH = 300;
 export const POST_MEDIA_MAX_COUNT = 4;
+
+export const NAME_MIN_LENGTH = 2;
+export const NAME_MAX_LENGTH = 25;
+export const BIO_MAX_LENGTH = 160;

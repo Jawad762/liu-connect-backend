@@ -9,6 +9,9 @@ const uploadRouter = {
     image: { maxFileSize: "16MB", maxFileCount: POST_MEDIA_MAX_COUNT },
     video: { maxFileSize: "64MB", maxFileCount: POST_MEDIA_MAX_COUNT }
   }).onUploadComplete(({ file }) => {}),
+  imageUploader: f({
+    image: { maxFileSize: "16MB", maxFileCount: 1 }
+  }).onUploadComplete(({ file }) => {}),
 } satisfies FileRouter;
 
 export const uploadthingRouter = createRouteHandler({ router: uploadRouter });

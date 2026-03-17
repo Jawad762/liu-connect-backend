@@ -21,15 +21,6 @@ export const validatePassword = (password: string) => {
   return true;
 };
 
-export const validateName = (name: string) => {
-  if (!name) return false;
-
-  if (name.length < 2) return false;
-  if (name.length > 25) return false;
-
-  return true;
-};
-
 export const generateVerificationCode = (): string => {
   return Array.from({ length: 6 }, () => randomInt(0, 10)).join('');
 };
