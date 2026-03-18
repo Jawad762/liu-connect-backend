@@ -1,11 +1,29 @@
 import logger from "../lib/logger.ts";
 import { notificationQueue } from "./queues.ts";
 
+export type PushNotificationType =
+  | "comment_created"
+  | "comment_reply"
+  | "post_liked"
+  | "comment_liked"
+  | "user_followed";
+
+export interface PushNotificationPayload {
+  type: PushNotificationType;
+  redirectPath: string;
+  postId?: string;
+  commentId?: string;
+  parentCommentId?: string;
+  actorId?: string;
+  actorName?: string;
+  followerId?: string;
+}
+
 export function enqueuePushNotifications(
   pushTokens: Array<{ token: string }>,
   title: string,
   body: string,
-  data?: Record<string, string>,
+  data?: PushNotificationPayload,
 ) {
   pushTokens.forEach(({ token }) => {
     notificationQueue

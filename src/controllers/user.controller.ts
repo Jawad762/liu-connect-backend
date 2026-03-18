@@ -106,7 +106,7 @@ export const followUser = async (req: IAuthRequest, res: Response) => {
 
     const notificationTitle = `${req.user.name ?? "Someone"} followed you`;
     const notificationBody = "You have a new follower";
-    const redirectPath = req.user.id ? `/users/${req.user.id}` : undefined;
+    const redirectPath = req.user.id ? `/user/${req.user.id}/profile` : undefined;
 
     await prisma.notification.create({
       data: {
@@ -122,11 +122,11 @@ export const followUser = async (req: IAuthRequest, res: Response) => {
     });
     
     enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
-      type: NotificationType.FOLLOW,
-      entity: "user",
+      type: "user_followed",
+      redirectPath: redirectPath ?? "",
       followerId: req.user.id ?? "",
       actorId: req.user.id ?? "",
-      actorName: req.user.name ?? "",
+      actorName: req.user.name ?? "Someone",
     });
 
     const requestUser = await prisma.user.findUnique({

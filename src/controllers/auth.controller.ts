@@ -30,7 +30,7 @@ export const signUp = async (req: IRequestBody<ISignUpBody>, res: Response) => {
     const { email, password } = req.body;
 
     if (!validateEmail(email)) return res.status(400).json(errorResponse('Please use a valid @students.liu.edu.lb email'));
-    if (!validatePassword(password)) return res.status(400).json(errorResponse('Invalid password'));
+    if (!validatePassword(password)) return res.status(400).json(errorResponse('Password must be at least 8 characters long'));
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) return res.status(409).json(errorResponse('An account with this email already exists'));
@@ -74,7 +74,7 @@ export const signIn = async (req: IRequestBody<ISignInBody>, res: Response) => {
   try {
     const { email, password } = req.body;
     if (!validateEmail(email)) return res.status(400).json(errorResponse('Please use a valid @students.liu.edu.lb email'));
-    if (!validatePassword(password)) return res.status(400).json(errorResponse('Invalid password'));
+    if (!validatePassword(password)) return res.status(400).json(errorResponse('Password must be at least 8 characters long'));
 
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) return res.status(401).json(errorResponse('Invalid email or password'));
@@ -231,7 +231,7 @@ export const resetPassword = async (req: IRequestBody<IResetPasswordBody>, res: 
     const { email, code, newPassword } = req.body;
     if (!validateEmail(email)) return res.status(400).json(errorResponse('Invalid email'));
     if (!validateCode(code)) return res.status(400).json(errorResponse('Invalid code format'));
-    if (!validatePassword(newPassword)) return res.status(400).json(errorResponse('Invalid password'));
+    if (!validatePassword(newPassword)) return res.status(400).json(errorResponse('Password must be at least 8 characters long'));
 
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) return res.status(404).json(errorResponse('User not found'));
@@ -265,7 +265,7 @@ export const changePassword = async (req: Request, res: Response) => {
 
     const { currentPassword, newPassword } = req.body as IChangePasswordBody;
     if (!validatePassword(currentPassword) || !validatePassword(newPassword)) {
-      return res.status(400).json(errorResponse('Invalid password'));
+      return res.status(400).json(errorResponse('Password must be at least 8 characters long'));
     }
 
     const user = await prisma.user.findUnique({ where: { id: userId } });

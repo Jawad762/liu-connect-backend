@@ -193,7 +193,7 @@ export const likePost = async (req: IAuthRequest, res: Response) => {
 
         const notificationTitle = `${user.name ?? "Someone"} liked your post`;
         const notificationBody = "You have a new like on your post";
-        const redirectPath = `/posts/${post.id}`;
+        const redirectPath = `/post/${post.id}`;
 
         await prisma.$transaction([
             prisma.postLike.create({
@@ -220,11 +220,11 @@ export const likePost = async (req: IAuthRequest, res: Response) => {
                 where: { userId: post.userId },
             });
             enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
-                type: NotificationType.LIKE,
-                entity: "post",
+                type: "post_liked",
+                redirectPath,
                 postId: post.id,
                 actorId: req.user?.id ?? "",
-                actorName: user.name ?? "",
+                actorName: user.name ?? "Someone",
             });
         }
 
@@ -520,7 +520,7 @@ export const search = async (req: IAuthRequest, res: Response) => {
             ...post,
             isLiked: likedPostIds.has(post.id),
         }));
-        
+
         return res.status(200).json(successResponse(postsWithIsLiked));
     } catch (error) {
         logger.error({ err: error, method: req.method, path: req.path }, "Request failed");

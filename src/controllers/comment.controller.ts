@@ -75,7 +75,7 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
             if (parentUserId !== userId) {
                 const notificationTitle = `${user.name ?? "Someone"} replied to your comment`;
                 const notificationBody = "You have a new reply to your comment";
-                const redirectPath = `/posts/${post.id}`;
+                const redirectPath = `/post/${post.id}`;
 
                 await prisma.notification.create({
                     data: {
@@ -92,20 +92,20 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
                     where: { userId: parentUserId },
                 });
                 enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
-                    type: NotificationType.COMMENT,
-                    entity: "comment_reply",
+                    type: "comment_reply",
+                    redirectPath,
                     postId: post.id,
                     commentId: comment.id,
-                    parentCommentId: parentId,
+                    parentCommentId: parentId ?? "",
                     actorId: req.user?.id ?? "",
-                    actorName: user.name ?? "",
+                    actorName: user.name ?? "Someone",
                 });
             }
         } else {
             if (post.userId !== userId) {
                 const notificationTitle = `${user.name ?? "Someone"} commented on your post`;
                 const notificationBody = "You have a new comment on your post";
-                const redirectPath = `/posts/${post.id}`;
+                const redirectPath = `/post/${post.id}`;
 
                 await prisma.notification.create({
                     data: {
@@ -122,12 +122,12 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
                     where: { userId: post.userId },
                 });
                 enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
-                    type: NotificationType.COMMENT,
-                    entity: "comment",
+                    type: "comment_created",
+                    redirectPath,
                     postId: post.id,
                     commentId: comment.id,
                     actorId: req.user?.id ?? "",
-                    actorName: user.name ?? "",
+                    actorName: user.name ?? "Someone",
                 });
             }
         }
@@ -277,7 +277,7 @@ export const likeComment = async (req: IAuthRequest, res: Response) => {
 
         const notificationTitle = `${user.name ?? "Someone"} liked your comment`;
         const notificationBody = "You have a new like on your comment";
-        const redirectPath = `/posts/${comment.post.id}`;
+        const redirectPath = `/post/${comment.post.id}`;
 
         await prisma.$transaction([
             prisma.commentLike.create({
@@ -305,12 +305,12 @@ export const likeComment = async (req: IAuthRequest, res: Response) => {
                 where: { userId: comment.userId },
             });
             enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
-                type: NotificationType.LIKE,
-                entity: "comment",
+                type: "comment_liked",
+                redirectPath,
                 postId: comment.post.id,
                 commentId: comment.id,
                 actorId: req.user?.id ?? "",
-                actorName: user.name ?? "",
+                actorName: user.name ?? "Someone",
             });
         }
 
