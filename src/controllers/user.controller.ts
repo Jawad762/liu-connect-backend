@@ -259,9 +259,15 @@ export const addPushToken = async (req: IAuthRequestBody<IAddPushTokenBody>, res
 
     const { token } = req.body;
     if (!token) return res.status(400).json(errorResponse("Token is required"));
+    const normalizedToken = token.trim();
+    if (!normalizedToken) return res.status(400).json(errorResponse("Token is required"));
 
-    await prisma.pushToken.create({
-      data: { token, userId },
+    // `PushToken.token` is unique in the schema; use `upsert` so re-registering
+    // the same device token doesn't throw a unique constraint error.
+    await prisma.pushToken.upsert({
+      where: { token: normalizedToken },
+      update: { userId },
+      create: { token: normalizedToken, userId },
     });
 
     return res.status(201).json(successResponse(undefined, "Push token added"));

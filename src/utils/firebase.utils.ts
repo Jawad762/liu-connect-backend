@@ -14,6 +14,9 @@ export const sendNotification = async (
       notification: { title, body },
       android: {
         priority: "high",
+        notification: {
+          color: "#000000",
+        },
       },
       apns: {
         payload: {
