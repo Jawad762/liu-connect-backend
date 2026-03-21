@@ -28,8 +28,8 @@ export async function processNotificationJob(
   job: Job<NotificationJobData>,
 ): Promise<void> {
   const { token, title, body, data } = job.data;
-  if (!token || !title || !body) {
-    throw new Error("Token, title, and body are required");
+  if (!token || !title) {
+    throw new Error("Token and title are required");
   }
   await sendNotification(token, title, body, data);
 }

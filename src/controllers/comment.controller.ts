@@ -74,17 +74,20 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
         if (parentId && parentUserId !== null) {
             if (parentUserId !== userId) {
                 const notificationTitle = `${user.name ?? "Someone"} replied to your comment`;
-                const notificationBody = "You have a new reply to your comment";
+                const notificationBody = content ?? "You have a new reply on your comment";
                 const redirectPath = `/post/${post.id}`;
 
                 await prisma.notification.create({
                     data: {
                         type: NotificationType.COMMENT,
                         title: notificationTitle,
+                        body: notificationBody,
                         redirect_url: redirectPath,
                         userId: parentUserId,
                         postId: post.id,
                         commentId: comment.id,
+                        actorId: userId,
+                        media_url: media[0]?.url ?? null,
                     },
                 });
 
@@ -104,17 +107,20 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
         } else {
             if (post.userId !== userId) {
                 const notificationTitle = `${user.name ?? "Someone"} commented on your post`;
-                const notificationBody = "You have a new comment on your post";
+                const notificationBody = content ?? "You have a new comment on your post";
                 const redirectPath = `/post/${post.id}`;
 
                 await prisma.notification.create({
                     data: {
                         type: NotificationType.COMMENT,
                         title: notificationTitle,
+                        body: notificationBody,
                         redirect_url: redirectPath,
                         userId: post.userId,
                         postId: post.id,
                         commentId: comment.id,
+                        actorId: userId,
+                        media_url: media[0]?.url ?? null,
                     },
                 });
 
@@ -271,12 +277,12 @@ export const likeComment = async (req: IAuthRequest, res: Response) => {
 
         const comment = await prisma.comment.findUnique({
             where: { id },
-            select: { id: true, userId: true, postId: true, post: { select: { id: true } } },
+            select: { id: true, userId: true, postId: true, post: { select: { id: true } }, content: true, media: { select: { media_url: true } } },
         });
         if (!comment) return res.status(404).json(errorResponse("Comment not found"));
 
         const notificationTitle = `${user.name ?? "Someone"} liked your comment`;
-        const notificationBody = "You have a new like on your comment";
+        const notificationBody = comment.content ?? "You have a new like on your comment";
         const redirectPath = `/post/${comment.post.id}`;
 
         await prisma.$transaction([
@@ -294,10 +300,13 @@ export const likeComment = async (req: IAuthRequest, res: Response) => {
                 data: {
                     type: NotificationType.LIKE,
                     title: notificationTitle,
+                    body: notificationBody,
                     redirect_url: redirectPath,
                     userId: comment.userId,
                     postId: comment.postId,
                     commentId: comment.id,
+                    actorId: userId,
+                    media_url: comment.media[0]?.media_url ?? null,
                 },
             });
 

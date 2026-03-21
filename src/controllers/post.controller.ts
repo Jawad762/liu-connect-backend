@@ -7,7 +7,6 @@ import { getRouteParam } from "../utils/request.utils.ts";
 import { BookmarkableType, NotificationType } from "../../generated/prisma/enums.ts";
 import { enqueuePushNotifications } from "../queue/enqueuePushNotifications.ts";
 import logger from "../lib/logger.ts";
-import { toProfile } from "../mappers/user.mapper.ts";
 
 export const getPosts = async (req: IAuthRequest, res: Response) => {
     try {
@@ -180,7 +179,7 @@ export const likePost = async (req: IAuthRequest, res: Response) => {
 
         const post = await prisma.post.findUnique({
             where: { id: postId },
-            select: { id: true, userId: true },
+            select: { id: true, userId: true, content: true, media: { select: { media_url: true } } },
         });
         if (!post) return res.status(404).json(errorResponse("Post not found"));
 
@@ -192,7 +191,7 @@ export const likePost = async (req: IAuthRequest, res: Response) => {
         }
 
         const notificationTitle = `${user.name ?? "Someone"} liked your post`;
-        const notificationBody = "You have a new like on your post";
+        const notificationBody = post.content ?? "You have a new like on your post";
         const redirectPath = `/post/${post.id}`;
 
         await prisma.$transaction([
@@ -210,9 +209,12 @@ export const likePost = async (req: IAuthRequest, res: Response) => {
                 data: {
                     type: NotificationType.LIKE,
                     title: notificationTitle,
+                    body: notificationBody,
                     redirect_url: redirectPath,
                     userId: post.userId,
                     postId: post.id,
+                    actorId: userId,
+                    media_url: post.media[0]?.media_url ?? null,
                 },
             });
 

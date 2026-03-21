@@ -48,7 +48,8 @@ model User {
   communities CommunityMember[]
   postLikes PostLike[]
   commentLikes CommentLike[]
-  notifications Notification[]
+  notifications Notification[] @relation("NotificationUser")
+  triggeredNotifications Notification[] @relation("NotificationActor")
   createdCommunities Community[]
   bookmarks Bookmark[]
   pushTokens PushToken[]
@@ -173,15 +174,18 @@ model Notification {
   id        String   @id @default(uuid())
   type      NotificationType
   title     String
+  body      String?
   media_url String?
   redirect_url String?
   read      Boolean @default(false)
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User    @relation("NotificationUser", fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   post      Post?   @relation(fields: [postId], references: [id], onDelete: SetNull)
   postId    String?
   comment   Comment? @relation(fields: [commentId], references: [id], onDelete: SetNull)
   commentId String?
+  actor User @relation("NotificationActor", fields: [actorId], references: [id], onDelete: Cascade)
+  actorId   String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

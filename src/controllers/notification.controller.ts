@@ -15,14 +15,14 @@ export const listNotifications = async (req: IAuthRequest, res: Response) => {
       orderBy: { createdAt: "desc" },
       skip: (Number(page) - 1) * Number(size),
       take: Number(size),
-      select: {
-        id: true,
-        type: true,
-        title: true,
-        media_url: true,
-        redirect_url: true,
-        read: true,
-        createdAt: true
+      include: {
+        actor: {
+          select: {
+            id: true,
+            name: true,
+            avatar_url: true,
+          },
+        },
       },
     });
 

@@ -1,5 +1,7 @@
 import { randomInt } from 'crypto';
 import { emailQueue } from '../queue/queues.ts';
+import { PASSWORD_MIN_LENGTH } from '../constants.ts';
+import { PASSWORD_MAX_LENGTH } from '../constants.ts';
 
 export const validateEmail = (email: string) => {
   if (!email) return false;
@@ -16,7 +18,8 @@ export const validateEmail = (email: string) => {
 export const validatePassword = (password: string) => {
   if (!password) return false;
 
-  if (password.length < 8) return false;
+  if (password.length < PASSWORD_MIN_LENGTH) return false;
+  if (password.length > PASSWORD_MAX_LENGTH) return false;
 
   return true;
 };

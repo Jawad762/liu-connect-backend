@@ -1526,12 +1526,14 @@ export const NotificationScalarFieldEnum = {
   id: 'id',
   type: 'type',
   title: 'title',
+  body: 'body',
   media_url: 'media_url',
   redirect_url: 'redirect_url',
   read: 'read',
   userId: 'userId',
   postId: 'postId',
   commentId: 'commentId',
+  actorId: 'actorId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

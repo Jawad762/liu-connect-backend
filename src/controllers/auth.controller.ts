@@ -264,7 +264,7 @@ export const changePassword = async (req: Request, res: Response) => {
     if (!userId) return res.status(401).json(errorResponse('Unauthorized'));
 
     const { currentPassword, newPassword } = req.body as IChangePasswordBody;
-    if (!validatePassword(currentPassword) || !validatePassword(newPassword)) {
+    if (!validatePassword(newPassword)) {
       return res.status(400).json(errorResponse('Password must be at least 8 characters long'));
     }
 

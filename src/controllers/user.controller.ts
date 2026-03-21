@@ -112,8 +112,10 @@ export const followUser = async (req: IAuthRequest, res: Response) => {
       data: {
         type: NotificationType.FOLLOW,
         title: notificationTitle,
+        body: notificationBody,
         ...(redirectPath && { redirect_url: redirectPath }),
         userId: targetUser.id,
+        actorId: followerId,
       },
     });
 

@@ -15,13 +15,14 @@ import healthRoutes from './routes/health.routes.ts';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import { uploadthingRouter } from './lib/uploadthing.ts';
+import { RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX, AUTH_RATE_LIMIT_WINDOW_MS, AUTH_RATE_LIMIT_MAX } from './constants.ts';
 
 const app = express();
 app.set('trust proxy', 1);
 
 const rateLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 100, // 100 requests per 1 minute per IP
+  windowMs: RATE_LIMIT_WINDOW_MS, // 1 minute
+  max: RATE_LIMIT_MAX, // 100 requests per 1 minute per IP
   handler: (_req, res) => {
     res.status(429).json(errorResponse('Too many requests, please try again later.'));
   },
@@ -30,8 +31,8 @@ const rateLimiter = rateLimit({
 });
 
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // 10 requests per 15 minutes per IP for auth
+  windowMs: AUTH_RATE_LIMIT_WINDOW_MS, // 15 minutes
+  max: AUTH_RATE_LIMIT_MAX, // 100 requests per 15 minutes per IP for auth
   handler: (_req, res) => {
     res.status(429).json(errorResponse('Too many requests, please try again later.'));
   },
