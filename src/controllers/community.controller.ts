@@ -4,28 +4,53 @@ import { prisma } from "../lib/prisma.ts";
 import { ICreateCommunityBody, IUpdateCommunityBody } from "../dtos/community.dto.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
 import logger from "../lib/logger.ts";
-import { validateName } from "../utils/user.utils.ts";
+import { validateBio, validateName } from "../utils/user.utils.ts";
 
 export const getCommunities = async (req: IAuthRequest, res: Response) => {
     try {
-        const { page = 1, size = 10, search = "" } = req.query;
+        const userId = req.user?.id;
+        if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
+
+        const { page: rawPage, size: rawSize, search = "", userOnly: rawUserOnly } = req.query;
+
+        const page = Math.max(1, parseInt(rawPage as string) || 1);
+        const size = Math.min(100, Math.max(1, parseInt(rawSize as string) || 10));
 
         const cleanedSearch = typeof search === "string" ? search.trim().toLowerCase() : null;
+        const userOnly = rawUserOnly === "true";
 
         const communities = await prisma.community.findMany({
             where: {
                 ...(cleanedSearch && {
                     name: { contains: cleanedSearch, mode: "insensitive" },
                 }),
+                ...(userOnly && {
+                    OR: [
+                        { communityMembers: { some: { userId } } },
+                        { createdById: userId },
+                    ]
+                }),
             },
             orderBy: {
                 createdAt: "desc",
             },
-            skip: (Number(page) - 1) * Number(size),
-            take: Number(size),
+            skip: (page - 1) * size,
+            take: size,
+            include: {
+                communityMembers: {
+                    where: { userId },
+                    select: { id: true },
+                    take: 1,
+                },
+            },
         });
 
-        return res.status(200).json(successResponse(communities));
+        const mappedCommunities = communities.map(({ communityMembers, ...c }) => ({
+            ...c,
+            isJoined: communityMembers.length > 0,
+        }));
+
+        return res.status(200).json(successResponse(mappedCommunities));
     } catch (error) {
         logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
@@ -48,12 +73,19 @@ export const createCommunity = async (
                 .status(400)
                 .json(errorResponse(nameValidation.message));
         }
+        const descriptionValidation = validateBio(description ?? null);
+        if (!descriptionValidation.success) {
+            return res
+                .status(400)
+                .json(errorResponse(descriptionValidation.message));
+        }
 
         const community = await prisma.community.create({
             data: {
                 name,
                 description: description ?? null,
                 createdById: userId,
+                avatar_url: avatar_url ?? null,
             },
         });
 
@@ -66,6 +98,9 @@ export const createCommunity = async (
 
 export const getCommunity = async (req: IAuthRequest, res: Response) => {
     try {
+        const userId = req.user?.id;
+        if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
+
         const id = getRouteParam(req, "id");
         if (!id) {
             return res
@@ -81,7 +116,11 @@ export const getCommunity = async (req: IAuthRequest, res: Response) => {
             return res.status(404).json(errorResponse("Community not found"));
         }
 
-        return res.status(200).json(successResponse(community));
+        const communityMember = await prisma.communityMember.findUnique({
+            where: { communityId_userId: { communityId: id, userId } },
+        });
+
+        return res.status(200).json(successResponse({ ...community, isJoined: !!communityMember }));
     } catch (error) {
         logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));
@@ -118,10 +157,18 @@ export const updateCommunity = async (
 
         const { name, description, avatar_url } = req.body;
 
-        if (name !== undefined && !validateName(name)) {
+        const nameValidation = validateName(name ?? null);
+        if (!nameValidation.success) {
             return res
                 .status(400)
-                .json(errorResponse("Name must be at least 2 characters"));
+                .json(errorResponse(nameValidation.message));
+        }
+
+        const descriptionValidation = validateBio(description ?? null);
+        if (!descriptionValidation.success) {
+            return res
+                .status(400)
+                .json(errorResponse(descriptionValidation.message));
         }
 
         await prisma.community.update({

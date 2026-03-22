@@ -13,14 +13,14 @@ export const getPosts = async (req: IAuthRequest, res: Response) => {
         const currentUserId = req.user?.id;
         if (!currentUserId) return res.status(401).json(errorResponse("Unauthorized"));
 
-        const { page: rawPage, size: rawSize, followingOnly: rawFollowingOnly, communityId: queryCommunityId, authorId: queryAuthorId } = req.query;
+        const { page: rawPage, size: rawSize, followingOnly: rawFollowingOnly, communitiesOnly: rawCommunitiesOnly, communityId: queryCommunityId, authorId: queryAuthorId } = req.query;
 
         const pageNumber = Math.max(1, parseInt(rawPage as string) || 1);
         const sizeNumber = Math.min(30, Math.max(1, parseInt(rawSize as string) || 20));
         const followingOnly = rawFollowingOnly === "true";
+        const communitiesOnly = rawCommunitiesOnly === "true";
 
-        if (followingOnly && queryCommunityId) return res.status(400).json(errorResponse("Please either choose following only or a community, but not both."));
-        if (followingOnly && queryAuthorId) return res.status(400).json(errorResponse("Please either choose following only or an author, but not both."));
+        if ([followingOnly, communitiesOnly, queryCommunityId, queryAuthorId].filter(e => !!e).length > 1) return res.status(400).json(errorResponse("Please either choose following only, communities only, author only, or communityId only, but not multiple."));
 
         const authorId = typeof queryAuthorId === "string" ? queryAuthorId : null;
         if (authorId) {
@@ -46,9 +46,20 @@ export const getPosts = async (req: IAuthRequest, res: Response) => {
         }) : [];
         const followingIds = followingOnly ? userFollowings.map(uf => uf.followingId) : [];
 
+        const joinedUserCommunities = rawCommunitiesOnly ? await prisma.communityMember.findMany({
+            where: { userId: currentUserId },
+            select: { communityId: true },
+        }) : [];
+        const createdUserCommunities = rawCommunitiesOnly ? await prisma.community.findMany({
+            where: { createdById: currentUserId },
+            select: { id: true },
+        }) : [];
+        const communityIds = rawCommunitiesOnly ? [...joinedUserCommunities.map(uc => uc.communityId), ...createdUserCommunities.map(uc => uc.id)] : [];
+
         const posts = await prisma.post.findMany({
             where: {
-                ...(communityId && { communityId }),
+                ...(communityId != null && { communityId }),
+                ...(communitiesOnly && { communityId: { in: communityIds } }),
                 ...(authorId != null && { userId: authorId }),
                 ...(followingOnly && { userId: { in: followingIds } }),
                 is_deleted: false,
@@ -141,10 +152,13 @@ export const createPost = async (req: IAuthRequestBody<ICreatePostBody>, res: Re
         let communityId: string | null = null;
         if (bodyCommunityId) {
             const community = await prisma.community.findUnique({
-                where: { id: bodyCommunityId },
+                where: { id: bodyCommunityId, OR: [
+                    { communityMembers: { some: { userId } } },
+                    { createdById: userId },
+                ] },
                 select: { id: true },
             });
-            if (!community) return res.status(404).json(errorResponse("Community not found"));
+            if (!community) return res.status(404).json(errorResponse("Community not found, or you are not a member."));
             communityId = community.id;
         }
 

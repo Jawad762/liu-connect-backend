@@ -71,7 +71,7 @@ model Post {
   comments Comment[]
   likes_count Int @default(0)
   comments_count Int @default(0)
-  community Community? @relation(fields: [communityId], references: [id])
+  community Community? @relation(fields: [communityId], references: [id], onDelete: Cascade)
   communityId String?
   likes PostLike[]
   media PostMedia[]
