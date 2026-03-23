@@ -31,3 +31,7 @@ export interface IUserListItem {
 export interface IAddPushTokenBody {
   token: string;
 }
+
+export interface IDeleteMyAccountBody {
+  password: string;
+}

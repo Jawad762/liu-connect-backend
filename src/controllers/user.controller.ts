@@ -1,6 +1,6 @@
 import { IAuthRequestBody, IAuthRequest } from "../dtos/base.dto.ts";
 import { errorResponse, successResponse } from "../dtos/base.dto.ts";
-import { IAddPushTokenBody, IUpdateProfileBody, IUserListItem } from "../dtos/user.dto.ts";
+import { IAddPushTokenBody, IDeleteMyAccountBody, IUpdateProfileBody, IUserListItem } from "../dtos/user.dto.ts";
 import { prisma } from "../lib/prisma.ts";
 import { Response } from "express";
 import { toProfile, toProfileSelf, toUserListItem } from "../mappers/user.mapper.ts";
@@ -9,6 +9,7 @@ import { getRouteParam } from "../utils/request.utils.ts";
 import { NotificationType } from "../../generated/prisma/enums.ts";
 import { enqueuePushNotifications } from "../queue/enqueuePushNotifications.ts";
 import logger from "../lib/logger.ts";
+import bcrypt from "bcrypt";
 
 export const getMe = async (req: IAuthRequest, res: Response) => {
   try {
@@ -289,6 +290,7 @@ export const search = async (req: IAuthRequest, res: Response) => {
 
     const users = await prisma.user.findMany({
       where: {
+        is_deleted: false,
         name: { contains: sanitizedQuery, mode: "insensitive" },
       },
       skip: (pageNumber - 1) * sizeNumber,
@@ -296,6 +298,34 @@ export const search = async (req: IAuthRequest, res: Response) => {
     })
 
     return res.status(200).json(successResponse(users.map((user) => toProfile(user, false))));
+  } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
+    return res.status(500).json(errorResponse("Internal server error"));
+  }
+};
+
+export const deleteMyAccount = async (req: IAuthRequestBody<IDeleteMyAccountBody>, res: Response) => {
+  try {
+    const { password } = req.body;
+    if (!password) return res.status(400).json(errorResponse("Password is required"));
+
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user || user.is_deleted) return res.status(404).json(errorResponse("User not found"));
+    
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) return res.status(400).json(errorResponse("Invalid password"));
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { is_deleted: true, deleted_at: new Date(), refresh_token: null },
+    });
+
+    return res.status(200).json(successResponse(undefined, "Account deleted"));
   } catch (error) {
     logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse("Internal server error"));

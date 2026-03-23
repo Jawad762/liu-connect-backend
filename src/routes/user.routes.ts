@@ -9,6 +9,7 @@ import {
   search,
   unfollowUser,
   updateProfile,
+  deleteMyAccount,
 } from '../controllers/user.controller.ts';
 import { authMiddleware } from '../middleware/auth.middleware.ts';
 
@@ -18,6 +19,7 @@ router.use(authMiddleware);
 
 router.get('/me', getMe);
 router.patch('/me', updateProfile);
+router.delete('/me', deleteMyAccount);
 router.post('/me/push-token', addPushToken);
 router.get('/search', search);
 router.get('/:id', getUserById);
