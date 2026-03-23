@@ -21,6 +21,7 @@ export const getCommunities = async (req: IAuthRequest, res: Response) => {
 
         const communities = await prisma.community.findMany({
             where: {
+                is_deleted: false,
                 ...(cleanedSearch && {
                     name: { contains: cleanedSearch, mode: "insensitive" },
                 }),
@@ -108,8 +109,8 @@ export const getCommunity = async (req: IAuthRequest, res: Response) => {
                 .json(errorResponse("Community ID is required"));
         }
 
-        const community = await prisma.community.findUnique({
-            where: { id },
+        const community = await prisma.community.findFirst({
+            where: { id, is_deleted: false },
         });
 
         if (!community) {
@@ -142,8 +143,8 @@ export const updateCommunity = async (
                 .json(errorResponse("Community ID is required"));
         }
 
-        const existing = await prisma.community.findUnique({
-            where: { id },
+        const existing = await prisma.community.findFirst({
+            where: { id, is_deleted: false },
             select: { id: true, createdById: true },
         });
 
@@ -199,8 +200,8 @@ export const deleteCommunity = async (req: IAuthRequest, res: Response) => {
                 .json(errorResponse("Community ID is required"));
         }
 
-        const existing = await prisma.community.findUnique({
-            where: { id },
+        const existing = await prisma.community.findFirst({
+            where: { id, is_deleted: false },
             select: { id: true, createdById: true },
         });
 
@@ -212,8 +213,9 @@ export const deleteCommunity = async (req: IAuthRequest, res: Response) => {
             return res.status(403).json(errorResponse("Forbidden"));
         }
 
-        await prisma.community.delete({
+        await prisma.community.update({
             where: { id: existing.id },
+            data: { is_deleted: true, deleted_at: new Date() },
         });
 
         return res.status(200).json(successResponse(undefined, "Community deleted"));
@@ -235,8 +237,8 @@ export const joinCommunity = async (req: IAuthRequest, res: Response) => {
                 .json(errorResponse("Community ID is required"));
         }
 
-        const community = await prisma.community.findUnique({
-            where: { id },
+        const community = await prisma.community.findFirst({
+            where: { id, is_deleted: false },
             select: { id: true },
         });
 
@@ -277,8 +279,8 @@ export const leaveCommunity = async (req: IAuthRequest, res: Response) => {
                 .json(errorResponse("Community ID is required"));
         }
 
-        const community = await prisma.community.findUnique({
-            where: { id },
+        const community = await prisma.community.findFirst({
+            where: { id, is_deleted: false },
             select: { id: true, createdById: true },
         });
 

@@ -29,6 +29,8 @@ export type CommunityMinAggregateOutputType = {
   name: string | null
   description: string | null
   avatar_url: string | null
+  is_deleted: boolean | null
+  deleted_at: Date | null
   createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -39,6 +41,8 @@ export type CommunityMaxAggregateOutputType = {
   name: string | null
   description: string | null
   avatar_url: string | null
+  is_deleted: boolean | null
+  deleted_at: Date | null
   createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -49,6 +53,8 @@ export type CommunityCountAggregateOutputType = {
   name: number
   description: number
   avatar_url: number
+  is_deleted: number
+  deleted_at: number
   createdById: number
   createdAt: number
   updatedAt: number
@@ -61,6 +67,8 @@ export type CommunityMinAggregateInputType = {
   name?: true
   description?: true
   avatar_url?: true
+  is_deleted?: true
+  deleted_at?: true
   createdById?: true
   createdAt?: true
   updatedAt?: true
@@ -71,6 +79,8 @@ export type CommunityMaxAggregateInputType = {
   name?: true
   description?: true
   avatar_url?: true
+  is_deleted?: true
+  deleted_at?: true
   createdById?: true
   createdAt?: true
   updatedAt?: true
@@ -81,6 +91,8 @@ export type CommunityCountAggregateInputType = {
   name?: true
   description?: true
   avatar_url?: true
+  is_deleted?: true
+  deleted_at?: true
   createdById?: true
   createdAt?: true
   updatedAt?: true
@@ -164,6 +176,8 @@ export type CommunityGroupByOutputType = {
   name: string
   description: string | null
   avatar_url: string | null
+  is_deleted: boolean
+  deleted_at: Date | null
   createdById: string
   createdAt: Date
   updatedAt: Date
@@ -195,6 +209,8 @@ export type CommunityWhereInput = {
   name?: Prisma.StringFilter<"Community"> | string
   description?: Prisma.StringNullableFilter<"Community"> | string | null
   avatar_url?: Prisma.StringNullableFilter<"Community"> | string | null
+  is_deleted?: Prisma.BoolFilter<"Community"> | boolean
+  deleted_at?: Prisma.DateTimeNullableFilter<"Community"> | Date | string | null
   createdById?: Prisma.StringFilter<"Community"> | string
   createdAt?: Prisma.DateTimeFilter<"Community"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Community"> | Date | string
@@ -208,6 +224,8 @@ export type CommunityOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   avatar_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  is_deleted?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -224,6 +242,8 @@ export type CommunityWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Community"> | string
   description?: Prisma.StringNullableFilter<"Community"> | string | null
   avatar_url?: Prisma.StringNullableFilter<"Community"> | string | null
+  is_deleted?: Prisma.BoolFilter<"Community"> | boolean
+  deleted_at?: Prisma.DateTimeNullableFilter<"Community"> | Date | string | null
   createdById?: Prisma.StringFilter<"Community"> | string
   createdAt?: Prisma.DateTimeFilter<"Community"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Community"> | Date | string
@@ -237,6 +257,8 @@ export type CommunityOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   avatar_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  is_deleted?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -253,6 +275,8 @@ export type CommunityScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Community"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Community"> | string | null
   avatar_url?: Prisma.StringNullableWithAggregatesFilter<"Community"> | string | null
+  is_deleted?: Prisma.BoolWithAggregatesFilter<"Community"> | boolean
+  deleted_at?: Prisma.DateTimeNullableWithAggregatesFilter<"Community"> | Date | string | null
   createdById?: Prisma.StringWithAggregatesFilter<"Community"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Community"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Community"> | Date | string
@@ -263,6 +287,8 @@ export type CommunityCreateInput = {
   name: string
   description?: string | null
   avatar_url?: string | null
+  is_deleted?: boolean
+  deleted_at?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
@@ -275,6 +301,8 @@ export type CommunityUncheckedCreateInput = {
   name: string
   description?: string | null
   avatar_url?: string | null
+  is_deleted?: boolean
+  deleted_at?: Date | string | null
   createdById: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -287,6 +315,8 @@ export type CommunityUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUpdateManyWithoutCommunityNestedInput
@@ -299,6 +329,8 @@ export type CommunityUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -311,6 +343,8 @@ export type CommunityCreateManyInput = {
   name: string
   description?: string | null
   avatar_url?: string | null
+  is_deleted?: boolean
+  deleted_at?: Date | string | null
   createdById: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -321,6 +355,8 @@ export type CommunityUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -330,6 +366,8 @@ export type CommunityUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -355,6 +393,8 @@ export type CommunityCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   avatar_url?: Prisma.SortOrder
+  is_deleted?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -365,6 +405,8 @@ export type CommunityMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   avatar_url?: Prisma.SortOrder
+  is_deleted?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -375,6 +417,8 @@ export type CommunityMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   avatar_url?: Prisma.SortOrder
+  is_deleted?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -462,6 +506,8 @@ export type CommunityCreateWithoutCreatedByInput = {
   name: string
   description?: string | null
   avatar_url?: string | null
+  is_deleted?: boolean
+  deleted_at?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
@@ -473,6 +519,8 @@ export type CommunityUncheckedCreateWithoutCreatedByInput = {
   name: string
   description?: string | null
   avatar_url?: string | null
+  is_deleted?: boolean
+  deleted_at?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
@@ -513,6 +561,8 @@ export type CommunityScalarWhereInput = {
   name?: Prisma.StringFilter<"Community"> | string
   description?: Prisma.StringNullableFilter<"Community"> | string | null
   avatar_url?: Prisma.StringNullableFilter<"Community"> | string | null
+  is_deleted?: Prisma.BoolFilter<"Community"> | boolean
+  deleted_at?: Prisma.DateTimeNullableFilter<"Community"> | Date | string | null
   createdById?: Prisma.StringFilter<"Community"> | string
   createdAt?: Prisma.DateTimeFilter<"Community"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Community"> | Date | string
@@ -523,6 +573,8 @@ export type CommunityCreateWithoutPostsInput = {
   name: string
   description?: string | null
   avatar_url?: string | null
+  is_deleted?: boolean
+  deleted_at?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   communityMembers?: Prisma.CommunityMemberCreateNestedManyWithoutCommunityInput
@@ -534,6 +586,8 @@ export type CommunityUncheckedCreateWithoutPostsInput = {
   name: string
   description?: string | null
   avatar_url?: string | null
+  is_deleted?: boolean
+  deleted_at?: Date | string | null
   createdById: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -561,6 +615,8 @@ export type CommunityUpdateWithoutPostsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   communityMembers?: Prisma.CommunityMemberUpdateManyWithoutCommunityNestedInput
@@ -572,6 +628,8 @@ export type CommunityUncheckedUpdateWithoutPostsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -583,6 +641,8 @@ export type CommunityCreateWithoutCommunityMembersInput = {
   name: string
   description?: string | null
   avatar_url?: string | null
+  is_deleted?: boolean
+  deleted_at?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
@@ -594,6 +654,8 @@ export type CommunityUncheckedCreateWithoutCommunityMembersInput = {
   name: string
   description?: string | null
   avatar_url?: string | null
+  is_deleted?: boolean
+  deleted_at?: Date | string | null
   createdById: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -621,6 +683,8 @@ export type CommunityUpdateWithoutCommunityMembersInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUpdateManyWithoutCommunityNestedInput
@@ -632,6 +696,8 @@ export type CommunityUncheckedUpdateWithoutCommunityMembersInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -643,6 +709,8 @@ export type CommunityCreateManyCreatedByInput = {
   name: string
   description?: string | null
   avatar_url?: string | null
+  is_deleted?: boolean
+  deleted_at?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -652,6 +720,8 @@ export type CommunityUpdateWithoutCreatedByInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUpdateManyWithoutCommunityNestedInput
@@ -663,6 +733,8 @@ export type CommunityUncheckedUpdateWithoutCreatedByInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
@@ -674,6 +746,8 @@ export type CommunityUncheckedUpdateManyWithoutCreatedByInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -723,6 +797,8 @@ export type CommunitySelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   name?: boolean
   description?: boolean
   avatar_url?: boolean
+  is_deleted?: boolean
+  deleted_at?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -737,6 +813,8 @@ export type CommunitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   name?: boolean
   description?: boolean
   avatar_url?: boolean
+  is_deleted?: boolean
+  deleted_at?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -748,6 +826,8 @@ export type CommunitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   name?: boolean
   description?: boolean
   avatar_url?: boolean
+  is_deleted?: boolean
+  deleted_at?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -759,12 +839,14 @@ export type CommunitySelectScalar = {
   name?: boolean
   description?: boolean
   avatar_url?: boolean
+  is_deleted?: boolean
+  deleted_at?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type CommunityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "avatar_url" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["community"]>
+export type CommunityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "avatar_url" | "is_deleted" | "deleted_at" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["community"]>
 export type CommunityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   posts?: boolean | Prisma.Community$postsArgs<ExtArgs>
   communityMembers?: boolean | Prisma.Community$communityMembersArgs<ExtArgs>
@@ -790,6 +872,8 @@ export type $CommunityPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     name: string
     description: string | null
     avatar_url: string | null
+    is_deleted: boolean
+    deleted_at: Date | null
     createdById: string
     createdAt: Date
     updatedAt: Date
@@ -1223,6 +1307,8 @@ export interface CommunityFieldRefs {
   readonly name: Prisma.FieldRef<"Community", 'String'>
   readonly description: Prisma.FieldRef<"Community", 'String'>
   readonly avatar_url: Prisma.FieldRef<"Community", 'String'>
+  readonly is_deleted: Prisma.FieldRef<"Community", 'Boolean'>
+  readonly deleted_at: Prisma.FieldRef<"Community", 'DateTime'>
   readonly createdById: Prisma.FieldRef<"Community", 'String'>
   readonly createdAt: Prisma.FieldRef<"Community", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Community", 'DateTime'>

@@ -118,6 +118,8 @@ model Community {
   name      String
   description String?
   avatar_url String?
+  is_deleted Boolean  @default(false) @map("is_deleted")
+  deleted_at DateTime? @map("deleted_at")
   posts Post[]
   communityMembers CommunityMember[]
   createdBy User @relation(fields: [createdById], references: [id], onDelete: Cascade)
@@ -126,6 +128,7 @@ model Community {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([createdById])
+  @@index([is_deleted])
 }
 
 model CommunityMember {

@@ -1481,6 +1481,8 @@ export const CommunityScalarFieldEnum = {
   name: 'name',
   description: 'description',
   avatar_url: 'avatar_url',
+  is_deleted: 'is_deleted',
+  deleted_at: 'deleted_at',
   createdById: 'createdById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

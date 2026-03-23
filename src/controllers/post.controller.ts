@@ -33,8 +33,8 @@ export const getPosts = async (req: IAuthRequest, res: Response) => {
 
         const communityId = typeof queryCommunityId === "string" ? queryCommunityId : null;
         if (communityId) {
-            const community = await prisma.community.findUnique({
-                where: { id: communityId },
+            const community = await prisma.community.findFirst({
+                where: { id: communityId, is_deleted: false },
                 select: { id: true },
             });
             if (!community) return res.status(404).json(errorResponse("Community not found"));
@@ -46,15 +46,20 @@ export const getPosts = async (req: IAuthRequest, res: Response) => {
         }) : [];
         const followingIds = followingOnly ? userFollowings.map(uf => uf.followingId) : [];
 
-        const joinedUserCommunities = rawCommunitiesOnly ? await prisma.communityMember.findMany({
-            where: { userId: currentUserId },
-            select: { communityId: true },
-        }) : [];
-        const createdUserCommunities = rawCommunitiesOnly ? await prisma.community.findMany({
-            where: { createdById: currentUserId },
-            select: { id: true },
-        }) : [];
-        const communityIds = rawCommunitiesOnly ? [...joinedUserCommunities.map(uc => uc.communityId), ...createdUserCommunities.map(uc => uc.id)] : [];
+        const communityIds = rawCommunitiesOnly
+            ? (
+                  await prisma.community.findMany({
+                      where: {
+                          is_deleted: false,
+                          OR: [
+                              { communityMembers: { some: { userId: currentUserId } } },
+                              { createdById: currentUserId },
+                          ],
+                      },
+                      select: { id: true },
+                  })
+              ).map((c) => c.id)
+            : [];
 
         const posts = await prisma.post.findMany({
             where: {
@@ -151,11 +156,15 @@ export const createPost = async (req: IAuthRequestBody<ICreatePostBody>, res: Re
 
         let communityId: string | null = null;
         if (bodyCommunityId) {
-            const community = await prisma.community.findUnique({
-                where: { id: bodyCommunityId, OR: [
-                    { communityMembers: { some: { userId } } },
-                    { createdById: userId },
-                ] },
+            const community = await prisma.community.findFirst({
+                where: {
+                    id: bodyCommunityId,
+                    is_deleted: false,
+                    OR: [
+                        { communityMembers: { some: { userId } } },
+                        { createdById: userId },
+                    ],
+                },
                 select: { id: true },
             });
             if (!community) return res.status(404).json(errorResponse("Community not found, or you are not a member."));
