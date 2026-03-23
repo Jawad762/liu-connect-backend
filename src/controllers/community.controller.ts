@@ -212,19 +212,6 @@ export const deleteCommunity = async (req: IAuthRequest, res: Response) => {
             return res.status(403).json(errorResponse("Forbidden"));
         }
 
-        const postsCount = await prisma.post.count({
-            where: {
-                communityId: existing.id,
-                is_deleted: false,
-            },
-        });
-
-        if (postsCount > 0) {
-            return res
-                .status(400)
-                .json(errorResponse("Cannot delete community with posts"));
-        }
-
         await prisma.community.delete({
             where: { id: existing.id },
         });

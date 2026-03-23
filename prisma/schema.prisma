@@ -130,7 +130,7 @@ model Community {
 
 model CommunityMember {
   id        String   @id @default(uuid())
-  community Community @relation(fields: [communityId], references: [id])
+  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
   communityId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
