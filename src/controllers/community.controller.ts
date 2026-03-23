@@ -114,7 +114,7 @@ export const getCommunity = async (req: IAuthRequest, res: Response) => {
         });
 
         if (!community) {
-            return res.status(404).json(errorResponse("Community not found"));
+            return res.status(404).json(errorResponse("This community does not exist, or has been deleted."));
         }
 
         const communityMember = await prisma.communityMember.findUnique({
