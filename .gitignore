@@ -5,3 +5,5 @@ node_modules
 /src/generated/prisma
 
 liu-connect-app-firebase-adminsdk-fbsvc-bb6b2d69b4.json
+
+dist
