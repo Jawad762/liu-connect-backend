@@ -4,12 +4,13 @@ import { IAddPushTokenBody, IDeleteMyAccountBody, IUpdateProfileBody, IUserListI
 import { prisma } from "../lib/prisma.ts";
 import { Response } from "express";
 import { toProfile, toProfileSelf, toUserListItem } from "../mappers/user.mapper.ts";
-import { validateBio, validateName } from "../utils/user.utils.ts";
+import { validateBio, validateMajor, validateName, validateSchool } from "../utils/user.utils.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
 import { NotificationType } from "../../generated/prisma/enums.ts";
 import { enqueuePushNotifications } from "../queue/enqueuePushNotifications.ts";
 import logger from "../lib/logger.ts";
 import bcrypt from "bcrypt";
+import { validateUrl } from "../utils/media.utils.ts";
 
 export const getMe = async (req: IAuthRequest, res: Response) => {
   try {
@@ -34,11 +35,24 @@ export const updateProfile = async (req: IAuthRequestBody<IUpdateProfileBody>, r
     if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
 
     const { name, avatar_url, cover_url, bio, major, school } = req.body;
+
     const nameValidation = validateName(name);
     if (!nameValidation.success) return res.status(400).json(errorResponse(nameValidation.message));
 
     const bioValidation = validateBio(bio);
     if (!bioValidation.success) return res.status(400).json(errorResponse(bioValidation.message));
+
+    const schoolValidation = validateSchool(school);
+    if (!schoolValidation.success) return res.status(400).json(errorResponse(schoolValidation.message));
+
+    const majorValidation = validateMajor(major);
+    if (!majorValidation.success) return res.status(400).json(errorResponse(majorValidation.message));
+
+    const avatarUrlValidation = validateUrl(avatar_url);
+    if (!avatarUrlValidation.success) return res.status(400).json(errorResponse(avatarUrlValidation.message));
+
+    const coverUrlValidation = validateUrl(cover_url);
+    if (!coverUrlValidation.success) return res.status(400).json(errorResponse(coverUrlValidation.message));
 
     const user = await prisma.user.update({
       where: { id: userId },

@@ -5,6 +5,7 @@ import { ICreateCommunityBody, IJoinMultipleCommunitiesBody, ISuggestCommunities
 import { getRouteParam } from "../utils/request.utils.ts";
 import logger from "../lib/logger.ts";
 import { validateBio, validateName } from "../utils/user.utils.ts";
+import { validateUrl } from "../utils/media.utils.ts";
 
 export const getCommunities = async (req: IAuthRequest, res: Response) => {
     try {
@@ -79,6 +80,13 @@ export const createCommunity = async (
             return res
                 .status(400)
                 .json(errorResponse(descriptionValidation.message));
+        }
+
+        const avatarUrlValidation = validateUrl(avatar_url ?? null);
+        if (!avatarUrlValidation.success) {
+            return res
+                .status(400)
+                .json(errorResponse(avatarUrlValidation.message));
         }
 
         const community = await prisma.community.create({
@@ -170,6 +178,13 @@ export const updateCommunity = async (
             return res
                 .status(400)
                 .json(errorResponse(descriptionValidation.message));
+        }
+
+        const avatarUrlValidation = validateUrl(avatar_url ?? null);
+        if (!avatarUrlValidation.success) {
+            return res
+                .status(400)
+                .json(errorResponse(avatarUrlValidation.message));
         }
 
         await prisma.community.update({
