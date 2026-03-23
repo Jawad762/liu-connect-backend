@@ -91,9 +91,11 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
                     },
                 });
 
-                const pushTokens = await prisma.pushToken.findMany({
-                    where: { userId: parentUserId },
+                const parentUserWithPushToken = await prisma.user.findUnique({
+                    where: { id: parentUserId },
+                    select: { push_token: true },
                 });
+                const pushTokens = parentUserWithPushToken?.push_token ? [parentUserWithPushToken.push_token] : [];
                 enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
                     type: "comment_reply",
                     redirectPath,
@@ -124,9 +126,11 @@ export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, r
                     },
                 });
 
-                const pushTokens = await prisma.pushToken.findMany({
-                    where: { userId: post.userId },
+                const postOwnerWithPushToken = await prisma.user.findUnique({
+                    where: { id: post.userId },
+                    select: { push_token: true },
                 });
+                const pushTokens = postOwnerWithPushToken?.push_token ? [postOwnerWithPushToken.push_token] : [];
                 enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
                     type: "comment_created",
                     redirectPath,
@@ -310,9 +314,11 @@ export const likeComment = async (req: IAuthRequest, res: Response) => {
                 },
             });
 
-            const pushTokens = await prisma.pushToken.findMany({
-                where: { userId: comment.userId },
+            const commentOwnerWithPushToken = await prisma.user.findUnique({
+                where: { id: comment.userId },
+                select: { push_token: true },
             });
+            const pushTokens = commentOwnerWithPushToken?.push_token ? [commentOwnerWithPushToken.push_token] : [];
             enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
                 type: "comment_liked",
                 redirectPath,

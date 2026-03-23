@@ -20,12 +20,12 @@ export interface PushNotificationPayload {
 }
 
 export function enqueuePushNotifications(
-  pushTokens: Array<{ token: string }>,
+  pushTokens: string[],
   title: string,
   body: string,
   data?: PushNotificationPayload,
 ) {
-  pushTokens.forEach(({ token }) => {
+  pushTokens.forEach((token) => {
     notificationQueue
       .add("notification", { token, title, body, data })
       .catch((error: unknown) => {

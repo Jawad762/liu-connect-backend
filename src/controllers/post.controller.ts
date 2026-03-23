@@ -241,9 +241,11 @@ export const likePost = async (req: IAuthRequest, res: Response) => {
                 },
             });
 
-            const pushTokens = await prisma.pushToken.findMany({
-                where: { userId: post.userId },
+            const userWithPushToken = await prisma.user.findUnique({
+                where: { id: post.userId },
+                select: { push_token: true },
             });
+            const pushTokens = userWithPushToken?.push_token ? [userWithPushToken.push_token] : [];
             enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
                 type: "post_liked",
                 redirectPath,

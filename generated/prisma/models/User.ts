@@ -41,6 +41,7 @@ export type UserMinAggregateOutputType = {
   email: string | null
   name: string | null
   avatar_url: string | null
+  cover_url: string | null
   bio: string | null
   school: string | null
   major: string | null
@@ -55,6 +56,7 @@ export type UserMinAggregateOutputType = {
   is_verified: boolean | null
   is_deleted: boolean | null
   deleted_at: Date | null
+  push_token: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -64,6 +66,7 @@ export type UserMaxAggregateOutputType = {
   email: string | null
   name: string | null
   avatar_url: string | null
+  cover_url: string | null
   bio: string | null
   school: string | null
   major: string | null
@@ -78,6 +81,7 @@ export type UserMaxAggregateOutputType = {
   is_verified: boolean | null
   is_deleted: boolean | null
   deleted_at: Date | null
+  push_token: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -87,6 +91,7 @@ export type UserCountAggregateOutputType = {
   email: number
   name: number
   avatar_url: number
+  cover_url: number
   bio: number
   school: number
   major: number
@@ -101,6 +106,7 @@ export type UserCountAggregateOutputType = {
   is_verified: number
   is_deleted: number
   deleted_at: number
+  push_token: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -122,6 +128,7 @@ export type UserMinAggregateInputType = {
   email?: true
   name?: true
   avatar_url?: true
+  cover_url?: true
   bio?: true
   school?: true
   major?: true
@@ -136,6 +143,7 @@ export type UserMinAggregateInputType = {
   is_verified?: true
   is_deleted?: true
   deleted_at?: true
+  push_token?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -145,6 +153,7 @@ export type UserMaxAggregateInputType = {
   email?: true
   name?: true
   avatar_url?: true
+  cover_url?: true
   bio?: true
   school?: true
   major?: true
@@ -159,6 +168,7 @@ export type UserMaxAggregateInputType = {
   is_verified?: true
   is_deleted?: true
   deleted_at?: true
+  push_token?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -168,6 +178,7 @@ export type UserCountAggregateInputType = {
   email?: true
   name?: true
   avatar_url?: true
+  cover_url?: true
   bio?: true
   school?: true
   major?: true
@@ -182,6 +193,7 @@ export type UserCountAggregateInputType = {
   is_verified?: true
   is_deleted?: true
   deleted_at?: true
+  push_token?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -278,6 +290,7 @@ export type UserGroupByOutputType = {
   email: string
   name: string | null
   avatar_url: string | null
+  cover_url: string | null
   bio: string | null
   school: string | null
   major: string | null
@@ -292,6 +305,7 @@ export type UserGroupByOutputType = {
   is_verified: boolean
   is_deleted: boolean
   deleted_at: Date | null
+  push_token: string | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -324,6 +338,7 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   name?: Prisma.StringNullableFilter<"User"> | string | null
   avatar_url?: Prisma.StringNullableFilter<"User"> | string | null
+  cover_url?: Prisma.StringNullableFilter<"User"> | string | null
   bio?: Prisma.StringNullableFilter<"User"> | string | null
   school?: Prisma.StringNullableFilter<"User"> | string | null
   major?: Prisma.StringNullableFilter<"User"> | string | null
@@ -338,6 +353,7 @@ export type UserWhereInput = {
   is_verified?: Prisma.BoolFilter<"User"> | boolean
   is_deleted?: Prisma.BoolFilter<"User"> | boolean
   deleted_at?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  push_token?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   posts?: Prisma.PostListRelationFilter
@@ -349,7 +365,6 @@ export type UserWhereInput = {
   triggeredNotifications?: Prisma.NotificationListRelationFilter
   createdCommunities?: Prisma.CommunityListRelationFilter
   bookmarks?: Prisma.BookmarkListRelationFilter
-  pushTokens?: Prisma.PushTokenListRelationFilter
   followers?: Prisma.UserFollowListRelationFilter
   following?: Prisma.UserFollowListRelationFilter
 }
@@ -359,6 +374,7 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   avatar_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  cover_url?: Prisma.SortOrderInput | Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   school?: Prisma.SortOrderInput | Prisma.SortOrder
   major?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -373,6 +389,7 @@ export type UserOrderByWithRelationInput = {
   is_verified?: Prisma.SortOrder
   is_deleted?: Prisma.SortOrder
   deleted_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  push_token?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   posts?: Prisma.PostOrderByRelationAggregateInput
@@ -384,7 +401,6 @@ export type UserOrderByWithRelationInput = {
   triggeredNotifications?: Prisma.NotificationOrderByRelationAggregateInput
   createdCommunities?: Prisma.CommunityOrderByRelationAggregateInput
   bookmarks?: Prisma.BookmarkOrderByRelationAggregateInput
-  pushTokens?: Prisma.PushTokenOrderByRelationAggregateInput
   followers?: Prisma.UserFollowOrderByRelationAggregateInput
   following?: Prisma.UserFollowOrderByRelationAggregateInput
 }
@@ -397,6 +413,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   name?: Prisma.StringNullableFilter<"User"> | string | null
   avatar_url?: Prisma.StringNullableFilter<"User"> | string | null
+  cover_url?: Prisma.StringNullableFilter<"User"> | string | null
   bio?: Prisma.StringNullableFilter<"User"> | string | null
   school?: Prisma.StringNullableFilter<"User"> | string | null
   major?: Prisma.StringNullableFilter<"User"> | string | null
@@ -411,6 +428,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   is_verified?: Prisma.BoolFilter<"User"> | boolean
   is_deleted?: Prisma.BoolFilter<"User"> | boolean
   deleted_at?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  push_token?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   posts?: Prisma.PostListRelationFilter
@@ -422,7 +440,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   triggeredNotifications?: Prisma.NotificationListRelationFilter
   createdCommunities?: Prisma.CommunityListRelationFilter
   bookmarks?: Prisma.BookmarkListRelationFilter
-  pushTokens?: Prisma.PushTokenListRelationFilter
   followers?: Prisma.UserFollowListRelationFilter
   following?: Prisma.UserFollowListRelationFilter
 }, "id" | "email">
@@ -432,6 +449,7 @@ export type UserOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   avatar_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  cover_url?: Prisma.SortOrderInput | Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   school?: Prisma.SortOrderInput | Prisma.SortOrder
   major?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -446,6 +464,7 @@ export type UserOrderByWithAggregationInput = {
   is_verified?: Prisma.SortOrder
   is_deleted?: Prisma.SortOrder
   deleted_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  push_token?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -463,6 +482,7 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   avatar_url?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  cover_url?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   bio?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   school?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   major?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
@@ -477,6 +497,7 @@ export type UserScalarWhereWithAggregatesInput = {
   is_verified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   is_deleted?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   deleted_at?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  push_token?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -486,6 +507,7 @@ export type UserCreateInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -500,6 +522,7 @@ export type UserCreateInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostCreateNestedManyWithoutUserInput
@@ -511,7 +534,6 @@ export type UserCreateInput = {
   triggeredNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowCreateNestedManyWithoutFollowingInput
 }
@@ -521,6 +543,7 @@ export type UserUncheckedCreateInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -535,6 +558,7 @@ export type UserUncheckedCreateInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutUserInput
@@ -546,7 +570,6 @@ export type UserUncheckedCreateInput = {
   triggeredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkUncheckedCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowingInput
 }
@@ -556,6 +579,7 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -570,6 +594,7 @@ export type UserUpdateInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUpdateManyWithoutUserNestedInput
@@ -581,7 +606,6 @@ export type UserUpdateInput = {
   triggeredNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUpdateManyWithoutFollowingNestedInput
 }
@@ -591,6 +615,7 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -605,6 +630,7 @@ export type UserUncheckedUpdateInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUncheckedUpdateManyWithoutUserNestedInput
@@ -616,7 +642,6 @@ export type UserUncheckedUpdateInput = {
   triggeredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUncheckedUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowingNestedInput
 }
@@ -626,6 +651,7 @@ export type UserCreateManyInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -640,6 +666,7 @@ export type UserCreateManyInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -649,6 +676,7 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -663,6 +691,7 @@ export type UserUpdateManyMutationInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -672,6 +701,7 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -686,6 +716,7 @@ export type UserUncheckedUpdateManyInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -695,6 +726,7 @@ export type UserCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   avatar_url?: Prisma.SortOrder
+  cover_url?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   school?: Prisma.SortOrder
   major?: Prisma.SortOrder
@@ -709,6 +741,7 @@ export type UserCountOrderByAggregateInput = {
   is_verified?: Prisma.SortOrder
   is_deleted?: Prisma.SortOrder
   deleted_at?: Prisma.SortOrder
+  push_token?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -723,6 +756,7 @@ export type UserMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   avatar_url?: Prisma.SortOrder
+  cover_url?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   school?: Prisma.SortOrder
   major?: Prisma.SortOrder
@@ -737,6 +771,7 @@ export type UserMaxOrderByAggregateInput = {
   is_verified?: Prisma.SortOrder
   is_deleted?: Prisma.SortOrder
   deleted_at?: Prisma.SortOrder
+  push_token?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -746,6 +781,7 @@ export type UserMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   avatar_url?: Prisma.SortOrder
+  cover_url?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   school?: Prisma.SortOrder
   major?: Prisma.SortOrder
@@ -760,6 +796,7 @@ export type UserMinOrderByAggregateInput = {
   is_verified?: Prisma.SortOrder
   is_deleted?: Prisma.SortOrder
   deleted_at?: Prisma.SortOrder
+  push_token?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -942,20 +979,6 @@ export type UserUpdateOneRequiredWithoutFollowingNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFollowingInput, Prisma.UserUpdateWithoutFollowingInput>, Prisma.UserUncheckedUpdateWithoutFollowingInput>
 }
 
-export type UserCreateNestedOneWithoutPushTokensInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutPushTokensInput, Prisma.UserUncheckedCreateWithoutPushTokensInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPushTokensInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutPushTokensNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutPushTokensInput, Prisma.UserUncheckedCreateWithoutPushTokensInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPushTokensInput
-  upsert?: Prisma.UserUpsertWithoutPushTokensInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPushTokensInput, Prisma.UserUpdateWithoutPushTokensInput>, Prisma.UserUncheckedUpdateWithoutPushTokensInput>
-}
-
 export type UserCreateNestedOneWithoutBookmarksInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutBookmarksInput, Prisma.UserUncheckedCreateWithoutBookmarksInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutBookmarksInput
@@ -975,6 +998,7 @@ export type UserCreateWithoutPostsInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -989,6 +1013,7 @@ export type UserCreateWithoutPostsInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
@@ -999,7 +1024,6 @@ export type UserCreateWithoutPostsInput = {
   triggeredNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowCreateNestedManyWithoutFollowingInput
 }
@@ -1009,6 +1033,7 @@ export type UserUncheckedCreateWithoutPostsInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -1023,6 +1048,7 @@ export type UserUncheckedCreateWithoutPostsInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
@@ -1033,7 +1059,6 @@ export type UserUncheckedCreateWithoutPostsInput = {
   triggeredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkUncheckedCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowingInput
 }
@@ -1059,6 +1084,7 @@ export type UserUpdateWithoutPostsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1073,6 +1099,7 @@ export type UserUpdateWithoutPostsInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
@@ -1083,7 +1110,6 @@ export type UserUpdateWithoutPostsInput = {
   triggeredNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUpdateManyWithoutFollowingNestedInput
 }
@@ -1093,6 +1119,7 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1107,6 +1134,7 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
@@ -1117,7 +1145,6 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   triggeredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUncheckedUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowingNestedInput
 }
@@ -1127,6 +1154,7 @@ export type UserCreateWithoutCommentsInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -1141,6 +1169,7 @@ export type UserCreateWithoutCommentsInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostCreateNestedManyWithoutUserInput
@@ -1151,7 +1180,6 @@ export type UserCreateWithoutCommentsInput = {
   triggeredNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowCreateNestedManyWithoutFollowingInput
 }
@@ -1161,6 +1189,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -1175,6 +1204,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutUserInput
@@ -1185,7 +1215,6 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   triggeredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkUncheckedCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowingInput
 }
@@ -1211,6 +1240,7 @@ export type UserUpdateWithoutCommentsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1225,6 +1255,7 @@ export type UserUpdateWithoutCommentsInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUpdateManyWithoutUserNestedInput
@@ -1235,7 +1266,6 @@ export type UserUpdateWithoutCommentsInput = {
   triggeredNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUpdateManyWithoutFollowingNestedInput
 }
@@ -1245,6 +1275,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1259,6 +1290,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUncheckedUpdateManyWithoutUserNestedInput
@@ -1269,7 +1301,6 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   triggeredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUncheckedUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowingNestedInput
 }
@@ -1279,6 +1310,7 @@ export type UserCreateWithoutCreatedCommunitiesInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -1293,6 +1325,7 @@ export type UserCreateWithoutCreatedCommunitiesInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostCreateNestedManyWithoutUserInput
@@ -1303,7 +1336,6 @@ export type UserCreateWithoutCreatedCommunitiesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   triggeredNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   bookmarks?: Prisma.BookmarkCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowCreateNestedManyWithoutFollowingInput
 }
@@ -1313,6 +1345,7 @@ export type UserUncheckedCreateWithoutCreatedCommunitiesInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -1327,6 +1360,7 @@ export type UserUncheckedCreateWithoutCreatedCommunitiesInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutUserInput
@@ -1337,7 +1371,6 @@ export type UserUncheckedCreateWithoutCreatedCommunitiesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   triggeredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   bookmarks?: Prisma.BookmarkUncheckedCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowingInput
 }
@@ -1363,6 +1396,7 @@ export type UserUpdateWithoutCreatedCommunitiesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1377,6 +1411,7 @@ export type UserUpdateWithoutCreatedCommunitiesInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUpdateManyWithoutUserNestedInput
@@ -1387,7 +1422,6 @@ export type UserUpdateWithoutCreatedCommunitiesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   triggeredNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   bookmarks?: Prisma.BookmarkUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUpdateManyWithoutFollowingNestedInput
 }
@@ -1397,6 +1431,7 @@ export type UserUncheckedUpdateWithoutCreatedCommunitiesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1411,6 +1446,7 @@ export type UserUncheckedUpdateWithoutCreatedCommunitiesInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUncheckedUpdateManyWithoutUserNestedInput
@@ -1421,7 +1457,6 @@ export type UserUncheckedUpdateWithoutCreatedCommunitiesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   triggeredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   bookmarks?: Prisma.BookmarkUncheckedUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowingNestedInput
 }
@@ -1431,6 +1466,7 @@ export type UserCreateWithoutCommunitiesInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -1445,6 +1481,7 @@ export type UserCreateWithoutCommunitiesInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostCreateNestedManyWithoutUserInput
@@ -1455,7 +1492,6 @@ export type UserCreateWithoutCommunitiesInput = {
   triggeredNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowCreateNestedManyWithoutFollowingInput
 }
@@ -1465,6 +1501,7 @@ export type UserUncheckedCreateWithoutCommunitiesInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -1479,6 +1516,7 @@ export type UserUncheckedCreateWithoutCommunitiesInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutUserInput
@@ -1489,7 +1527,6 @@ export type UserUncheckedCreateWithoutCommunitiesInput = {
   triggeredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkUncheckedCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowingInput
 }
@@ -1515,6 +1552,7 @@ export type UserUpdateWithoutCommunitiesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1529,6 +1567,7 @@ export type UserUpdateWithoutCommunitiesInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUpdateManyWithoutUserNestedInput
@@ -1539,7 +1578,6 @@ export type UserUpdateWithoutCommunitiesInput = {
   triggeredNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUpdateManyWithoutFollowingNestedInput
 }
@@ -1549,6 +1587,7 @@ export type UserUncheckedUpdateWithoutCommunitiesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1563,6 +1602,7 @@ export type UserUncheckedUpdateWithoutCommunitiesInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUncheckedUpdateManyWithoutUserNestedInput
@@ -1573,7 +1613,6 @@ export type UserUncheckedUpdateWithoutCommunitiesInput = {
   triggeredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUncheckedUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowingNestedInput
 }
@@ -1583,6 +1622,7 @@ export type UserCreateWithoutPostLikesInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -1597,6 +1637,7 @@ export type UserCreateWithoutPostLikesInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostCreateNestedManyWithoutUserInput
@@ -1607,7 +1648,6 @@ export type UserCreateWithoutPostLikesInput = {
   triggeredNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowCreateNestedManyWithoutFollowingInput
 }
@@ -1617,6 +1657,7 @@ export type UserUncheckedCreateWithoutPostLikesInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -1631,6 +1672,7 @@ export type UserUncheckedCreateWithoutPostLikesInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutUserInput
@@ -1641,7 +1683,6 @@ export type UserUncheckedCreateWithoutPostLikesInput = {
   triggeredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkUncheckedCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowingInput
 }
@@ -1667,6 +1708,7 @@ export type UserUpdateWithoutPostLikesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1681,6 +1723,7 @@ export type UserUpdateWithoutPostLikesInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUpdateManyWithoutUserNestedInput
@@ -1691,7 +1734,6 @@ export type UserUpdateWithoutPostLikesInput = {
   triggeredNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUpdateManyWithoutFollowingNestedInput
 }
@@ -1701,6 +1743,7 @@ export type UserUncheckedUpdateWithoutPostLikesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1715,6 +1758,7 @@ export type UserUncheckedUpdateWithoutPostLikesInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUncheckedUpdateManyWithoutUserNestedInput
@@ -1725,7 +1769,6 @@ export type UserUncheckedUpdateWithoutPostLikesInput = {
   triggeredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUncheckedUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowingNestedInput
 }
@@ -1735,6 +1778,7 @@ export type UserCreateWithoutCommentLikesInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -1749,6 +1793,7 @@ export type UserCreateWithoutCommentLikesInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostCreateNestedManyWithoutUserInput
@@ -1759,7 +1804,6 @@ export type UserCreateWithoutCommentLikesInput = {
   triggeredNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowCreateNestedManyWithoutFollowingInput
 }
@@ -1769,6 +1813,7 @@ export type UserUncheckedCreateWithoutCommentLikesInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -1783,6 +1828,7 @@ export type UserUncheckedCreateWithoutCommentLikesInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutUserInput
@@ -1793,7 +1839,6 @@ export type UserUncheckedCreateWithoutCommentLikesInput = {
   triggeredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkUncheckedCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowingInput
 }
@@ -1819,6 +1864,7 @@ export type UserUpdateWithoutCommentLikesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1833,6 +1879,7 @@ export type UserUpdateWithoutCommentLikesInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUpdateManyWithoutUserNestedInput
@@ -1843,7 +1890,6 @@ export type UserUpdateWithoutCommentLikesInput = {
   triggeredNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUpdateManyWithoutFollowingNestedInput
 }
@@ -1853,6 +1899,7 @@ export type UserUncheckedUpdateWithoutCommentLikesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1867,6 +1914,7 @@ export type UserUncheckedUpdateWithoutCommentLikesInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUncheckedUpdateManyWithoutUserNestedInput
@@ -1877,7 +1925,6 @@ export type UserUncheckedUpdateWithoutCommentLikesInput = {
   triggeredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUncheckedUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowingNestedInput
 }
@@ -1887,6 +1934,7 @@ export type UserCreateWithoutNotificationsInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -1901,6 +1949,7 @@ export type UserCreateWithoutNotificationsInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostCreateNestedManyWithoutUserInput
@@ -1911,7 +1960,6 @@ export type UserCreateWithoutNotificationsInput = {
   triggeredNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowCreateNestedManyWithoutFollowingInput
 }
@@ -1921,6 +1969,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -1935,6 +1984,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutUserInput
@@ -1945,7 +1995,6 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   triggeredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkUncheckedCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowingInput
 }
@@ -1960,6 +2009,7 @@ export type UserCreateWithoutTriggeredNotificationsInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -1974,6 +2024,7 @@ export type UserCreateWithoutTriggeredNotificationsInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostCreateNestedManyWithoutUserInput
@@ -1984,7 +2035,6 @@ export type UserCreateWithoutTriggeredNotificationsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   createdCommunities?: Prisma.CommunityCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowCreateNestedManyWithoutFollowingInput
 }
@@ -1994,6 +2044,7 @@ export type UserUncheckedCreateWithoutTriggeredNotificationsInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -2008,6 +2059,7 @@ export type UserUncheckedCreateWithoutTriggeredNotificationsInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutUserInput
@@ -2018,7 +2070,6 @@ export type UserUncheckedCreateWithoutTriggeredNotificationsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   createdCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkUncheckedCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowingInput
 }
@@ -2044,6 +2095,7 @@ export type UserUpdateWithoutNotificationsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2058,6 +2110,7 @@ export type UserUpdateWithoutNotificationsInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUpdateManyWithoutUserNestedInput
@@ -2068,7 +2121,6 @@ export type UserUpdateWithoutNotificationsInput = {
   triggeredNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUpdateManyWithoutFollowingNestedInput
 }
@@ -2078,6 +2130,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2092,6 +2145,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUncheckedUpdateManyWithoutUserNestedInput
@@ -2102,7 +2156,6 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   triggeredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUncheckedUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowingNestedInput
 }
@@ -2123,6 +2176,7 @@ export type UserUpdateWithoutTriggeredNotificationsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2137,6 +2191,7 @@ export type UserUpdateWithoutTriggeredNotificationsInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUpdateManyWithoutUserNestedInput
@@ -2147,7 +2202,6 @@ export type UserUpdateWithoutTriggeredNotificationsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   createdCommunities?: Prisma.CommunityUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUpdateManyWithoutFollowingNestedInput
 }
@@ -2157,6 +2211,7 @@ export type UserUncheckedUpdateWithoutTriggeredNotificationsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2171,6 +2226,7 @@ export type UserUncheckedUpdateWithoutTriggeredNotificationsInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUncheckedUpdateManyWithoutUserNestedInput
@@ -2181,7 +2237,6 @@ export type UserUncheckedUpdateWithoutTriggeredNotificationsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   createdCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUncheckedUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowingNestedInput
 }
@@ -2191,6 +2246,7 @@ export type UserCreateWithoutFollowersInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -2205,6 +2261,7 @@ export type UserCreateWithoutFollowersInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostCreateNestedManyWithoutUserInput
@@ -2216,7 +2273,6 @@ export type UserCreateWithoutFollowersInput = {
   triggeredNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   following?: Prisma.UserFollowCreateNestedManyWithoutFollowingInput
 }
 
@@ -2225,6 +2281,7 @@ export type UserUncheckedCreateWithoutFollowersInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -2239,6 +2296,7 @@ export type UserUncheckedCreateWithoutFollowersInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutUserInput
@@ -2250,7 +2308,6 @@ export type UserUncheckedCreateWithoutFollowersInput = {
   triggeredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkUncheckedCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   following?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowingInput
 }
 
@@ -2264,6 +2321,7 @@ export type UserCreateWithoutFollowingInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -2278,6 +2336,7 @@ export type UserCreateWithoutFollowingInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostCreateNestedManyWithoutUserInput
@@ -2289,7 +2348,6 @@ export type UserCreateWithoutFollowingInput = {
   triggeredNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowCreateNestedManyWithoutFollowerInput
 }
 
@@ -2298,6 +2356,7 @@ export type UserUncheckedCreateWithoutFollowingInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -2312,6 +2371,7 @@ export type UserUncheckedCreateWithoutFollowingInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutUserInput
@@ -2323,7 +2383,6 @@ export type UserUncheckedCreateWithoutFollowingInput = {
   triggeredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutCreatedByInput
   bookmarks?: Prisma.BookmarkUncheckedCreateNestedManyWithoutUserInput
-  pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowerInput
 }
 
@@ -2348,6 +2407,7 @@ export type UserUpdateWithoutFollowersInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2362,6 +2422,7 @@ export type UserUpdateWithoutFollowersInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUpdateManyWithoutUserNestedInput
@@ -2373,7 +2434,6 @@ export type UserUpdateWithoutFollowersInput = {
   triggeredNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   following?: Prisma.UserFollowUpdateManyWithoutFollowingNestedInput
 }
 
@@ -2382,6 +2442,7 @@ export type UserUncheckedUpdateWithoutFollowersInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2396,6 +2457,7 @@ export type UserUncheckedUpdateWithoutFollowersInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUncheckedUpdateManyWithoutUserNestedInput
@@ -2407,7 +2469,6 @@ export type UserUncheckedUpdateWithoutFollowersInput = {
   triggeredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUncheckedUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   following?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowingNestedInput
 }
 
@@ -2427,6 +2488,7 @@ export type UserUpdateWithoutFollowingInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2441,6 +2503,7 @@ export type UserUpdateWithoutFollowingInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUpdateManyWithoutUserNestedInput
@@ -2452,7 +2515,6 @@ export type UserUpdateWithoutFollowingInput = {
   triggeredNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUpdateManyWithoutFollowerNestedInput
 }
 
@@ -2461,6 +2523,7 @@ export type UserUncheckedUpdateWithoutFollowingInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2475,158 +2538,7 @@ export type UserUncheckedUpdateWithoutFollowingInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  posts?: Prisma.PostUncheckedUpdateManyWithoutUserNestedInput
-  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
-  communities?: Prisma.CommunityMemberUncheckedUpdateManyWithoutUserNestedInput
-  postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
-  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
-  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
-  triggeredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
-  createdCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutCreatedByNestedInput
-  bookmarks?: Prisma.BookmarkUncheckedUpdateManyWithoutUserNestedInput
-  pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
-  followers?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowerNestedInput
-}
-
-export type UserCreateWithoutPushTokensInput = {
-  id?: string
-  email: string
-  name?: string | null
-  avatar_url?: string | null
-  bio?: string | null
-  school?: string | null
-  major?: string | null
-  followers_count?: number
-  following_count?: number
-  password: string
-  refresh_token?: string | null
-  reset_password_token?: string | null
-  reset_password_expires?: Date | string | null
-  verify_email_token?: string | null
-  verify_email_expires?: Date | string | null
-  is_verified?: boolean
-  is_deleted?: boolean
-  deleted_at?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  posts?: Prisma.PostCreateNestedManyWithoutUserInput
-  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
-  communities?: Prisma.CommunityMemberCreateNestedManyWithoutUserInput
-  postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
-  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
-  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
-  triggeredNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
-  createdCommunities?: Prisma.CommunityCreateNestedManyWithoutCreatedByInput
-  bookmarks?: Prisma.BookmarkCreateNestedManyWithoutUserInput
-  followers?: Prisma.UserFollowCreateNestedManyWithoutFollowerInput
-  following?: Prisma.UserFollowCreateNestedManyWithoutFollowingInput
-}
-
-export type UserUncheckedCreateWithoutPushTokensInput = {
-  id?: string
-  email: string
-  name?: string | null
-  avatar_url?: string | null
-  bio?: string | null
-  school?: string | null
-  major?: string | null
-  followers_count?: number
-  following_count?: number
-  password: string
-  refresh_token?: string | null
-  reset_password_token?: string | null
-  reset_password_expires?: Date | string | null
-  verify_email_token?: string | null
-  verify_email_expires?: Date | string | null
-  is_verified?: boolean
-  is_deleted?: boolean
-  deleted_at?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutUserInput
-  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
-  communities?: Prisma.CommunityMemberUncheckedCreateNestedManyWithoutUserInput
-  postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
-  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
-  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
-  triggeredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
-  createdCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutCreatedByInput
-  bookmarks?: Prisma.BookmarkUncheckedCreateNestedManyWithoutUserInput
-  followers?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowerInput
-  following?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowingInput
-}
-
-export type UserCreateOrConnectWithoutPushTokensInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutPushTokensInput, Prisma.UserUncheckedCreateWithoutPushTokensInput>
-}
-
-export type UserUpsertWithoutPushTokensInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutPushTokensInput, Prisma.UserUncheckedUpdateWithoutPushTokensInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutPushTokensInput, Prisma.UserUncheckedCreateWithoutPushTokensInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutPushTokensInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutPushTokensInput, Prisma.UserUncheckedUpdateWithoutPushTokensInput>
-}
-
-export type UserUpdateWithoutPushTokensInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  followers_count?: Prisma.IntFieldUpdateOperationsInput | number
-  following_count?: Prisma.IntFieldUpdateOperationsInput | number
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  refresh_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reset_password_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reset_password_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verify_email_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verify_email_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  posts?: Prisma.PostUpdateManyWithoutUserNestedInput
-  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
-  communities?: Prisma.CommunityMemberUpdateManyWithoutUserNestedInput
-  postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
-  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
-  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
-  triggeredNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
-  createdCommunities?: Prisma.CommunityUpdateManyWithoutCreatedByNestedInput
-  bookmarks?: Prisma.BookmarkUpdateManyWithoutUserNestedInput
-  followers?: Prisma.UserFollowUpdateManyWithoutFollowerNestedInput
-  following?: Prisma.UserFollowUpdateManyWithoutFollowingNestedInput
-}
-
-export type UserUncheckedUpdateWithoutPushTokensInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  followers_count?: Prisma.IntFieldUpdateOperationsInput | number
-  following_count?: Prisma.IntFieldUpdateOperationsInput | number
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  refresh_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reset_password_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reset_password_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  verify_email_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verify_email_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUncheckedUpdateManyWithoutUserNestedInput
@@ -2639,7 +2551,6 @@ export type UserUncheckedUpdateWithoutPushTokensInput = {
   createdCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutCreatedByNestedInput
   bookmarks?: Prisma.BookmarkUncheckedUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowerNestedInput
-  following?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowingNestedInput
 }
 
 export type UserCreateWithoutBookmarksInput = {
@@ -2647,6 +2558,7 @@ export type UserCreateWithoutBookmarksInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -2661,6 +2573,7 @@ export type UserCreateWithoutBookmarksInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostCreateNestedManyWithoutUserInput
@@ -2671,7 +2584,6 @@ export type UserCreateWithoutBookmarksInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   triggeredNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityCreateNestedManyWithoutCreatedByInput
-  pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowCreateNestedManyWithoutFollowingInput
 }
@@ -2681,6 +2593,7 @@ export type UserUncheckedCreateWithoutBookmarksInput = {
   email: string
   name?: string | null
   avatar_url?: string | null
+  cover_url?: string | null
   bio?: string | null
   school?: string | null
   major?: string | null
@@ -2695,6 +2608,7 @@ export type UserUncheckedCreateWithoutBookmarksInput = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: Date | string | null
+  push_token?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutUserInput
@@ -2705,7 +2619,6 @@ export type UserUncheckedCreateWithoutBookmarksInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   triggeredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   createdCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutCreatedByInput
-  pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   followers?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowerInput
   following?: Prisma.UserFollowUncheckedCreateNestedManyWithoutFollowingInput
 }
@@ -2731,6 +2644,7 @@ export type UserUpdateWithoutBookmarksInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2745,6 +2659,7 @@ export type UserUpdateWithoutBookmarksInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUpdateManyWithoutUserNestedInput
@@ -2755,7 +2670,6 @@ export type UserUpdateWithoutBookmarksInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   triggeredNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUpdateManyWithoutCreatedByNestedInput
-  pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUpdateManyWithoutFollowingNestedInput
 }
@@ -2765,6 +2679,7 @@ export type UserUncheckedUpdateWithoutBookmarksInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   major?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2779,6 +2694,7 @@ export type UserUncheckedUpdateWithoutBookmarksInput = {
   is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   posts?: Prisma.PostUncheckedUpdateManyWithoutUserNestedInput
@@ -2789,7 +2705,6 @@ export type UserUncheckedUpdateWithoutBookmarksInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   triggeredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   createdCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutCreatedByNestedInput
-  pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   followers?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowerNestedInput
   following?: Prisma.UserFollowUncheckedUpdateManyWithoutFollowingNestedInput
 }
@@ -2809,7 +2724,6 @@ export type UserCountOutputType = {
   triggeredNotifications: number
   createdCommunities: number
   bookmarks: number
-  pushTokens: number
   followers: number
   following: number
 }
@@ -2824,7 +2738,6 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   triggeredNotifications?: boolean | UserCountOutputTypeCountTriggeredNotificationsArgs
   createdCommunities?: boolean | UserCountOutputTypeCountCreatedCommunitiesArgs
   bookmarks?: boolean | UserCountOutputTypeCountBookmarksArgs
-  pushTokens?: boolean | UserCountOutputTypeCountPushTokensArgs
   followers?: boolean | UserCountOutputTypeCountFollowersArgs
   following?: boolean | UserCountOutputTypeCountFollowingArgs
 }
@@ -2905,13 +2818,6 @@ export type UserCountOutputTypeCountBookmarksArgs<ExtArgs extends runtime.Types.
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountPushTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.PushTokenWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
 export type UserCountOutputTypeCountFollowersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.UserFollowWhereInput
 }
@@ -2929,6 +2835,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   email?: boolean
   name?: boolean
   avatar_url?: boolean
+  cover_url?: boolean
   bio?: boolean
   school?: boolean
   major?: boolean
@@ -2943,6 +2850,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: boolean
+  push_token?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   posts?: boolean | Prisma.User$postsArgs<ExtArgs>
@@ -2954,7 +2862,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   triggeredNotifications?: boolean | Prisma.User$triggeredNotificationsArgs<ExtArgs>
   createdCommunities?: boolean | Prisma.User$createdCommunitiesArgs<ExtArgs>
   bookmarks?: boolean | Prisma.User$bookmarksArgs<ExtArgs>
-  pushTokens?: boolean | Prisma.User$pushTokensArgs<ExtArgs>
   followers?: boolean | Prisma.User$followersArgs<ExtArgs>
   following?: boolean | Prisma.User$followingArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -2965,6 +2872,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   name?: boolean
   avatar_url?: boolean
+  cover_url?: boolean
   bio?: boolean
   school?: boolean
   major?: boolean
@@ -2979,6 +2887,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: boolean
+  push_token?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -2988,6 +2897,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   name?: boolean
   avatar_url?: boolean
+  cover_url?: boolean
   bio?: boolean
   school?: boolean
   major?: boolean
@@ -3002,6 +2912,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: boolean
+  push_token?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -3011,6 +2922,7 @@ export type UserSelectScalar = {
   email?: boolean
   name?: boolean
   avatar_url?: boolean
+  cover_url?: boolean
   bio?: boolean
   school?: boolean
   major?: boolean
@@ -3025,11 +2937,12 @@ export type UserSelectScalar = {
   is_verified?: boolean
   is_deleted?: boolean
   deleted_at?: boolean
+  push_token?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "avatar_url" | "bio" | "school" | "major" | "followers_count" | "following_count" | "password" | "refresh_token" | "reset_password_token" | "reset_password_expires" | "verify_email_token" | "verify_email_expires" | "is_verified" | "is_deleted" | "deleted_at" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "avatar_url" | "cover_url" | "bio" | "school" | "major" | "followers_count" | "following_count" | "password" | "refresh_token" | "reset_password_token" | "reset_password_expires" | "verify_email_token" | "verify_email_expires" | "is_verified" | "is_deleted" | "deleted_at" | "push_token" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   posts?: boolean | Prisma.User$postsArgs<ExtArgs>
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
@@ -3040,7 +2953,6 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   triggeredNotifications?: boolean | Prisma.User$triggeredNotificationsArgs<ExtArgs>
   createdCommunities?: boolean | Prisma.User$createdCommunitiesArgs<ExtArgs>
   bookmarks?: boolean | Prisma.User$bookmarksArgs<ExtArgs>
-  pushTokens?: boolean | Prisma.User$pushTokensArgs<ExtArgs>
   followers?: boolean | Prisma.User$followersArgs<ExtArgs>
   following?: boolean | Prisma.User$followingArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -3060,7 +2972,6 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     triggeredNotifications: Prisma.$NotificationPayload<ExtArgs>[]
     createdCommunities: Prisma.$CommunityPayload<ExtArgs>[]
     bookmarks: Prisma.$BookmarkPayload<ExtArgs>[]
-    pushTokens: Prisma.$PushTokenPayload<ExtArgs>[]
     followers: Prisma.$UserFollowPayload<ExtArgs>[]
     following: Prisma.$UserFollowPayload<ExtArgs>[]
   }
@@ -3069,6 +2980,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     email: string
     name: string | null
     avatar_url: string | null
+    cover_url: string | null
     bio: string | null
     school: string | null
     major: string | null
@@ -3083,6 +2995,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     is_verified: boolean
     is_deleted: boolean
     deleted_at: Date | null
+    push_token: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -3488,7 +3401,6 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   triggeredNotifications<T extends Prisma.User$triggeredNotificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$triggeredNotificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdCommunities<T extends Prisma.User$createdCommunitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdCommunitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommunityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   bookmarks<T extends Prisma.User$bookmarksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$bookmarksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookmarkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  pushTokens<T extends Prisma.User$pushTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$pushTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PushTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   followers<T extends Prisma.User$followersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$followersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserFollowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   following<T extends Prisma.User$followingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$followingArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserFollowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -3524,6 +3436,7 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly name: Prisma.FieldRef<"User", 'String'>
   readonly avatar_url: Prisma.FieldRef<"User", 'String'>
+  readonly cover_url: Prisma.FieldRef<"User", 'String'>
   readonly bio: Prisma.FieldRef<"User", 'String'>
   readonly school: Prisma.FieldRef<"User", 'String'>
   readonly major: Prisma.FieldRef<"User", 'String'>
@@ -3538,6 +3451,7 @@ export interface UserFieldRefs {
   readonly is_verified: Prisma.FieldRef<"User", 'Boolean'>
   readonly is_deleted: Prisma.FieldRef<"User", 'Boolean'>
   readonly deleted_at: Prisma.FieldRef<"User", 'DateTime'>
+  readonly push_token: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
@@ -4141,30 +4055,6 @@ export type User$bookmarksArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.BookmarkScalarFieldEnum | Prisma.BookmarkScalarFieldEnum[]
-}
-
-/**
- * User.pushTokens
- */
-export type User$pushTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the PushToken
-   */
-  select?: Prisma.PushTokenSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the PushToken
-   */
-  omit?: Prisma.PushTokenOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.PushTokenInclude<ExtArgs> | null
-  where?: Prisma.PushTokenWhereInput
-  orderBy?: Prisma.PushTokenOrderByWithRelationInput | Prisma.PushTokenOrderByWithRelationInput[]
-  cursor?: Prisma.PushTokenWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.PushTokenScalarFieldEnum | Prisma.PushTokenScalarFieldEnum[]
 }
 
 /**

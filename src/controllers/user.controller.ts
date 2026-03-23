@@ -33,7 +33,7 @@ export const updateProfile = async (req: IAuthRequestBody<IUpdateProfileBody>, r
     const userId = req.user?.id;
     if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
 
-    const { name, avatar_url, bio } = req.body;
+    const { name, avatar_url, cover_url, bio, major, school } = req.body;
     const nameValidation = validateName(name);
     if (!nameValidation.success) return res.status(400).json(errorResponse(nameValidation.message));
 
@@ -42,7 +42,7 @@ export const updateProfile = async (req: IAuthRequestBody<IUpdateProfileBody>, r
 
     const user = await prisma.user.update({
       where: { id: userId },
-      data: { name, avatar_url, bio },
+      data: { name, avatar_url, cover_url, bio, major, school },
     });
     res.status(200).json(successResponse(toProfileSelf(user)));
   } catch (error) {
@@ -120,9 +120,11 @@ export const followUser = async (req: IAuthRequest, res: Response) => {
       },
     });
 
-    const pushTokens = await prisma.pushToken.findMany({
-      where: { userId: targetUser.id },
+    const targetUserWithPushToken = await prisma.user.findUnique({
+      where: { id: targetUser.id },
+      select: { push_token: true },
     });
+    const pushTokens = targetUserWithPushToken?.push_token ? [targetUserWithPushToken.push_token] : [];
     
     enqueuePushNotifications(pushTokens, notificationTitle, notificationBody, {
       type: "user_followed",
@@ -265,12 +267,9 @@ export const addPushToken = async (req: IAuthRequestBody<IAddPushTokenBody>, res
     const normalizedToken = token.trim();
     if (!normalizedToken) return res.status(400).json(errorResponse("Token is required"));
 
-    // `PushToken.token` is unique in the schema; use `upsert` so re-registering
-    // the same device token doesn't throw a unique constraint error.
-    await prisma.pushToken.upsert({
-      where: { token: normalizedToken },
-      update: { userId },
-      create: { token: normalizedToken, userId },
+    await prisma.user.update({
+      where: { id: userId },
+      data: { push_token: normalizedToken },
     });
 
     return res.status(201).json(successResponse(undefined, "Push token added"));
@@ -322,7 +321,7 @@ export const deleteMyAccount = async (req: IAuthRequestBody<IDeleteMyAccountBody
 
     await prisma.user.update({
       where: { id: userId },
-      data: { is_deleted: true, deleted_at: new Date(), refresh_token: null },
+      data: { is_deleted: true, deleted_at: new Date(), refresh_token: null, push_token: null },
     });
 
     return res.status(200).json(successResponse(undefined, "Account deleted"));

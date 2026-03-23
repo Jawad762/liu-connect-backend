@@ -5,6 +5,7 @@ export function toProfileSelf(user: {
   email: string;
   name: string | null;
   avatar_url: string | null;
+  cover_url: string | null;
   bio: string | null;
   school: string | null;
   major: string | null;
@@ -18,6 +19,7 @@ export function toProfileSelf(user: {
     email: user.email,
     name: user.name,
     avatar_url: user.avatar_url,
+    cover_url: user.cover_url,
     bio: user.bio,
     school: user.school,
     major: user.major,
@@ -33,6 +35,7 @@ export function toProfile(
     id: string;
     name: string | null;
     avatar_url: string | null;
+    cover_url: string | null;
     bio: string | null;
     school: string | null;
     major: string | null;

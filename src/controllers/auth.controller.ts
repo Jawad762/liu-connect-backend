@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { errorResponse, IRequestBody, successResponse } from "../dtos/base.dto.ts";
+import { errorResponse, IAuthRequest, IRequestBody, successResponse } from "../dtos/base.dto.ts";
 import {
   generateVerificationCode,
   sendPasswordResetEmail,
@@ -38,12 +38,14 @@ export const signUp = async (req: IRequestBody<ISignUpBody>, res: Response) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const verificationCode = generateVerificationCode();
     const codeExpiration = new Date(Date.now() + 5 * 60 * 1000);
+    const name = email.split('@')[0] ?? null;
     const user = await prisma.user.create({
       data: {
         email,
         password: hashedPassword,
         verify_email_token: verificationCode,
         verify_email_expires: codeExpiration,
+        name,
       },
     });
     await sendVerificationEmail(user.email, verificationCode);
@@ -53,6 +55,7 @@ export const signUp = async (req: IRequestBody<ISignUpBody>, res: Response) => {
       email: user.email,
       name: user.name,
       avatar_url: user.avatar_url,
+      cover_url: user.cover_url,
       bio: user.bio,
       school: user.school,
       major: user.major,
@@ -93,6 +96,7 @@ export const signIn = async (req: IRequestBody<ISignInBody>, res: Response) => {
       email: user.email,
       name: user.name,
       avatar_url: user.avatar_url,
+      cover_url: user.cover_url,
       bio: user.bio,
       school: user.school,
       major: user.major,
@@ -102,24 +106,22 @@ export const signIn = async (req: IRequestBody<ISignInBody>, res: Response) => {
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
-    res.status(200).json(successResponse({ user: responseUser, accessToken, refreshToken }, 'Signed in successfully'));
+    const onboardingComplete = user.name !== null && user.school !== null && user.major !== null;
+    res.status(200).json(successResponse({ user: responseUser, accessToken, refreshToken, onboardingComplete }, 'Signed in successfully'));
   } catch (error) {
     logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse('Internal server error'));
   }
 };
 
-export const signOut = async (req: IRequestBody<ISignOutBody>, res: Response) => {
+export const signOut = async (req: IAuthRequest, res: Response) => {
   try {
-    const { refreshToken } = req.body;
-    if (!refreshToken) return res.status(401).json(errorResponse('Unauthorized'));
-    const decoded = jwt.verify(refreshToken, config.REFRESH_TOKEN_SECRET) as JwtPayload;
-    if (!decoded) return res.status(401).json(errorResponse('Unauthorized'));
-    const user = await prisma.user.findUnique({ where: { id: decoded.id } });
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json(errorResponse('Unauthorized'));
+    const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) return res.status(401).json(errorResponse('Unauthorized'));
-    if (user.refresh_token === refreshToken) {
-      await prisma.user.update({ where: { id: user.id }, data: { refresh_token: null } });
-    }
+    await prisma.user.update({ where: { id: user.id }, data: { refresh_token: null, push_token: null } });
+
     res.status(200).json(successResponse(undefined, 'Signed out successfully'));
   } catch (error) {
     logger.error({ err: error, method: req.method, path: req.path }, "Request failed");

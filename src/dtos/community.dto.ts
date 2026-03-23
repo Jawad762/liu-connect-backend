@@ -10,3 +10,10 @@ export interface IUpdateCommunityBody {
   avatar_url?: string | null;
 }
 
+export interface ISuggestCommunitiesBody {
+  courseCodes: string[];
+}
+
+export interface IJoinMultipleCommunitiesBody {
+  communityIds: string[];
+}

@@ -15,6 +15,7 @@ const envSchema = z.object({
   REDIS_URL: z.string().min(1, 'REDIS_URL is required').default('redis://localhost:6379'),
   UPLOADTHING_TOKEN: z.string().min(1, 'UPLOADTHING_TOKEN is required'),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
+  OPENAI_API_KEY: z.string().min(1, 'OPENAI_API_KEY is required'),
 });
 
 const parseEnv = () => {
@@ -43,6 +44,7 @@ const config = {
   FIREBASE_SERVICE_ACCOUNT: env.FIREBASE_SERVICE_ACCOUNT,
   REDIS_URL: env.REDIS_URL,
   UPLOADTHING_TOKEN: env.UPLOADTHING_TOKEN,
+  OPENAI_API_KEY: env.OPENAI_API_KEY,
   LOG_LEVEL: env.LOG_LEVEL,
 };
 

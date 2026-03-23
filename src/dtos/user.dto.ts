@@ -1,13 +1,17 @@
 export interface IUpdateProfileBody {
   name: string;
   avatar_url: string | null;
+  cover_url: string | null;
   bio: string | null;
+  major: string | null;
+  school: string | null;
 }
 
 export interface IUserProfile {
   id: string;
   name: string | null;
   avatar_url: string | null;
+  cover_url: string | null;
   bio: string | null;
   school: string | null;
   major: string | null;

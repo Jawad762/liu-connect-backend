@@ -16,6 +16,7 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import { uploadthingRouter } from './lib/uploadthing.ts';
 import { RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX, AUTH_RATE_LIMIT_WINDOW_MS, AUTH_RATE_LIMIT_MAX } from './constants.ts';
+import aiRoutes from './routes/ai.routes.ts';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -51,6 +52,7 @@ app.use('/api/notifications', rateLimiter, notificationRoutes);
 app.use('/api/posts', rateLimiter, postRoutes);
 app.use('/api/comments', rateLimiter, commentRoutes);
 app.use('/api/communities', rateLimiter, communityRoutes);
+app.use('/api/ai', rateLimiter, aiRoutes);
 app.use("/api/uploadthing", uploadthingRouter);
 
 app.use((_req, _res, next) => {

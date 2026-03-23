@@ -62,7 +62,6 @@ export const ModelName = {
   PostMedia: 'PostMedia',
   CommentMedia: 'CommentMedia',
   UserFollow: 'UserFollow',
-  PushToken: 'PushToken',
   Bookmark: 'Bookmark'
 } as const
 
@@ -87,6 +86,7 @@ export const UserScalarFieldEnum = {
   email: 'email',
   name: 'name',
   avatar_url: 'avatar_url',
+  cover_url: 'cover_url',
   bio: 'bio',
   school: 'school',
   major: 'major',
@@ -101,6 +101,7 @@ export const UserScalarFieldEnum = {
   is_verified: 'is_verified',
   is_deleted: 'is_deleted',
   deleted_at: 'deleted_at',
+  push_token: 'push_token',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -241,17 +242,6 @@ export const UserFollowScalarFieldEnum = {
 } as const
 
 export type UserFollowScalarFieldEnum = (typeof UserFollowScalarFieldEnum)[keyof typeof UserFollowScalarFieldEnum]
-
-
-export const PushTokenScalarFieldEnum = {
-  id: 'id',
-  token: 'token',
-  userId: 'userId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type PushTokenScalarFieldEnum = (typeof PushTokenScalarFieldEnum)[keyof typeof PushTokenScalarFieldEnum]
 
 
 export const BookmarkScalarFieldEnum = {

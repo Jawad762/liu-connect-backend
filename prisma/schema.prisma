@@ -29,6 +29,7 @@ model User {
   email    String   @unique
   name     String?
   avatar_url String?
+  cover_url String?
   bio      String?
   school   String?
   major    String?
@@ -52,7 +53,7 @@ model User {
   triggeredNotifications Notification[] @relation("NotificationActor")
   createdCommunities Community[]
   bookmarks Bookmark[]
-  pushTokens PushToken[]
+  push_token String?
   followers UserFollow[]  @relation("Follower")
   following UserFollow[] @relation("Following")
   createdAt DateTime @default(now()) @map("created_at")
@@ -229,17 +230,6 @@ model UserFollow {
   @@unique([followerId, followingId])
   @@index([followerId])
   @@index([followingId])
-}
-
-model PushToken {
-  id        String   @id @default(uuid())
-  token     String @unique
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@index([userId])
 }
 
 model Bookmark {

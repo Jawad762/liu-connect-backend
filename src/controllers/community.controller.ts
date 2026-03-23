@@ -1,7 +1,7 @@
 import { errorResponse, IAuthRequest, IAuthRequestBody, successResponse } from "../dtos/base.dto.ts";
 import { Response } from "express";
 import { prisma } from "../lib/prisma.ts";
-import { ICreateCommunityBody, IUpdateCommunityBody } from "../dtos/community.dto.ts";
+import { ICreateCommunityBody, IJoinMultipleCommunitiesBody, ISuggestCommunitiesBody, IUpdateCommunityBody } from "../dtos/community.dto.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
 import logger from "../lib/logger.ts";
 import { validateBio, validateName } from "../utils/user.utils.ts";
@@ -302,6 +302,82 @@ export const leaveCommunity = async (req: IAuthRequest, res: Response) => {
         });
 
         return res.status(200).json(successResponse(undefined, "Left community"));
+    } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
+        return res.status(500).json(errorResponse("Internal server error"));
+    }
+};
+
+export const suggestCommunities = async (req: IAuthRequestBody<ISuggestCommunitiesBody>, res: Response) => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
+
+        const { courseCodes } = req.body;
+        if (!Array.isArray(courseCodes) || courseCodes.length === 0) {
+            return res.status(400).json(errorResponse("Course codes are required"));
+        }
+
+        const communities = await prisma.community.findMany({
+            where: {
+                is_deleted: false,
+                OR: courseCodes.map((code) => ({
+                    name: { contains: code, mode: "insensitive" },
+                })),
+                communityMembers: { none: { userId } },
+            },
+            take: 10,
+        });
+
+        if (communities.length > 0) {
+            return res.status(200).json(successResponse(communities));
+        }
+
+        const fallbackCommunities = await prisma.community.findMany({
+            where: {
+                is_deleted: false,
+                communityMembers: { none: { userId } },
+            },
+            orderBy: {
+                communityMembers: {
+                    _count: "desc",
+                },
+            },
+            take: 5,
+        });
+
+        return res.status(200).json(successResponse(fallbackCommunities));
+    } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
+        return res.status(500).json(errorResponse("Internal server error"));
+    }
+};
+
+export const joinMultipleCommunities = async (req: IAuthRequestBody<IJoinMultipleCommunitiesBody>, res: Response) => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
+
+        const { communityIds } = req.body;
+        if (!Array.isArray(communityIds) || communityIds.length === 0) {
+            return res.status(400).json(errorResponse("Community IDs are required"));
+        }
+
+        const communities = await prisma.community.findMany({
+            where: { id: { in: communityIds }, is_deleted: false },
+        });
+
+        await Promise.all(
+            communities.map((community) =>
+                prisma.communityMember.upsert({
+                    where: { communityId_userId: { communityId: community.id, userId } },
+                    update: {},
+                    create: { communityId: community.id, userId },
+                })
+            )
+        );
+
+        return res.status(200).json(successResponse(communities));
     } catch (error) {
         logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));

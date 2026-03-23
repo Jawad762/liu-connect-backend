@@ -8,6 +8,8 @@ import {
   deleteCommunity,
   joinCommunity,
   leaveCommunity,
+  suggestCommunities,
+  joinMultipleCommunities,
 } from '../controllers/community.controller.ts';
 
 const router = express.Router();
@@ -16,6 +18,8 @@ router.use(authMiddleware);
 
 router.get('/', getCommunities);
 router.post('/', createCommunity);
+router.post('/suggestions', suggestCommunities);
+router.post('/join-multiple', joinMultipleCommunities);
 router.get('/:id', getCommunity);
 router.put('/:id', updateCommunity);
 router.delete('/:id', deleteCommunity);
