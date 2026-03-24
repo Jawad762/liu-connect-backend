@@ -4,7 +4,7 @@ import { IAddPushTokenBody, IDeleteMyAccountBody, IUpdateProfileBody, IUserListI
 import { prisma } from "../lib/prisma.ts";
 import { Response } from "express";
 import { toProfile, toProfileSelf, toUserListItem } from "../mappers/user.mapper.ts";
-import { validateBio, validateMajor, validateName, validateSchool } from "../utils/user.utils.ts";
+import { validateBio, validateName } from "../utils/user.utils.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
 import { NotificationType } from "../../generated/prisma/enums.ts";
 import { enqueuePushNotifications } from "../queue/enqueuePushNotifications.ts";
