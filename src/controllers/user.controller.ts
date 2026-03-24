@@ -42,11 +42,11 @@ export const updateProfile = async (req: IAuthRequestBody<IUpdateProfileBody>, r
     const bioValidation = validateBio(bio);
     if (!bioValidation.success) return res.status(400).json(errorResponse(bioValidation.message));
 
-    const schoolValidation = validateSchool(school);
-    if (!schoolValidation.success) return res.status(400).json(errorResponse(schoolValidation.message));
+    // const schoolValidation = validateSchool(school);
+    // if (!schoolValidation.success) return res.status(400).json(errorResponse(schoolValidation.message));
 
-    const majorValidation = validateMajor(major);
-    if (!majorValidation.success) return res.status(400).json(errorResponse(majorValidation.message));
+    // const majorValidation = validateMajor(major);
+    // if (!majorValidation.success) return res.status(400).json(errorResponse(majorValidation.message));
 
     const avatarUrlValidation = validateUrl(avatar_url);
     if (!avatarUrlValidation.success) return res.status(400).json(errorResponse(avatarUrlValidation.message));
