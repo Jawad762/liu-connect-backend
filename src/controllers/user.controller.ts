@@ -229,7 +229,7 @@ export const getFollowers = async (req: IAuthRequest, res: Response) => {
 
     const follows = await prisma.userFollow.findMany({
       where: { followingId: user.id },
-      include: { follower: { select: { id: true, name: true, avatar_url: true, bio: true, school: true, major: true } } },
+      include: { follower: { select: { id: true, name: true, avatar_url: true, cover_url: true, bio: true, school: true, major: true } } },
       orderBy: { createdAt: "desc" },
       skip: (Number(page) - 1) * Number(size),
       take: Number(size),
@@ -257,7 +257,7 @@ export const getFollowing = async (req: IAuthRequest, res: Response) => {
 
     const follows = await prisma.userFollow.findMany({
       where: { followerId: user.id },
-      include: { following: { select: { id: true, name: true, avatar_url: true, bio: true, school: true, major: true } } },
+      include: { following: { select: { id: true, name: true, avatar_url: true, bio: true, cover_url: true, school: true, major: true } } },
       orderBy: { createdAt: "desc" },
       skip: (Number(page) - 1) * Number(size),
       take: Number(size),
