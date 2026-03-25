@@ -82,11 +82,13 @@ export const createCommunity = async (
                 .json(errorResponse(descriptionValidation.message));
         }
 
-        const avatarUrlValidation = validateUrl(avatar_url ?? null);
-        if (!avatarUrlValidation.success) {
-            return res
-                .status(400)
-                .json(errorResponse(avatarUrlValidation.message));
+        if (avatar_url) {
+            const avatarUrlValidation = validateUrl(avatar_url);
+            if (!avatarUrlValidation.success) {
+                return res
+                    .status(400)
+                    .json(errorResponse(avatarUrlValidation.message));
+            }
         }
 
         const community = await prisma.community.create({
@@ -180,11 +182,13 @@ export const updateCommunity = async (
                 .json(errorResponse(descriptionValidation.message));
         }
 
-        const avatarUrlValidation = validateUrl(avatar_url ?? null);
-        if (!avatarUrlValidation.success) {
-            return res
-                .status(400)
-                .json(errorResponse(avatarUrlValidation.message));
+        if (avatar_url) {
+            const avatarUrlValidation = validateUrl(avatar_url);
+            if (!avatarUrlValidation.success) {
+                return res
+                    .status(400)
+                    .json(errorResponse(avatarUrlValidation.message));
+            }
         }
 
         await prisma.community.update({

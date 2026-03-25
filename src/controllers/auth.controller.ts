@@ -17,7 +17,6 @@ import {
   IResendVerificationBody,
   IResetPasswordBody,
   ISignInBody,
-  ISignOutBody,
   ISignUpBody,
   IVerifyEmailBody,
 } from "../dtos/auth.dto.ts";

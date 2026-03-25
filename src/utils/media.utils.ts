@@ -12,8 +12,7 @@ export const validateMediaItems = (media: { url: string; type: string }[]) => {
 };
 
 export const validateUrl = (url: string | null) => {
-    if (!url) return { success: true, message: "URL is optional" };
-    if (!url.startsWith("https://")) return { success: false, message: "Invalid URL" };
+    if (!url || !url.startsWith("https://")) return { success: false, message: "Invalid URL" };
     return { success: true, message: "URL is valid" };
 };
 

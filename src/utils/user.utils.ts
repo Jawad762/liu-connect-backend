@@ -17,11 +17,11 @@ export const validateBio = (bio: string | null) => {
 };
 
 export const validateSchool = (school: string | null) => {
-    if (!school || !LIU_SCHOOL_OPTIONS.includes(school as LiusSchool)) return { success: false, message: "Invalid school" };
+    if (!LIU_SCHOOL_OPTIONS.some((option) => option === school)) return { success: false, message: "Invalid school" };
     return { success: true, message: "School is valid" };
 };
 
 export const validateMajor = (major: string | null) => {
-    if (!major || !LIU_MAJOR_OPTIONS.some((option) => option.major === major)) return { success: false, message: "Invalid major" };
+    if (!LIU_MAJOR_OPTIONS.some((option) => option.major === major)) return { success: false, message: "Invalid major" };
     return { success: true, message: "Major is valid" };
 };

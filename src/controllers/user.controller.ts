@@ -3,8 +3,8 @@ import { errorResponse, successResponse } from "../dtos/base.dto.ts";
 import { IAddPushTokenBody, IDeleteMyAccountBody, IUpdateProfileBody, IUserListItem } from "../dtos/user.dto.ts";
 import { prisma } from "../lib/prisma.ts";
 import { Response } from "express";
-import { toProfile, toProfileSelf, toUserListItem } from "../mappers/user.mapper.ts";
-import { validateBio, validateName } from "../utils/user.utils.ts";
+import { toProfile, toProfileSelf } from "../mappers/user.mapper.ts";
+import { validateBio, validateMajor, validateName, validateSchool } from "../utils/user.utils.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
 import { NotificationType } from "../../generated/prisma/enums.ts";
 import { enqueuePushNotifications } from "../queue/enqueuePushNotifications.ts";
@@ -42,17 +42,25 @@ export const updateProfile = async (req: IAuthRequestBody<IUpdateProfileBody>, r
     const bioValidation = validateBio(bio);
     if (!bioValidation.success) return res.status(400).json(errorResponse(bioValidation.message));
 
-    // const schoolValidation = validateSchool(school);
-    // if (!schoolValidation.success) return res.status(400).json(errorResponse(schoolValidation.message));
+    if (school) {
+      const schoolValidation = validateSchool(school);
+      if (!schoolValidation.success) return res.status(400).json(errorResponse(schoolValidation.message));
+    }
 
-    // const majorValidation = validateMajor(major);
-    // if (!majorValidation.success) return res.status(400).json(errorResponse(majorValidation.message));
+    if (major) {
+      const majorValidation = validateMajor(major);
+      if (!majorValidation.success) return res.status(400).json(errorResponse(majorValidation.message));
+    }
 
-    const avatarUrlValidation = validateUrl(avatar_url);
-    if (!avatarUrlValidation.success) return res.status(400).json(errorResponse(avatarUrlValidation.message));
+    if (avatar_url) {
+      const avatarUrlValidation = validateUrl(avatar_url);
+      if (!avatarUrlValidation.success) return res.status(400).json(errorResponse(avatarUrlValidation.message));
+    }
 
-    const coverUrlValidation = validateUrl(cover_url);
-    if (!coverUrlValidation.success) return res.status(400).json(errorResponse(coverUrlValidation.message));
+    if (cover_url) {
+      const coverUrlValidation = validateUrl(cover_url);
+      if (!coverUrlValidation.success) return res.status(400).json(errorResponse(coverUrlValidation.message));
+    }
 
     const user = await prisma.user.update({
       where: { id: userId },
@@ -235,7 +243,7 @@ export const getFollowers = async (req: IAuthRequest, res: Response) => {
       take: Number(size),
     });
 
-    const list: IUserListItem[] = follows.map((f) => toUserListItem(f.follower));
+    const list = follows.map((f) => f.follower);
     res.status(200).json(successResponse(list));
   } catch (error) {
     logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
@@ -263,7 +271,7 @@ export const getFollowing = async (req: IAuthRequest, res: Response) => {
       take: Number(size),
     });
 
-    const list: IUserListItem[] = follows.map((f) => toUserListItem(f.following));
+    const list = follows.map((f) => f.following);
     res.status(200).json(successResponse(list));
   } catch (error) {
     logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
