@@ -7,6 +7,7 @@ import { BookmarkableType, NotificationType } from "../../generated/prisma/enums
 import { enqueuePushNotifications } from "../queue/enqueuePushNotifications.ts";
 import logger from "../lib/logger.ts";
 import { validatePost } from "../utils/post.utils.ts";
+import { parsePagination } from "../utils/pagination.utils.ts";
 
 export const createComment = async (req: IAuthRequestBody<ICreateCommentBody>, res: Response) => {
     try {
@@ -154,7 +155,12 @@ export const getComments = async (req: IAuthRequest, res: Response) => {
     try {
         const currentUserId = req.user?.id;
         if (!currentUserId) return res.status(401).json(errorResponse("Unauthorized"));
-        const { page = 1, size = 10, postId: queryPostId, userId: queryUserId, parentCommentId } = req.query;
+        const { postId: queryPostId, userId: queryUserId, parentCommentId } = req.query;
+        const { skip, take } = parsePagination(req.query.page, req.query.size, {
+            defaultPage: 1,
+            defaultSize: 10,
+            maxSize: 50,
+        });
 
         if (!queryPostId && !queryUserId) return res.status(400).json(errorResponse("Post ID or User ID is required"));
 
@@ -202,8 +208,8 @@ export const getComments = async (req: IAuthRequest, res: Response) => {
             orderBy: {
                 createdAt: "desc",
             },
-            skip: (Number(page) - 1) * Number(size),
-            take: Number(size),
+            skip,
+            take,
             include: {
                 user: { select: { id: true, name: true, avatar_url: true } },
                 media: { select: { id: true, media_url: true, type: true } },

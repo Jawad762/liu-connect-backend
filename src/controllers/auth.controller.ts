@@ -84,7 +84,7 @@ export const signIn = async (req: IRequestBody<ISignInBody>, res: Response) => {
     if (!user.is_verified) return res.status(403).json(errorResponse('Please verify your email before signing in'));
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) return res.status(401).json(errorResponse('Invalid email or password'));
-    const accessToken = jwt.sign({ id: user.id, name: user.name }, config.ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
+    const accessToken = jwt.sign({ id: user.id, name: user.name }, config.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
     const refreshToken = jwt.sign({ id: user.id, name: user.name }, config.REFRESH_TOKEN_SECRET, { expiresIn: '30d' });
     await prisma.user.update({
       where: { id: user.id },
@@ -133,14 +133,16 @@ export const refreshToken = async (req: IRequestBody<IRefreshTokenBody>, res: Re
     const { refreshToken } = req.body;
     if (!refreshToken) return res.status(401).json(errorResponse('Unauthorized'));
     const decoded = jwt.verify(refreshToken, config.REFRESH_TOKEN_SECRET) as JwtPayload;
-    if (!decoded) return res.status(401).json(errorResponse('Unauthorized'));
     const user = await prisma.user.findUnique({ where: { id: decoded.id } });
     if (!user || user.is_deleted || !user.refresh_token || user.refresh_token !== refreshToken) {
       return res.status(401).json(errorResponse('Unauthorized'));
     }
-    const accessToken = jwt.sign({ id: user.id, name: user.name }, config.ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
+    const accessToken = jwt.sign({ id: user.id, name: user.name }, config.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
     res.status(200).json(successResponse({ accessToken }, 'Token refreshed successfully'));
   } catch (error) {
+    if (error instanceof jwt.TokenExpiredError || error instanceof jwt.JsonWebTokenError) {
+      return res.status(401).json(errorResponse('Unauthorized'));
+    }
     logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse('Internal server error'));
   }

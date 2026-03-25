@@ -527,6 +527,7 @@ export const search = async (req: IAuthRequest, res: Response) => {
         const posts = await prisma.post.findMany({
             where: {
                 content: { contains: sanitizedQuery, mode: "insensitive" },
+                is_deleted: false,
             },
             include: {
                 user: { select: { id: true, name: true, avatar_url: true } },

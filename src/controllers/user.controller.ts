@@ -11,6 +11,7 @@ import { enqueuePushNotifications } from "../queue/enqueuePushNotifications.ts";
 import logger from "../lib/logger.ts";
 import bcrypt from "bcrypt";
 import { validateUrl } from "../utils/media.utils.ts";
+import { parsePagination } from "../utils/pagination.utils.ts";
 
 export const getMe = async (req: IAuthRequest, res: Response) => {
   try {
@@ -227,8 +228,11 @@ export const getFollowers = async (req: IAuthRequest, res: Response) => {
   try {
     const id = getRouteParam(req, "id");
     if (!id) return res.status(400).json(errorResponse("Invalid user"));
-
-    const { page = 1, size = 10 } = req.query;
+    const { skip, take } = parsePagination(req.query.page, req.query.size, {
+      defaultPage: 1,
+      defaultSize: 10,
+      maxSize: 50,
+    });
 
     const user = await prisma.user.findUnique({
       where: { id },
@@ -239,8 +243,8 @@ export const getFollowers = async (req: IAuthRequest, res: Response) => {
       where: { followingId: user.id },
       include: { follower: { select: { id: true, name: true, avatar_url: true, cover_url: true, bio: true, school: true, major: true } } },
       orderBy: { createdAt: "desc" },
-      skip: (Number(page) - 1) * Number(size),
-      take: Number(size),
+      skip,
+      take,
     });
 
     const list = follows.map((f) => f.follower);
@@ -255,8 +259,11 @@ export const getFollowing = async (req: IAuthRequest, res: Response) => {
   try {
     const id = getRouteParam(req, "id");
     if (!id) return res.status(400).json(errorResponse("Invalid user"));
-
-    const { page = 1, size = 10 } = req.query;
+    const { skip, take } = parsePagination(req.query.page, req.query.size, {
+      defaultPage: 1,
+      defaultSize: 10,
+      maxSize: 50,
+    });
 
     const user = await prisma.user.findUnique({
       where: { id },
@@ -267,8 +274,8 @@ export const getFollowing = async (req: IAuthRequest, res: Response) => {
       where: { followerId: user.id },
       include: { following: { select: { id: true, name: true, avatar_url: true, bio: true, cover_url: true, school: true, major: true } } },
       orderBy: { createdAt: "desc" },
-      skip: (Number(page) - 1) * Number(size),
-      take: Number(size),
+      skip,
+      take,
     });
 
     const list = follows.map((f) => f.following);

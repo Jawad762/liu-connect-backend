@@ -3,8 +3,7 @@ import logger from './lib/logger.ts';
 import { prisma } from './lib/prisma.ts';
 import { redis } from './queue/connection.ts';
 import { errorResponse } from './dtos/base.dto.ts';
-import express, { Request, Response, NextFunction } from 'express';
-import cookieParser from 'cookie-parser';
+import express from 'express';
 import authRoutes from './routes/auth.routes.ts';
 import usersRoutes from './routes/user.routes.ts';
 import notificationRoutes from './routes/notification.routes.ts';
@@ -17,6 +16,8 @@ import rateLimit from 'express-rate-limit';
 import { uploadthingRouter } from './lib/uploadthing.ts';
 import { RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX, AUTH_RATE_LIMIT_WINDOW_MS, AUTH_RATE_LIMIT_MAX } from './constants.ts';
 import aiRoutes from './routes/ai.routes.ts';
+import { requestLoggerMiddleware } from './middleware/request-logger.middleware.ts';
+import { errorMiddleware, notFoundMiddleware } from './middleware/error.middleware.ts';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -42,8 +43,8 @@ const authLimiter = rateLimit({
 });
 
 app.use(cors());
+app.use(requestLoggerMiddleware);
 app.use(express.json({ limit: '1mb' }));
-app.use(cookieParser());
 
 app.use('/api', rateLimiter, healthRoutes);
 app.use('/api/auth', authLimiter, authRoutes);
@@ -53,26 +54,10 @@ app.use('/api/posts', rateLimiter, postRoutes);
 app.use('/api/comments', rateLimiter, commentRoutes);
 app.use('/api/communities', rateLimiter, communityRoutes);
 app.use('/api/ai', rateLimiter, aiRoutes);
-app.use("/api/uploadthing", uploadthingRouter);
+app.use('/api/uploadthing', rateLimiter, uploadthingRouter);
 
-app.use((_req, _res, next) => {
-  next(new Error('Not Found'));
-});
-
-app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
-  const status = err.message === 'Not Found' ? 404 : 500;
-  const message = err.message === 'Not Found' ? 'Not found' : 'Internal server error';
-
-  logger.error(
-    { err, method: req.method, path: req.path, status },
-    'Request error'
-  );
-
-  if (res.headersSent) {
-    return;
-  }
-  res.status(status).json(errorResponse(message));
-});
+app.use(notFoundMiddleware);
+app.use(errorMiddleware);
 
 const server = app.listen(config.PORT, () => {
   logger.info(`Server is running on port ${config.PORT}`);

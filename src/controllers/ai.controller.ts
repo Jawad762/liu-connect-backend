@@ -4,6 +4,7 @@ import logger from "../lib/logger.ts";
 import { openAiClient } from "../lib/openai.ts";
 import { COURSE_CODE_REGEX, getAnalyzeSchedulePrompt, isValidAnalyzeScheduleResult, normalizeCourseCode } from "../utils/ai.utils.ts";
 import { IAnalyzeScheduleResult } from "../dtos/ai.dto.ts";
+import { validateUrl } from "../utils/media.utils.ts";
 
 export const analyzeSchedule = async (
   req: IAuthRequestBody<{ scheduleUrl: string }>,
@@ -13,6 +14,10 @@ export const analyzeSchedule = async (
     const { scheduleUrl } = req.body;
     if (!scheduleUrl) {
       return res.status(400).json(errorResponse("Schedule URL is required"));
+    }
+    const urlValidation = validateUrl(scheduleUrl);
+    if (!urlValidation.success) {
+      return res.status(400).json(errorResponse("Schedule URL must be a valid https URL"));
     }
 
     const response = await openAiClient.responses.create({

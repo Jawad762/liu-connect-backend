@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/main.ts",
   "scripts": {
-    "dev": "nodemon src/main.ts",
+    "dev": "nodemon --watch src --ext ts,json --ignore dist --exec \"tsx ./src/main.ts\"",
     "dev:debug": "nodemon --exec \"tsx --inspect src/main.ts\" src/main.ts",
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/src/main.js",
@@ -21,7 +21,6 @@
     "@sendgrid/mail": "^8.1.6",
     "bcrypt": "^6.0.0",
     "bullmq": "^5.70.1",
-    "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
@@ -38,7 +37,6 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
-    "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
