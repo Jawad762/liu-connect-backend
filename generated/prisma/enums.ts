@@ -33,3 +33,12 @@ export const BookmarkableType = {
 } as const
 
 export type BookmarkableType = (typeof BookmarkableType)[keyof typeof BookmarkableType]
+
+
+export const ReportStatus = {
+  OPEN: 'OPEN',
+  RESOLVED: 'RESOLVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type ReportStatus = (typeof ReportStatus)[keyof typeof ReportStatus]

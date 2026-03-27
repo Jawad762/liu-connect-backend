@@ -24,61 +24,72 @@ enum BookmarkableType {
   COMMENT
 }
 
+enum ReportStatus {
+  OPEN
+  RESOLVED
+  REJECTED
+}
+
 model User {
-  id       String   @id @default(uuid())
-  email    String   @unique
-  name     String?
-  avatar_url String?
-  cover_url String?
-  bio      String?
-  school   String?
-  major    String?
-  followers_count Int @default(0) @map("followers_count")
-  following_count Int @default(0) @map("following_count")
-  password   String
-  refresh_token String?
-  reset_password_token String?
+  id                     String            @id @default(uuid())
+  email                  String            @unique
+  name                   String?
+  avatar_url             String?
+  cover_url              String?
+  bio                    String?
+  school                 String?
+  major                  String?
+  followers_count        Int               @default(0) @map("followers_count")
+  following_count        Int               @default(0) @map("following_count")
+  password               String
+  refresh_token          String?
+  reset_password_token   String?
   reset_password_expires DateTime?
-  verify_email_token String?
-  verify_email_expires DateTime?
-  is_verified Boolean @default(false)
-  is_deleted Boolean  @default(false) @map("is_deleted")
-  deleted_at DateTime? @map("deleted_at")
-  posts    Post[]
-  comments Comment[]
-  communities CommunityMember[]
-  postLikes PostLike[]
-  commentLikes CommentLike[]
-  notifications Notification[] @relation("NotificationUser")
-  triggeredNotifications Notification[] @relation("NotificationActor")
-  createdCommunities Community[]
-  bookmarks Bookmark[]
-  push_token String?
-  followers UserFollow[]  @relation("Follower")
-  following UserFollow[] @relation("Following")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  verify_email_token     String?
+  verify_email_expires   DateTime?
+  is_verified            Boolean           @default(false)
+  is_deleted             Boolean           @default(false) @map("is_deleted")
+  deleted_at             DateTime?         @map("deleted_at")
+  posts                  Post[]
+  comments               Comment[]
+  communities            CommunityMember[]
+  postLikes              PostLike[]
+  commentLikes           CommentLike[]
+  notifications          Notification[]    @relation("NotificationUser")
+  triggeredNotifications Notification[]    @relation("NotificationActor")
+  createdCommunities     Community[]
+  bookmarks              Bookmark[]
+  push_token             String?
+  followers              UserFollow[]      @relation("Follower")
+  following              UserFollow[]      @relation("Following")
+  blocksCreated          UserBlock[]       @relation("UserBlockBlocker")
+  blocksReceived         UserBlock[]       @relation("UserBlockBlocked")
+  postReports            PostReport[]
+  commentReports         CommentReport[]
+  createdAt              DateTime          @default(now()) @map("created_at")
+  updatedAt              DateTime          @updatedAt @map("updated_at")
 
   @@index([is_deleted])
 }
 
 model Post {
-  id        String   @id @default(uuid())
-  content   String
-  is_deleted Boolean @default(false) @map("is_deleted")
-  deleted_at DateTime? @map("deleted_at")
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  comments Comment[]
-  likes_count Int @default(0)
-  comments_count Int @default(0)
-  community Community? @relation(fields: [communityId], references: [id], onDelete: Cascade)
-  communityId String?
-  likes PostLike[]
-  media PostMedia[]
-  notifications Notification[]
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id             String         @id @default(uuid())
+  content        String
+  is_deleted     Boolean        @default(false) @map("is_deleted")
+  deleted_at     DateTime?      @map("deleted_at")
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  comments       Comment[]
+  likes_count    Int            @default(0)
+  comments_count Int            @default(0)
+  community      Community?     @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  communityId    String?
+  likes          PostLike[]
+  media          PostMedia[]
+  notifications  Notification[]
+  reports        PostReport[]
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
 
   @@index([userId])
   @@index([communityId])
@@ -88,24 +99,25 @@ model Post {
 }
 
 model Comment {
-  id        String   @id @default(uuid())
-  content   String
-  is_deleted Boolean @default(false) @map("is_deleted")
-  deleted_at DateTime? @map("deleted_at")
-  post      Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId    String
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  parentId  String?
-  parent   Comment?  @relation("Comment", fields: [parentId], references: [id], onDelete: Cascade)
-  replies  Comment[] @relation("Comment")
-  likes_count Int @default(0)
-  replies_count Int @default(0)
-  likes CommentLike[]
-  media CommentMedia[]
+  id            String          @id @default(uuid())
+  content       String
+  is_deleted    Boolean         @default(false) @map("is_deleted")
+  deleted_at    DateTime?       @map("deleted_at")
+  post          Post            @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId        String
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  parentId      String?
+  parent        Comment?        @relation("Comment", fields: [parentId], references: [id], onDelete: Cascade)
+  replies       Comment[]       @relation("Comment")
+  likes_count   Int             @default(0)
+  replies_count Int             @default(0)
+  likes         CommentLike[]
+  media         CommentMedia[]
   notifications Notification[]
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  reports       CommentReport[]
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
 
   @@index([postId])
   @@index([userId])
@@ -114,32 +126,80 @@ model Comment {
   @@index([is_deleted])
 }
 
-model Community {
-  id        String   @id @default(uuid())
-  name      String
-  description String?
-  avatar_url String?
-  is_deleted Boolean  @default(false) @map("is_deleted")
-  deleted_at DateTime? @map("deleted_at")
-  posts Post[]
-  communityMembers CommunityMember[]
-  createdBy User @relation(fields: [createdById], references: [id], onDelete: Cascade)
-  createdById String
+model UserBlock {
+  blocker   User     @relation("UserBlockBlocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blockerId String   @map("blocker_id")
+  blocked   User     @relation("UserBlockBlocked", fields: [blockedId], references: [id], onDelete: Cascade)
+  blockedId String   @map("blocked_id")
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@id([blockerId, blockedId])
+  @@index([blockerId])
+  @@index([blockedId])
+}
+
+model PostReport {
+  id         String       @id @default(uuid())
+  reporter   User         @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  reporterId String       @map("reporter_id")
+  post       Post         @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId     String       @map("post_id")
+  reason     String
+  details    String?
+  status     ReportStatus @default(OPEN)
+  createdAt  DateTime     @default(now()) @map("created_at")
+
+  @@unique([reporterId, postId])
+  @@index([reporterId])
+  @@index([postId])
+  @@index([createdAt])
+  @@index([status])
+}
+
+model CommentReport {
+  id         String       @id @default(uuid())
+  reporter   User         @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  reporterId String       @map("reporter_id")
+  comment    Comment      @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId  String       @map("comment_id")
+  reason     String
+  details    String?
+  status     ReportStatus @default(OPEN)
+  createdAt  DateTime     @default(now()) @map("created_at")
+
+  @@unique([reporterId, commentId])
+  @@index([reporterId])
+  @@index([commentId])
+  @@index([createdAt])
+  @@index([status])
+}
+
+model Community {
+  id               String            @id @default(uuid())
+  name             String
+  description      String?
+  avatar_url       String?
+  is_deleted       Boolean           @default(false) @map("is_deleted")
+  deleted_at       DateTime?         @map("deleted_at")
+  posts            Post[]
+  communityMembers CommunityMember[]
+  createdBy        User              @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById      String
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
 
   @@index([createdById])
   @@index([is_deleted])
 }
 
 model CommunityMember {
-  id        String   @id @default(uuid())
-  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  id          String    @id @default(uuid())
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
   communityId String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
   @@unique([communityId, userId])
   @@index([communityId])
@@ -148,10 +208,10 @@ model CommunityMember {
 
 model PostLike {
   id        String   @id @default(uuid())
-  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -162,10 +222,10 @@ model PostLike {
 
 model CommentLike {
   id        String   @id @default(uuid())
-  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -175,23 +235,23 @@ model CommentLike {
 }
 
 model Notification {
-  id        String   @id @default(uuid())
-  type      NotificationType
-  title     String
-  body      String?
-  media_url String?
+  id           String           @id @default(uuid())
+  type         NotificationType
+  title        String
+  body         String?
+  media_url    String?
   redirect_url String?
-  read      Boolean @default(false)
-  user      User    @relation("NotificationUser", fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  post      Post?   @relation(fields: [postId], references: [id], onDelete: SetNull)
-  postId    String?
-  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: SetNull)
-  commentId String?
-  actor User @relation("NotificationActor", fields: [actorId], references: [id], onDelete: Cascade)
-  actorId   String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  read         Boolean          @default(false)
+  user         User             @relation("NotificationUser", fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  post         Post?            @relation(fields: [postId], references: [id], onDelete: SetNull)
+  postId       String?
+  comment      Comment?         @relation(fields: [commentId], references: [id], onDelete: SetNull)
+  commentId    String?
+  actor        User             @relation("NotificationActor", fields: [actorId], references: [id], onDelete: Cascade)
+  actorId      String
+  createdAt    DateTime         @default(now()) @map("created_at")
+  updatedAt    DateTime         @updatedAt @map("updated_at")
 
   @@index([userId])
   @@index([userId, read])
@@ -199,33 +259,33 @@ model Notification {
 }
 
 model PostMedia {
-  id        String   @id @default(uuid())
-  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId String
+  id        String        @id @default(uuid())
+  post      Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
   media_url String
-  type MediaTypeEnum
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  type      MediaTypeEnum
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
 }
 
 model CommentMedia {
-  id        String   @id @default(uuid())
-  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  id        String        @id @default(uuid())
+  comment   Comment       @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId String
   media_url String
-  type MediaTypeEnum
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  type      MediaTypeEnum
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
 }
 
 model UserFollow {
-  id         String   @id @default(uuid())
-  follower   User     @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
-  followerId String
-  following  User     @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+  id          String   @id @default(uuid())
+  follower    User     @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId  String
+  following   User     @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
   followingId String
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@unique([followerId, followingId])
   @@index([followerId])
@@ -233,13 +293,13 @@ model UserFollow {
 }
 
 model Bookmark {
-  id         String          @id @default(uuid())
-  type       BookmarkableType
-  entityId   String          @map("entity_id")
-  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String
-  createdAt  DateTime        @default(now()) @map("created_at")
-  updatedAt  DateTime         @updatedAt @map("updated_at")
+  id        String           @id @default(uuid())
+  type      BookmarkableType
+  entityId  String           @map("entity_id")
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
 
   @@unique([userId, type, entityId])
   @@index([userId])

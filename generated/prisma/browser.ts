@@ -33,6 +33,21 @@ export type Post = Prisma.PostModel
  */
 export type Comment = Prisma.CommentModel
 /**
+ * Model UserBlock
+ * 
+ */
+export type UserBlock = Prisma.UserBlockModel
+/**
+ * Model PostReport
+ * 
+ */
+export type PostReport = Prisma.PostReportModel
+/**
+ * Model CommentReport
+ * 
+ */
+export type CommentReport = Prisma.CommentReportModel
+/**
  * Model Community
  * 
  */
