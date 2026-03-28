@@ -9,9 +9,15 @@ export const PASSWORD_MAX_LENGTH = 50;
 export const POST_CONTENT_MAX_LENGTH = 300;
 export const POST_MEDIA_MAX_COUNT = 4;
 
+export const COMMENT_CONTENT_MAX_LENGTH = 300;
+export const COMMENT_MEDIA_MAX_COUNT = 4;
+
+export const REPORT_DETAILS_MAX_LENGTH = 160;
+
 export const NAME_MIN_LENGTH = 2;
 export const NAME_MAX_LENGTH = 25;
 export const BIO_MAX_LENGTH = 160;
+export const DESCRIPTION_MAX_LENGTH = 160;
 
 export const LIU_MAJORS_BY_SCHOOL = {
     "School of Engineering": [

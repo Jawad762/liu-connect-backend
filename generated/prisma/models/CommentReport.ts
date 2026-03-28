@@ -28,7 +28,7 @@ export type CommentReportMinAggregateOutputType = {
   id: string | null
   reporterId: string | null
   commentId: string | null
-  reason: string | null
+  reason: $Enums.ReportReason | null
   details: string | null
   status: $Enums.ReportStatus | null
   createdAt: Date | null
@@ -38,7 +38,7 @@ export type CommentReportMaxAggregateOutputType = {
   id: string | null
   reporterId: string | null
   commentId: string | null
-  reason: string | null
+  reason: $Enums.ReportReason | null
   details: string | null
   status: $Enums.ReportStatus | null
   createdAt: Date | null
@@ -163,7 +163,7 @@ export type CommentReportGroupByOutputType = {
   id: string
   reporterId: string
   commentId: string
-  reason: string
+  reason: $Enums.ReportReason
   details: string | null
   status: $Enums.ReportStatus
   createdAt: Date
@@ -194,7 +194,7 @@ export type CommentReportWhereInput = {
   id?: Prisma.StringFilter<"CommentReport"> | string
   reporterId?: Prisma.StringFilter<"CommentReport"> | string
   commentId?: Prisma.StringFilter<"CommentReport"> | string
-  reason?: Prisma.StringFilter<"CommentReport"> | string
+  reason?: Prisma.EnumReportReasonFilter<"CommentReport"> | $Enums.ReportReason
   details?: Prisma.StringNullableFilter<"CommentReport"> | string | null
   status?: Prisma.EnumReportStatusFilter<"CommentReport"> | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeFilter<"CommentReport"> | Date | string
@@ -222,7 +222,7 @@ export type CommentReportWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.CommentReportWhereInput | Prisma.CommentReportWhereInput[]
   reporterId?: Prisma.StringFilter<"CommentReport"> | string
   commentId?: Prisma.StringFilter<"CommentReport"> | string
-  reason?: Prisma.StringFilter<"CommentReport"> | string
+  reason?: Prisma.EnumReportReasonFilter<"CommentReport"> | $Enums.ReportReason
   details?: Prisma.StringNullableFilter<"CommentReport"> | string | null
   status?: Prisma.EnumReportStatusFilter<"CommentReport"> | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeFilter<"CommentReport"> | Date | string
@@ -250,7 +250,7 @@ export type CommentReportScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"CommentReport"> | string
   reporterId?: Prisma.StringWithAggregatesFilter<"CommentReport"> | string
   commentId?: Prisma.StringWithAggregatesFilter<"CommentReport"> | string
-  reason?: Prisma.StringWithAggregatesFilter<"CommentReport"> | string
+  reason?: Prisma.EnumReportReasonWithAggregatesFilter<"CommentReport"> | $Enums.ReportReason
   details?: Prisma.StringNullableWithAggregatesFilter<"CommentReport"> | string | null
   status?: Prisma.EnumReportStatusWithAggregatesFilter<"CommentReport"> | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CommentReport"> | Date | string
@@ -258,7 +258,7 @@ export type CommentReportScalarWhereWithAggregatesInput = {
 
 export type CommentReportCreateInput = {
   id?: string
-  reason: string
+  reason: $Enums.ReportReason
   details?: string | null
   status?: $Enums.ReportStatus
   createdAt?: Date | string
@@ -270,7 +270,7 @@ export type CommentReportUncheckedCreateInput = {
   id?: string
   reporterId: string
   commentId: string
-  reason: string
+  reason: $Enums.ReportReason
   details?: string | null
   status?: $Enums.ReportStatus
   createdAt?: Date | string
@@ -278,7 +278,7 @@ export type CommentReportUncheckedCreateInput = {
 
 export type CommentReportUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
   details?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -290,7 +290,7 @@ export type CommentReportUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   reporterId?: Prisma.StringFieldUpdateOperationsInput | string
   commentId?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
   details?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -300,7 +300,7 @@ export type CommentReportCreateManyInput = {
   id?: string
   reporterId: string
   commentId: string
-  reason: string
+  reason: $Enums.ReportReason
   details?: string | null
   status?: $Enums.ReportStatus
   createdAt?: Date | string
@@ -308,7 +308,7 @@ export type CommentReportCreateManyInput = {
 
 export type CommentReportUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
   details?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -318,7 +318,7 @@ export type CommentReportUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   reporterId?: Prisma.StringFieldUpdateOperationsInput | string
   commentId?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
   details?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -455,7 +455,7 @@ export type CommentReportUncheckedUpdateManyWithoutCommentNestedInput = {
 
 export type CommentReportCreateWithoutReporterInput = {
   id?: string
-  reason: string
+  reason: $Enums.ReportReason
   details?: string | null
   status?: $Enums.ReportStatus
   createdAt?: Date | string
@@ -465,7 +465,7 @@ export type CommentReportCreateWithoutReporterInput = {
 export type CommentReportUncheckedCreateWithoutReporterInput = {
   id?: string
   commentId: string
-  reason: string
+  reason: $Enums.ReportReason
   details?: string | null
   status?: $Enums.ReportStatus
   createdAt?: Date | string
@@ -504,7 +504,7 @@ export type CommentReportScalarWhereInput = {
   id?: Prisma.StringFilter<"CommentReport"> | string
   reporterId?: Prisma.StringFilter<"CommentReport"> | string
   commentId?: Prisma.StringFilter<"CommentReport"> | string
-  reason?: Prisma.StringFilter<"CommentReport"> | string
+  reason?: Prisma.EnumReportReasonFilter<"CommentReport"> | $Enums.ReportReason
   details?: Prisma.StringNullableFilter<"CommentReport"> | string | null
   status?: Prisma.EnumReportStatusFilter<"CommentReport"> | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeFilter<"CommentReport"> | Date | string
@@ -512,7 +512,7 @@ export type CommentReportScalarWhereInput = {
 
 export type CommentReportCreateWithoutCommentInput = {
   id?: string
-  reason: string
+  reason: $Enums.ReportReason
   details?: string | null
   status?: $Enums.ReportStatus
   createdAt?: Date | string
@@ -522,7 +522,7 @@ export type CommentReportCreateWithoutCommentInput = {
 export type CommentReportUncheckedCreateWithoutCommentInput = {
   id?: string
   reporterId: string
-  reason: string
+  reason: $Enums.ReportReason
   details?: string | null
   status?: $Enums.ReportStatus
   createdAt?: Date | string
@@ -557,7 +557,7 @@ export type CommentReportUpdateManyWithWhereWithoutCommentInput = {
 export type CommentReportCreateManyReporterInput = {
   id?: string
   commentId: string
-  reason: string
+  reason: $Enums.ReportReason
   details?: string | null
   status?: $Enums.ReportStatus
   createdAt?: Date | string
@@ -565,7 +565,7 @@ export type CommentReportCreateManyReporterInput = {
 
 export type CommentReportUpdateWithoutReporterInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
   details?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -575,7 +575,7 @@ export type CommentReportUpdateWithoutReporterInput = {
 export type CommentReportUncheckedUpdateWithoutReporterInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   commentId?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
   details?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -584,7 +584,7 @@ export type CommentReportUncheckedUpdateWithoutReporterInput = {
 export type CommentReportUncheckedUpdateManyWithoutReporterInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   commentId?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
   details?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -593,7 +593,7 @@ export type CommentReportUncheckedUpdateManyWithoutReporterInput = {
 export type CommentReportCreateManyCommentInput = {
   id?: string
   reporterId: string
-  reason: string
+  reason: $Enums.ReportReason
   details?: string | null
   status?: $Enums.ReportStatus
   createdAt?: Date | string
@@ -601,7 +601,7 @@ export type CommentReportCreateManyCommentInput = {
 
 export type CommentReportUpdateWithoutCommentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
   details?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -611,7 +611,7 @@ export type CommentReportUpdateWithoutCommentInput = {
 export type CommentReportUncheckedUpdateWithoutCommentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   reporterId?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
   details?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -620,7 +620,7 @@ export type CommentReportUncheckedUpdateWithoutCommentInput = {
 export type CommentReportUncheckedUpdateManyWithoutCommentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   reporterId?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.EnumReportReasonFieldUpdateOperationsInput | $Enums.ReportReason
   details?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -698,7 +698,7 @@ export type $CommentReportPayload<ExtArgs extends runtime.Types.Extensions.Inter
     id: string
     reporterId: string
     commentId: string
-    reason: string
+    reason: $Enums.ReportReason
     details: string | null
     status: $Enums.ReportStatus
     createdAt: Date
@@ -1130,7 +1130,7 @@ export interface CommentReportFieldRefs {
   readonly id: Prisma.FieldRef<"CommentReport", 'String'>
   readonly reporterId: Prisma.FieldRef<"CommentReport", 'String'>
   readonly commentId: Prisma.FieldRef<"CommentReport", 'String'>
-  readonly reason: Prisma.FieldRef<"CommentReport", 'String'>
+  readonly reason: Prisma.FieldRef<"CommentReport", 'ReportReason'>
   readonly details: Prisma.FieldRef<"CommentReport", 'String'>
   readonly status: Prisma.FieldRef<"CommentReport", 'ReportStatus'>
   readonly createdAt: Prisma.FieldRef<"CommentReport", 'DateTime'>

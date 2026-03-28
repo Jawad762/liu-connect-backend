@@ -14,3 +14,8 @@ export interface IUpdatePostBody {
     content: string;
     media: { url: string, type: MediaTypeEnum }[];
 }
+
+export interface IReportPostBody {
+    reason: string;
+    details: string | null;
+}

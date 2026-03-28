@@ -4,7 +4,7 @@ import { prisma } from "../lib/prisma.ts";
 import { ICreateCommunityBody, IJoinMultipleCommunitiesBody, ISuggestCommunitiesBody, IUpdateCommunityBody } from "../dtos/community.dto.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
 import logger from "../lib/logger.ts";
-import { validateBio, validateName } from "../utils/user.utils.ts";
+import { validateCommunityDescription, validateCommunityName } from "../utils/community.utils.ts";
 import { validateUrl } from "../utils/media.utils.ts";
 
 export const getCommunities = async (req: IAuthRequest, res: Response) => {
@@ -69,13 +69,13 @@ export const createCommunity = async (
 
         const { name, description, avatar_url } = req.body;
 
-        const nameValidation = validateName(name);
+        const nameValidation = validateCommunityName(name);
         if (!nameValidation.success) {
             return res
                 .status(400)
                 .json(errorResponse(nameValidation.message));
         }
-        const descriptionValidation = validateBio(description ?? null);
+        const descriptionValidation = validateCommunityDescription(description ?? null);
         if (!descriptionValidation.success) {
             return res
                 .status(400)
@@ -168,14 +168,14 @@ export const updateCommunity = async (
 
         const { name, description, avatar_url } = req.body;
 
-        const nameValidation = validateName(name ?? null);
+        const nameValidation = validateCommunityName(name);
         if (!nameValidation.success) {
             return res
                 .status(400)
                 .json(errorResponse(nameValidation.message));
         }
 
-        const descriptionValidation = validateBio(description ?? null);
+        const descriptionValidation = validateCommunityDescription(description ?? null);
         if (!descriptionValidation.success) {
             return res
                 .status(400)
@@ -193,11 +193,7 @@ export const updateCommunity = async (
 
         await prisma.community.update({
             where: { id: existing.id },
-            data: {
-                name: name as string,
-                description: description ?? null,
-                avatar_url: avatar_url ?? null,
-            },
+            data: { name, description, avatar_url },
         });
 
         return res.status(200).json(successResponse(undefined, "Community updated"));

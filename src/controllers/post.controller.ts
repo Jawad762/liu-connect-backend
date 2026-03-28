@@ -1,10 +1,11 @@
 import { errorResponse, IAuthRequest, IAuthRequestBody, successResponse } from "../dtos/base.dto.ts";
-import { ICreatePostBody, IUpdatePostBody } from "../dtos/post.dto.ts";
+import { ICreatePostBody, IReportPostBody, IUpdatePostBody } from "../dtos/post.dto.ts";
 import { prisma } from "../lib/prisma.ts";
 import { Response } from "express";
 import { validatePost } from "../utils/post.utils.ts";
+import { validateReportReason, validateReportDetails } from "../utils/report.utils.ts";
 import { getRouteParam } from "../utils/request.utils.ts";
-import { BookmarkableType, NotificationType } from "../../generated/prisma/enums.ts";
+import { BookmarkableType, NotificationType, ReportReason, ReportStatus } from "../../generated/prisma/enums.ts";
 import { enqueuePushNotifications } from "../queue/enqueuePushNotifications.ts";
 import logger from "../lib/logger.ts";
 
@@ -68,6 +69,18 @@ export const getPosts = async (req: IAuthRequest, res: Response) => {
                 ...(authorId != null && { userId: authorId }),
                 ...(followingOnly && { userId: { in: followingIds } }),
                 is_deleted: false,
+                user: {
+                    blocksReceived: {
+                        none: {
+                            blockerId: currentUserId,
+                        }
+                    },
+                    blocksCreated: {
+                        none: {
+                            blockedId: currentUserId,
+                        }
+                    }
+                }
             },
             orderBy: {
                 createdAt: "desc",
@@ -206,6 +219,18 @@ export const likePost = async (req: IAuthRequest, res: Response) => {
         });
         if (!post) return res.status(404).json(errorResponse("Post not found"));
 
+        if (post.userId !== userId) {
+            const block = await prisma.userBlock.findFirst({
+                where: {
+                    OR: [
+                        { blockerId: userId, blockedId: post.userId },
+                        { blockerId: post.userId, blockedId: userId },
+                    ],
+                },
+            });
+            if (block) return res.status(403).json(errorResponse("You cannot interact with this user"));
+        }
+
         const existingLike = await prisma.postLike.findUnique({
             where: { postId_userId: { postId: post.id, userId } },
         });
@@ -307,7 +332,22 @@ export const getPost = async (req: IAuthRequest, res: Response) => {
         if (!id) return res.status(400).json(errorResponse("Post ID is required"));
 
         const post = await prisma.post.findFirst({
-            where: { id, is_deleted: false },
+            where: { 
+                id,
+                is_deleted: false,
+                user: {
+                    blocksReceived: {
+                        none: {
+                            blockerId: userId,
+                        }
+                    },
+                    blocksCreated: {
+                        none: {
+                            blockedId: userId,
+                        }
+                    }
+                }
+             },
             include: {
                 media: { select: { id: true, media_url: true, type: true } },
                 user: {
@@ -416,7 +456,14 @@ export const getBookmarks = async (req: IAuthRequest, res: Response) => {
         }
 
         const posts = await prisma.post.findMany({
-            where: { id: { in: postIds }, is_deleted: false },
+            where: {
+                id: { in: postIds },
+                is_deleted: false,
+                user: {
+                    blocksReceived: { none: { blockerId: userId } },
+                    blocksCreated: { none: { blockedId: userId } },
+                },
+            },
             include: {
                 user: {
                     select: {
@@ -528,6 +575,10 @@ export const search = async (req: IAuthRequest, res: Response) => {
             where: {
                 content: { contains: sanitizedQuery, mode: "insensitive" },
                 is_deleted: false,
+                user: {
+                    blocksReceived: { none: { blockerId: userId } },
+                    blocksCreated: { none: { blockedId: userId } },
+                },
             },
             include: {
                 user: { select: { id: true, name: true, avatar_url: true } },
@@ -550,6 +601,54 @@ export const search = async (req: IAuthRequest, res: Response) => {
         }));
 
         return res.status(200).json(successResponse(postsWithIsLiked));
+    } catch (error) {
+        logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
+        return res.status(500).json(errorResponse("Internal server error"));
+    }
+};
+
+export const reportPost = async (req: IAuthRequestBody<IReportPostBody>, res: Response) => {
+    try {
+        const userId = req.user?.id;
+        const postId = getRouteParam(req, "id");
+        if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
+        if (!postId) return res.status(400).json(errorResponse("Post ID is required"));
+
+        const { reason, details: rawDetails } = req.body;
+        const details = rawDetails ?? null;
+
+        const reasonValidation = validateReportReason(reason);
+        if (!reasonValidation.success) return res.status(400).json(errorResponse(reasonValidation.message));
+
+        if (reason === ReportReason.OTHER && details === null) return res.status(400).json(errorResponse("Details are required when reason is other"));
+        if (details !== null) {
+            const detailsValidation = validateReportDetails(details);
+            if (!detailsValidation.success) return res.status(400).json(errorResponse(detailsValidation.message));
+        }
+
+        const post = await prisma.post.findUnique({
+            where: { id: postId },
+            select: { id: true, is_deleted: true },
+        });
+        if (!post || post.is_deleted) return res.status(404).json(errorResponse("Post not found"));
+
+        const existing = await prisma.postReport.findUnique({
+            where: { reporterId_postId: { reporterId: userId, postId } },
+        });
+        if (existing) {
+            return res.status(400).json(errorResponse("You have already reported this post."));
+        }
+
+        await prisma.postReport.create({
+            data: {
+                reporterId: userId,
+                postId,
+                reason: reason as ReportReason,
+                details,
+                status: ReportStatus.OPEN,
+            },
+        });
+        return res.status(201).json(successResponse(undefined, "Post reported successfully"));
     } catch (error) {
         logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
         return res.status(500).json(errorResponse("Internal server error"));

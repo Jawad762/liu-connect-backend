@@ -42,3 +42,15 @@ export const ReportStatus = {
 } as const
 
 export type ReportStatus = (typeof ReportStatus)[keyof typeof ReportStatus]
+
+
+export const ReportReason = {
+  SPAM: 'SPAM',
+  HARASSMENT: 'HARASSMENT',
+  SEXUAL_CONTENT: 'SEXUAL_CONTENT',
+  HATE_SPEECH: 'HATE_SPEECH',
+  DISCRIMINATION: 'DISCRIMINATION',
+  OTHER: 'OTHER'
+} as const
+
+export type ReportReason = (typeof ReportReason)[keyof typeof ReportReason]

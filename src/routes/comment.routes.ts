@@ -1,6 +1,6 @@
 import express from 'express';
 import { authMiddleware } from '../middleware/auth.middleware.ts';
-import { bookmarkComment, createComment, deleteComment, getBookmarks, getComment, getComments, likeComment, unbookmarkComment, unlikeComment, updateComment } from '../controllers/comment.controller.ts';
+import { bookmarkComment, createComment, deleteComment, getBookmarks, getComment, getComments, likeComment, reportComment, unbookmarkComment, unlikeComment, updateComment } from '../controllers/comment.controller.ts';
 
 const router = express.Router();
 
@@ -14,7 +14,8 @@ router.delete('/:id/unbookmark', unbookmarkComment);
 router.get('/:id', getComment);
 router.put('/:id', updateComment);
 router.delete('/:id', deleteComment);
-router.patch('/:id/like', likeComment);
-router.patch('/:id/unlike', unlikeComment);
+router.post('/:id/like', likeComment);
+router.delete('/:id/unlike', unlikeComment);
+router.post('/:id/report', reportComment);
 
 export default router;

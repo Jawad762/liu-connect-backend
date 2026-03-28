@@ -11,8 +11,8 @@ export const validateName = (name: string | null) => {
 
 export const validateBio = (bio: string | null) => {
     if (!bio) return { success: true, message: "Bio is valid" };
-    if (bio.length > BIO_MAX_LENGTH) return { success: false, message: "Bio must be less than 160 characters" };
-  
+    if (bio.length > BIO_MAX_LENGTH) return { success: false, message: `Bio must be less than ${BIO_MAX_LENGTH} characters` };
+
     return { success: true, message: "Bio is valid" };
 };
 

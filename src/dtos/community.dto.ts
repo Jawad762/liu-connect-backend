@@ -5,9 +5,9 @@ export interface ICreateCommunityBody {
 }
 
 export interface IUpdateCommunityBody {
-  name?: string;
-  description?: string | null;
-  avatar_url?: string | null;
+  name: string;
+  description: string | null;
+  avatar_url: string | null;
 }
 
 export interface ISuggestCommunitiesBody {

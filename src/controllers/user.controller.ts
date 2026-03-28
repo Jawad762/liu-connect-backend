@@ -83,7 +83,7 @@ export const getUserById = async (req: IAuthRequest, res: Response) => {
     if (!id) return res.status(400).json(errorResponse("Invalid user"));
 
     const user = await prisma.user.findUnique({
-      where: { id },
+      where: { id, blocksReceived: { none: { blockerId: currentUserId } }, blocksCreated: { none: { blockedId: currentUserId } } },
     });
     if (!user || user.is_deleted) return res.status(404).json(errorResponse("User not found"));
 
@@ -113,6 +113,16 @@ export const followUser = async (req: IAuthRequest, res: Response) => {
     });
     if (!targetUser || targetUser.is_deleted) return res.status(404).json(errorResponse("User not found"));
     if (targetUser.id === followerId) return res.status(400).json(errorResponse("Cannot follow yourself"));
+
+    const block = await prisma.userBlock.findFirst({
+      where: {
+        OR: [
+          { blockerId: followerId, blockedId: targetUser.id },
+          { blockerId: targetUser.id, blockedId: followerId },
+        ],
+      },
+    });
+    if (block) return res.status(403).json(errorResponse("You cannot interact with this user"));
 
     await prisma.$transaction([
       prisma.userFollow.create({
@@ -310,6 +320,9 @@ export const addPushToken = async (req: IAuthRequestBody<IAddPushTokenBody>, res
 
 export const search = async (req: IAuthRequest, res: Response) => {
   try {
+    const currentUserId = req.user?.id;
+    if (!currentUserId) return res.status(401).json(errorResponse("Unauthorized"));
+
     const { query, page = 1, size = 10 } = req.query;
     const pageNumber = Math.max(1, parseInt(page as string) || 1);
     const sizeNumber = Math.min(30, Math.max(1, parseInt(size as string) || 20));
@@ -320,6 +333,8 @@ export const search = async (req: IAuthRequest, res: Response) => {
       where: {
         is_deleted: false,
         name: { contains: sanitizedQuery, mode: "insensitive" },
+        blocksReceived: { none: { blockerId: currentUserId } },
+        blocksCreated: { none: { blockedId: currentUserId } },
       },
       skip: (pageNumber - 1) * sizeNumber,
       take: sizeNumber,
@@ -354,6 +369,102 @@ export const deleteMyAccount = async (req: IAuthRequestBody<IDeleteMyAccountBody
     });
 
     return res.status(200).json(successResponse(undefined, "Account deleted"));
+  } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
+    return res.status(500).json(errorResponse("Internal server error"));
+  }
+};
+
+export const blockUser = async (req: IAuthRequest, res: Response) => {
+  try {
+    const blockerId = req.user?.id;
+    if (!blockerId) return res.status(401).json(errorResponse("Unauthorized"));
+
+    const blockedId = getRouteParam(req, "id");
+    if (!blockedId) return res.status(400).json(errorResponse("Invalid user"));
+
+    const blockedUser = await prisma.user.findUnique({
+      where: { id: blockedId },
+    });
+    if (!blockedUser || blockedUser.is_deleted) return res.status(404).json(errorResponse("User not found"));
+
+    if (blockedUser.id === blockerId) return res.status(400).json(errorResponse("Cannot block yourself"));
+
+    const existing = await prisma.userBlock.findUnique({
+      where: { blockerId_blockedId: { blockerId, blockedId } },
+    });
+    if (existing) return res.status(200).json(successResponse(undefined, "Already blocked"));
+
+    await prisma.$transaction(async (tx) => {
+      await tx.userBlock.create({ data: { blockerId, blockedId } });
+
+      const aFollowsB = await tx.userFollow.deleteMany({
+        where: { followerId: blockerId, followingId: blockedId },
+      });
+      if (aFollowsB.count > 0) {
+        await tx.user.update({ where: { id: blockerId }, data: { following_count: { decrement: 1 } } });
+        await tx.user.update({ where: { id: blockedId }, data: { followers_count: { decrement: 1 } } });
+      }
+
+      const bFollowsA = await tx.userFollow.deleteMany({
+        where: { followerId: blockedId, followingId: blockerId },
+      });
+      if (bFollowsA.count > 0) {
+        await tx.user.update({ where: { id: blockedId }, data: { following_count: { decrement: 1 } } });
+        await tx.user.update({ where: { id: blockerId }, data: { followers_count: { decrement: 1 } } });
+      }
+    });
+
+    return res.status(201).json(successResponse(undefined, "Blocked"));
+  } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
+    return res.status(500).json(errorResponse("Internal server error"));
+  }
+};
+
+export const unblockUser = async (req: IAuthRequest, res: Response) => {
+  try {
+    const blockerId = req.user?.id;
+    if (!blockerId) return res.status(401).json(errorResponse("Unauthorized"));
+
+    const blockedId = getRouteParam(req, "id");
+    if (!blockedId) return res.status(400).json(errorResponse("Invalid user"));
+
+    const blockedUser = await prisma.user.findUnique({
+      where: { id: blockedId },
+    });
+    if (!blockedUser || blockedUser.is_deleted) return res.status(404).json(errorResponse("User not found"));
+
+    if (blockedUser.id === blockerId) return res.status(400).json(errorResponse("Cannot unblock yourself"));
+
+    const existing = await prisma.userBlock.findUnique({
+      where: { blockerId_blockedId: { blockerId, blockedId } },
+    });
+    if (!existing) return res.status(400).json(errorResponse("Not blocked"));
+
+    await prisma.userBlock.delete({
+      where: { blockerId_blockedId: { blockerId, blockedId } },
+    });
+
+    return res.status(200).json(successResponse(undefined, "Unblocked"))
+  } catch (error) {
+    logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
+    return res.status(500).json(errorResponse("Internal server error"));
+  }
+};
+
+export const getBlockedUsers = async (req: IAuthRequest, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json(errorResponse("Unauthorized"));
+
+    const blockedUsers = await prisma.userBlock.findMany({
+      where: { blockerId: userId },
+      include: { blocked: { select: { id: true, name: true, avatar_url: true, cover_url: true, bio: true, school: true, major: true } } },
+    });
+
+    const list = blockedUsers.map((b) => b.blocked);
+    return res.status(200).json(successResponse(list));
   } catch (error) {
     logger.error({ err: error, method: req.method, path: req.path }, "Request failed");
     return res.status(500).json(errorResponse("Internal server error"));

@@ -30,6 +30,15 @@ enum ReportStatus {
   REJECTED
 }
 
+enum ReportReason {
+  SPAM
+  HARASSMENT
+  SEXUAL_CONTENT
+  HATE_SPEECH
+  DISCRIMINATION
+  OTHER
+}
+
 model User {
   id                     String            @id @default(uuid())
   email                  String            @unique
@@ -144,7 +153,7 @@ model PostReport {
   reporterId String       @map("reporter_id")
   post       Post         @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId     String       @map("post_id")
-  reason     String
+  reason     ReportReason
   details    String?
   status     ReportStatus @default(OPEN)
   createdAt  DateTime     @default(now()) @map("created_at")
@@ -162,7 +171,7 @@ model CommentReport {
   reporterId String       @map("reporter_id")
   comment    Comment      @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId  String       @map("comment_id")
-  reason     String
+  reason     ReportReason
   details    String?
   status     ReportStatus @default(OPEN)
   createdAt  DateTime     @default(now()) @map("created_at")

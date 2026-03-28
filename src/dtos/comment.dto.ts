@@ -11,3 +11,8 @@ export interface IUpdateCommentBody {
     content: string;
     media: { url: string, type: MediaTypeEnum }[];
 }
+
+export interface IReportCommentBody {
+    reason: string;
+    details: string | null;
+}
