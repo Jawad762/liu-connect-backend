@@ -82,10 +82,9 @@ export const getPosts = async (req: IAuthRequest, res: Response) => {
                     }
                 }
             },
-            orderBy: [
-                { createdAt: "desc" },
-                { id: "desc" },
-            ],
+            orderBy: {
+                createdAt: "desc",
+            },
             skip: (pageNumber - 1) * sizeNumber,
             take: sizeNumber,
             include: {
